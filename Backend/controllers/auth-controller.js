@@ -9,6 +9,8 @@ export const getUser = async (request, h) => {
     }).code(200);
 };
 
+
+
 export const Register = async(request, h) => {
     try {
         const { name, email, password, confPassword } = request.payload;
@@ -28,6 +30,8 @@ export const Register = async(request, h) => {
     }
 }
 
+
+
 export const Login = async (request, h) => {
     try {
         const { email, password } = request.payload;
@@ -45,10 +49,12 @@ export const Login = async (request, h) => {
     }
 };
 
+
+
 export const Logout = async (request, h) => {
     const refreshToken = request.cookies.refreshToken
     if(!refreshToken){
-        return h.response().code(204)
+        return h.response().code(204);
     }
     
     const user = await Users.findAll({
@@ -57,7 +63,7 @@ export const Logout = async (request, h) => {
         }
     })
     if(!user[0]){
-        return h.response().code(204)
+        return h.response().code(204);
     }
 
     const userID = user[0].id
@@ -66,9 +72,10 @@ export const Logout = async (request, h) => {
             id: userID
         }
     })
-    h.response.clearCookie('refreshToken')
+    h.response.clearCookie('refreshToken');
     return h.response().code(200)
 }
+
 
 
 export const refreshToken = async (request, h) => {
@@ -78,7 +85,7 @@ export const refreshToken = async (request, h) => {
     }
 
     try {
-        const accessToken = await refreshTokenServise(refreshToken); // ✅ kirim ke service
+        const accessToken = await refreshTokenServise(refreshToken);
         return h.response({ accessToken });
     } catch (error) {
         return h.response({ message: error.message }).code(403);

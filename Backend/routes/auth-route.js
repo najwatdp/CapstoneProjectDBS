@@ -1,7 +1,7 @@
 import { getUser, Login, refreshToken, Register } from "../controllers/auth-controller.js";
 import {verifyToken} from "../middleware/verifyToken.js";
 
-const routes = [
+const routeAuth = [
     {
         method: 'GET',
         path: '/user',
@@ -31,4 +31,4 @@ const routes = [
 
 ]
 
-export default routes
+export default routeAuth

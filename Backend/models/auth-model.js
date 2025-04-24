@@ -50,9 +50,4 @@ const Users = db.define("users", {
 Roles.hasMany(Users, { foreignKey: "roleId" });
 Users.belongsTo(Roles, { foreignKey: "roleId" });
 
-(async () => {
-    await db.sync({ alter: true });
-    console.log("Database & tables created!");
-})();
-
 export { Users, Roles };

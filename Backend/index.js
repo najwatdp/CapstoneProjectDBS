@@ -1,7 +1,10 @@
 'use strict';
 
 import Hapi from '@hapi/hapi'
-import routes from './routes/auth-route.js';
+import routeAuth from './routes/auth-route.js';
+import db from './config/db.js';
+import routePenyakit from './routes/penyakit-route.js';
+import Penyakit from './models/penyakit-model.js';
 
 const init = async () => {
 
@@ -24,9 +27,18 @@ const init = async () => {
         path: '/',
         encoding: 'none', // biar bisa baca token string biasa
     });
+
+    try {
+        await db.authenticate();
+        console.log('Database Connected...');
+        await Penyakit.sync();
+    } catch (error) {
+        
+    }
     
 
-    server.route(routes);
+    server.route(routePenyakit);
+    server.route(routeAuth);
 
     await server.start();
     console.log('Server running on %s', server.info.uri);
