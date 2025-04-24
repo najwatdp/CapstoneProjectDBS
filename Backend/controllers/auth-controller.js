@@ -85,7 +85,7 @@ export const refreshToken = async (request, h) => {
     }
 
     try {
-        const accessToken = await refreshTokenServise(refreshToken); // ✅ kirim ke service
+        const accessToken = await refreshTokenServise(refreshToken);
         return h.response({ accessToken });
     } catch (error) {
         return h.response({ message: error.message }).code(403);
