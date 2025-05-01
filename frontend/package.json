@@ -10,9 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "frontend": "file:",
+=======
+    "axios": "^1.9.0",
+    "bootstrap": "^5.3.5",
+>>>>>>> 85a4e299ec7fd5de0c1dc1c15615e29cc3908cd8
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router": "^7.5.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
