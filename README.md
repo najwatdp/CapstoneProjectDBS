@@ -6,7 +6,7 @@ git clone https://github.com/CapstoneProjectDBS/CapstoneProjectDBS.git
 
 2. Masuk ke direktori backend
 ````
-cd Backend
+cd backend
 ````
 
 3. Instal node module
