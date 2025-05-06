@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import db from '../config/db.js';
 import KategoriKesehatan from './kategori-kesehatan.js';
 
-const Penyakit = db.define('penyakit', {
+const Kehamilan = db.define('kehamilan', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -11,8 +11,8 @@ const Penyakit = db.define('penyakit', {
     id_kategori: {
         type: DataTypes.INTEGER,
         references: {
-        model: KategoriKesehatan, 
-        key: 'id', 
+        model: KategoriKesehatan,
+        key: 'id',
         },
         allowNull: false,
     },
@@ -27,10 +27,10 @@ const Penyakit = db.define('penyakit', {
         type: DataTypes.DATE,
     },
     }, {
-    tableName: 'penyakit',
+    tableName: 'kehamilan',
     timestamps: false,
     });
 
-Penyakit.belongsTo(KategoriKesehatan, { foreignKey: 'id_kategori' });
+Kehamilan.belongsTo(KategoriKesehatan, { foreignKey: 'id_kategori' });
 
-export default Penyakit;
+export default Kehamilan;

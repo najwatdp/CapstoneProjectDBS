@@ -35,9 +35,9 @@ export const Register = async(request, h) => {
 export const Login = async (request, h) => {
     try {
         const { email, password } = request.payload;
-        const { refreshToken, accessToken } = await LoginService(email, password);
+        const { refreshToken, accessToken, role } = await LoginService(email, password);
 
-        return h.response({ accessToken }).state("refreshToken", refreshToken, {
+        return h.response({ accessToken, role }).state("refreshToken", refreshToken, {
             httpOnly: true,
             secure: false,
             sameSite: "Lax",

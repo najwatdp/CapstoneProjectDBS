@@ -1,4 +1,4 @@
-import { Users } from "../models/auth-model.js";
+import { Users, Roles } from "../models/auth-model.js";
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 
@@ -32,7 +32,14 @@ export const RegisterServices = async (name, email, password, confPassword) => {
 };
 
 export const LoginService = async (email, password) => {
-    const user = await Users.findOne({ where: { email } });
+    const user = await Users.findOne({
+        where: { email },
+        include: {
+            model: Roles,
+            as: 'role',
+            attributes: ['name']
+        }
+    });
 
     if (!user) {
         throw new Error("Email tidak ditemukan");
@@ -42,6 +49,7 @@ export const LoginService = async (email, password) => {
     if (!match) {
         throw new Error("Password salah");
     }
+    const role = user.role.name;
 
     const userID = user.id;
     const name = user.name;
@@ -56,7 +64,7 @@ export const LoginService = async (email, password) => {
 
     await Users.update({ refresh_token: refreshToken }, { where: { id: userID } });
 
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken, role };
 };
 
 

@@ -5,6 +5,11 @@ import routeAuth from './routes/auth-route.js';
 import db from './config/db.js';
 import routePenyakit from './routes/penyakit-route.js';
 import Penyakit from './models/penyakit-model.js';
+import KategoriKesehatan from './models/kategori-kesehatan.js';
+import CekKesehatan from './models/cekKesehatan-model.js';
+import Kulit from './models/kulit-model.js';
+import Kehamilan from './models/kehamilan-model.js';
+import KonsultasiPenyakit from './models/konsultasi-penyakit.js';
 
 const init = async () => {
 
@@ -31,7 +36,7 @@ const init = async () => {
     try {
         await db.authenticate();
         console.log('Database Connected...');
-        await Penyakit.sync();
+        await db.sync();
     } catch (error) {
         
     }
