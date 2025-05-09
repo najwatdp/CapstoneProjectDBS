@@ -110,7 +110,3 @@ export const Cookie = async (request, h) => {
         cookie: cookie
     }).code(201);
 }
-
-export const RemoveCookie = async (request, h) => {
-    return h.response("Bye").unstate("refreshToken");
-}

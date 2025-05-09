@@ -32,11 +32,6 @@ const routeAuth = [
         method: 'GET',
         path: '/cookie',
         handler: Cookie
-    },
-    {
-        method: 'GET',
-        path: '/remove-cookie',
-        handler: RemoveCookie
     }
 ]
 
