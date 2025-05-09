@@ -1,6 +1,6 @@
 'use strict';
 
-import Hapi from '@hapi/hapi'
+import Hapi, { server } from '@hapi/hapi'
 import routeAuth from './routes/auth-route.js';
 import db from './config/db.js';
 import routePenyakit from './routes/penyakit-route.js';
@@ -45,6 +45,7 @@ const init = async () => {
     server.route(routePenyakit);
     server.route(routeAuth);
 
+
     await server.start();
     console.log('Server running on %s', server.info.uri);
 };
@@ -54,5 +55,6 @@ process.on('unhandledRejection', (err) => {
     console.log(err);
     process.exit(1);
 });
+
 
 init();

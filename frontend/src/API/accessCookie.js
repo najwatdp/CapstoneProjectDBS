@@ -1,7 +1,8 @@
 import { instance } from "./index";
 
-// export const cookie = async () => {
-//     try {
-//         const res = await instance.post('')
-//     }
-// }
+export const cookie = async () => {
+    const res = await instance.get('/cookie', {
+        withCredentials: true
+    });
+    return res.data;
+}
