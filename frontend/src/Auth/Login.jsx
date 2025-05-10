@@ -21,6 +21,9 @@ export default function Login() {
             console.log(res);
 
             if (res.role) {
+
+                localStorage.setItem('role', res.role);
+
                 if (res.role.toLowerCase() === "admin") {
                 navigate("/dashboard");
                 } else {
