@@ -70,10 +70,10 @@ function CardNext({ setName, setEmail, name, email, setActive }) {
         let nameUser = name.split("");
         let emailUser = email.split("");
 
-        if (nameUser.length >= 1 && emailUser.length >= 1) {
-            setDisable(false)
+        if (nameUser.length >= -1 && emailUser.length >= -1) {
+            setDisable(false);
         } else {
-            setDisable(true)
+            setDisable(true);
         }
     }
 
@@ -92,6 +92,7 @@ function CardNext({ setName, setEmail, name, email, setActive }) {
 
         setLoading(true);
         setDisable(true);
+        console.log(name, email);
 
         setTimeout(() => {
             setActive(false);

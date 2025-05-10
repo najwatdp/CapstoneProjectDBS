@@ -1,5 +1,5 @@
 GET http://localhost:5000/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjEsIm5hbWUiOiJmYXRpaCIsImVtYWlsIjoiZmF0aWgxMjNAZ21haWwuY29tIiwiaWF0IjoxNzQ2MDc5NDYwLCJleHAiOjE3NDYwNzk0NzV9.3LT1gdW8jiHCqqGjt54znIe9jAo7KcY4EygsuaBT00M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjIsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZXMiOiJhZG1pbiIsImlhdCI6MTc0Njg2NTA1MSwiZXhwIjoxNzQ2ODY1MDcxfQ.oA8NMYgykWJox5lR1nELTiHTvQu-5L2QjYIz2BcSIXU
 
 ###
 POST http://localhost:5000/user
@@ -17,8 +17,8 @@ POST http://localhost:5000/login
 Content-Type: application/json
 
 {
-    "email":"fatih123@gmail.com",
-    "password":"123"
+    "email":"admin@gmail.com",
+    "password":"12345678"
 }
 
 ###

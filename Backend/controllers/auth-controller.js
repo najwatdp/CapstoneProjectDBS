@@ -30,14 +30,12 @@ export const Register = async (request, h) => {
     }
 }
 
-
-
 export const Login = async (request, h) => {
     try {
         const { email, password } = request.payload;
-        const { refreshToken, accessToken, role } = await LoginService(email, password);
+        const { refreshToken, accessToken, roles } = await LoginService(email, password);
 
-        return h.response({ accessToken, role }).state("refreshToken", refreshToken, {
+        return h.response({ accessToken, roles }).state("refreshToken", refreshToken, {
             httpOnly: true,
             secure: false,
             sameSite: "Lax",
@@ -48,9 +46,6 @@ export const Login = async (request, h) => {
         return h.response({ msg: error.message }).code(400);
     }
 };
-
-
-
 
 export const Logout = async (request, h) => {
     const refreshToken = request.cookies.refreshToken
@@ -92,21 +87,3 @@ export const refreshToken = async (request, h) => {
         return h.response({ message: error.message }).code(403);
     }
 };
-
-
-export const Cookie = async (request, h) => {
-    const cookie = request.state.refreshToken;
-
-    if (!cookie) {
-        return h.response(
-            {
-                success: false,
-                message: "Cookie tidak tersedia" 
-            }).code(404);
-    }
-
-    return h.response({
-        success: true,
-        cookie: cookie
-    }).code(201);
-}
