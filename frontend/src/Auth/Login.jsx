@@ -1,19 +1,33 @@
 import { useState } from "react";
 import Users from "../API/users";
 import LoadingBerputar from "../Animation Loading/LoadingBerputar";
+import { useNavigate } from "react-router";
 
 export default function Login() {
+
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [LoadingButton, setLoadingButton] = useState(false);
 
     async function Login(email, password) {
+
+        setLoadingButton(true);
+
         try {
-            setLoadingButton(true);
+
             const res = await Users.AuthLogin({email, password});
-            localStorage.setItem('token', res.accessToken);
             console.log(res);
+
+            if (res.role) {
+                if (res.role.toLowerCase() === "admin") {
+                navigate("/dashboard");
+                } else {
+                    navigate("/");
+                }
+            }
+        
         } catch (err) {
             console.log(err);
         } finally {
@@ -22,6 +36,10 @@ export default function Login() {
     }
 
     function submit(e) {
+<<<<<<< HEAD
+=======
+        e.preventDefault();
+>>>>>>> 70128bf827dcb2717f9fcef4c5a8d969ab1be001
 
         Login(email, password);
     }
@@ -60,7 +78,7 @@ export default function Login() {
     )
 }
 
-function FormLogin({setEmail, setPassword, setCheck, SubmitLogin, Loading}) {
+function FormLogin({setEmail, setPassword, setCheck, SubmitLogin, Loading, Route}) {
 
     const [disableButton, setDisableButton] = useState(true);
     const [inputEmail, setInputEmail] = useState('');
@@ -77,11 +95,15 @@ function FormLogin({setEmail, setPassword, setCheck, SubmitLogin, Loading}) {
     function handleInput(e) {
 
         if (e.target.id === 'email') {
+
             setInputEmail(e.target.value);
             setEmail(e.target.value);
+
         } else {
+
             setInputPassword(e.target.value);
             setPassword(e.target.value);
+
         }
 
         handleDisable()
@@ -89,7 +111,7 @@ function FormLogin({setEmail, setPassword, setCheck, SubmitLogin, Loading}) {
 
     return (
         <>
-            <form action="/dashboard" onSubmit={SubmitLogin}>
+            <form onSubmit={SubmitLogin}>
                 <div className="mb-20px">
                     <label htmlFor="email">Email Address</label>
                     <input type="text" name="email" onChange={handleInput} id="email" placeholder="example@gmail.com" className="d-block w-100 p-8px pi-15 rounded-20px mb-5px border border-0 outline-1" disabled={Loading} />

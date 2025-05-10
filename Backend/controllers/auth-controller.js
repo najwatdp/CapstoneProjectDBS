@@ -1,4 +1,4 @@
-import {LoginService, RegisterServices, serviceGetUser } from "../services/auth-service.js";
+import { LoginService, RegisterServices, serviceGetUser } from "../services/auth-service.js";
 import { refreshTokenServise } from "../services/auth-service.js";
 
 export const getUser = async (request, h) => {
@@ -11,7 +11,7 @@ export const getUser = async (request, h) => {
 
 
 
-export const Register = async(request, h) => {
+export const Register = async (request, h) => {
     try {
         const { name, email, password, confPassword } = request.payload;
         const response = await RegisterServices(name, email, password, confPassword);
@@ -22,7 +22,7 @@ export const Register = async(request, h) => {
             data: response
         }).code(201);
     } catch (error) {
-        console.error("Register error:", error.message); 
+        console.error("Register error:", error.message);
         return h.response({
             status: "fail",
             msg: error.message
@@ -49,21 +49,21 @@ export const Login = async (request, h) => {
 
 export const Logout = async (request, h) => {
     const refreshToken = request.cookies.refreshToken
-    if(!refreshToken){
+    if (!refreshToken) {
         return h.response().code(204);
     }
-    
+
     const user = await Users.findAll({
-        where:{
+        where: {
             refresh_token: refreshToken
         }
     })
-    if(!user[0]){
+    if (!user[0]) {
         return h.response().code(204);
     }
 
     const userID = user[0].id
-    await Users.update({refresh_token:null}, {
+    await Users.update({ refresh_token: null }, {
         where: {
             id: userID
         }
@@ -87,3 +87,21 @@ export const refreshToken = async (request, h) => {
         return h.response({ message: error.message }).code(403);
     }
 };
+
+
+export const Cookie = async (request, h) => {
+    const cookie = request.state.refreshToken;
+
+    if (!cookie) {
+        return h.response(
+            {
+                success: false,
+                message: "Cookie tidak tersedia" 
+            }).code(404);
+    }
+
+    return h.response({
+        success: true,
+        cookie: cookie
+    }).code(201);
+}

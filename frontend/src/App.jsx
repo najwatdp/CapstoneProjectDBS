@@ -4,6 +4,8 @@ import Register from './Auth/Signin'
 import ForgotPassword from './Auth/ForgotPassword'
 import Home from './Home'
 import PrivateRoute from './PrivateRoute'
+import Dashboard from './Dashboard'
+import LoadingSpinner from './Animation Loading/loadingSpinner'
 
 function App() {
 
@@ -18,6 +20,12 @@ function App() {
           <Home/>
         </PrivateRoute>
       }/>
+      <Route path='/dashboard' element={
+        <PrivateRoute>
+          <Dashboard/>
+        </PrivateRoute>
+      }/>
+      <Route path='/percobaan' element={<LoadingSpinner Width={20} Height={2}/>}/>
     </Routes>
     </>
   )
