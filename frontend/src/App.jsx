@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { Routes, Route } from 'react-router'
 import Login from './Auth/Login'
 import Register from './Auth/Signin'
