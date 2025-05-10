@@ -39,7 +39,10 @@ export default function Login() {
     }
 
     function submit(e) {
+<<<<<<< HEAD
+=======
         e.preventDefault();
+>>>>>>> 70128bf827dcb2717f9fcef4c5a8d969ab1be001
 
         Login(email, password);
     }

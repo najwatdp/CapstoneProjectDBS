@@ -30,8 +30,6 @@ export const Register = async (request, h) => {
     }
 }
 
-
-
 export const Login = async (request, h) => {
     try {
         const { email, password } = request.payload;
@@ -48,9 +46,6 @@ export const Login = async (request, h) => {
         return h.response({ msg: error.message }).code(400);
     }
 };
-
-
-
 
 export const Logout = async (request, h) => {
     const refreshToken = request.cookies.refreshToken
