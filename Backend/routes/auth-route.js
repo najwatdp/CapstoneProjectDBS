@@ -1,4 +1,4 @@
-import { Cookie, getUser, Login, refreshToken, Register, RemoveCookie } from "../controllers/auth-controller.js";
+import { Cookie, getUser, Login, refreshToken, Register } from "../controllers/auth-controller.js";
 import {verifyToken} from "../middleware/verifyToken.js";
 
 const routeAuth = [
