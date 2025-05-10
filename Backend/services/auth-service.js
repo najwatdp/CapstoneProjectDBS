@@ -49,22 +49,22 @@ export const LoginService = async (email, password) => {
     if (!match) {
         throw new Error("Password salah");
     }
-    const role = user.role.name;
+    const roles = user.role.name;
 
     const userID = user.id;
     const name = user.name;
 
-    const accessToken = jwt.sign({ userID, name, email }, process.env.ACCESS_TOKEN_SECRET, {
+    const accessToken = jwt.sign({ userID, name, email, roles }, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: "20s"
     });
 
-    const refreshToken = jwt.sign({ userID, name, email }, process.env.REFRESH_TOKEN_SECRET, {
+    const refreshToken = jwt.sign({ userID, name, email, roles }, process.env.REFRESH_TOKEN_SECRET, {
         expiresIn: "1d"
     });
 
     await Users.update({ refresh_token: refreshToken }, { where: { id: userID } });
 
-    return { accessToken, refreshToken, role };
+    return { accessToken, refreshToken, roles };
 };
 
 

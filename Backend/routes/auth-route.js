@@ -1,4 +1,4 @@
-import { Cookie, getUser, Login, refreshToken, Register, RemoveCookie } from "../controllers/auth-controller.js";
+import { Cookie, getUser, Login, refreshToken, Register } from "../controllers/auth-controller.js";
 import {verifyToken} from "../middleware/verifyToken.js";
 
 const routeAuth = [
@@ -7,7 +7,12 @@ const routeAuth = [
         path: '/user',
         options: {
             pre: [{ method: verifyToken }],
-            handler: getUser
+            handler: (request, h) => {
+            return {
+                message: 'Akses dashboard berhasil!',
+                user: request.auth.credentials
+            };
+            }
         }
     },
 
@@ -28,9 +33,10 @@ const routeAuth = [
         path: '/token',
         handler: refreshToken
     },
+
     {
         method: 'GET',
-        path: '/cookie',
+        path: '/verifyToken',
         handler: Cookie
     }
 ]
