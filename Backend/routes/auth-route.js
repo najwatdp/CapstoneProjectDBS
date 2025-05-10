@@ -1,4 +1,4 @@
-import { Login, refreshToken, Register } from "../controllers/auth-controller.js";
+import { getUser, Login, refreshToken, Register } from "../controllers/auth-controller.js";
 import {verifyToken} from "../middleware/verifyToken.js";
 
 const routeAuth = [
@@ -7,12 +7,7 @@ const routeAuth = [
         path: '/user',
         options: {
             pre: [{ method: verifyToken }],
-            handler: (request, h) => {
-            return {
-                message: 'Akses dashboard berhasil!',
-                user: request.auth.credentials
-            };
-            }
+            handler: getUser
         }
     },
 
@@ -33,6 +28,7 @@ const routeAuth = [
         path: '/token',
         handler: refreshToken
     },
+    
 ]
 
 export default routeAuth
