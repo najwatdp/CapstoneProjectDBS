@@ -12,11 +12,7 @@
   "dependencies": {
     "axios": "^1.9.0",
     "bootstrap": "^5.3.5",
-<<<<<<< HEAD
     "frontend": "file:",
-    "jwt-decode": "^4.0.0",
-=======
->>>>>>> 70128bf827dcb2717f9fcef4c5a8d969ab1be001
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.5.2",
