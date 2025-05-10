@@ -87,21 +87,3 @@ export const refreshToken = async (request, h) => {
         return h.response({ message: error.message }).code(403);
     }
 };
-
-
-export const Cookie = async (request, h) => {
-    const cookie = request.state.refreshToken;
-
-    if (!cookie) {
-        return h.response(
-            {
-                success: false,
-                message: "Cookie tidak tersedia" 
-            }).code(404);
-    }
-
-    return h.response({
-        success: true,
-        cookie: cookie
-    }).code(201);
-}

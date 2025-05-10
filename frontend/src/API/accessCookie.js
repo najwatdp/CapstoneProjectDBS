@@ -1,8 +1,17 @@
 import { instance } from "./index";
 
-export const cookie = async () => {
-    const res = await instance.get('/cookie', {
-        withCredentials: true
-    });
-    return res.data;
+
+class Cookie {
+
+    static async getCookie() {
+        const res = await instance.get('/token', {
+            withCredentials: true
+        });
+
+        return res.data;
+    }
 }
+
+
+
+export default Cookie;
