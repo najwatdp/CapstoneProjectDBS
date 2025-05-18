@@ -9,8 +9,6 @@ export const getUser = async (request, h) => {
     }).code(200);
 };
 
-
-
 export const Register = async (request, h) => {
     try {
         const { name, email, password, confPassword } = request.payload;
@@ -87,3 +85,4 @@ export const refreshToken = async (request, h) => {
         return h.response({ message: error.message }).code(403);
     }
 };
+
