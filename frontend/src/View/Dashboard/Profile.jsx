@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Container, Row, Col, Button, Form, Alert, Nav } from 'react-bootstrap';
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLock, FaEdit, FaSave, FaImage } from 'react-icons/fa';
+import ProfilePresenter from '../../Presenter/ProfilePresenter';
+import Users from '../../Model/users';
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState('profileInfo');
   const [isEditing, setIsEditing] = useState(false);
   const [successAlert, setSuccessAlert] = useState(false);
+  const [data, setData] = useState(null);
+
+
+  const presenter = new ProfilePresenter({
+    model: Users,
+    view: {
+      setData: setData
+    }
+  })
   
   // Data statis untuk profil pengguna
   const [profileData, setProfileData] = useState({
@@ -96,6 +107,7 @@ const Profile = () => {
     setSuccessAlert(true);
     setTimeout(() => setSuccessAlert(false), 3000);
   };
+
 
   return (
     <Container fluid className="p-4">
