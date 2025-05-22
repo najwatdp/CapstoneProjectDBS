@@ -1,5 +1,6 @@
 import { getKategori, addKategoriService, updateKategoriService, deleteKategoriService } from "../services/kategori-service.js";
 import Joi from "joi";
+import Boom from '@hapi/boom';
 
 export const getKategoriController = async (request, h) => {
     const response = await getKategori();
@@ -11,43 +12,14 @@ export const getKategoriController = async (request, h) => {
 
 export const addKategoriController = async (request, h) => {
     try {
-        const schema = Joi.object({
-        nama_kategori: Joi.string().min(3).required(),
-        deskripsi: Joi.string().allow('').optional()
-        });
-
-        const { error, value } = schema.validate(request.payload);
-        if (error) {
-        return h.response({
-            status: 'fail',
-            msg: error.details[0].message
-        }).code(400);
-        }
-
-        const { nama_kategori, deskripsi } = value;
-        const newKategori = await addKategoriService(nama_kategori, deskripsi);
-
-        return h.response({
-        status: 'success',
-        msg: 'Kategori berhasil ditambahkan',
-        data: newKategori
-        }).code(201);
-    } catch (err) {
-        return h.response({
-        status: 'fail',
-        msg: err.message
-        }).code(400);
-    }
-};
-
-export const updateKategoriController = async (request, h) => {
-    try {
+        // Validasi payload nama_kategori & deskripsi
         const schema = Joi.object({
         nama_kategori: Joi.string().min(3).required(),
         deskripsi: Joi.string().allow('').optional(),
         });
 
-        const { error, value } = schema.validate(request.payload);
+        const { nama_kategori, deskripsi, images } = request.payload;
+        const { error } = schema.validate({ nama_kategori, deskripsi });
         if (error) {
         return h.response({
             status: 'fail',
@@ -55,9 +27,59 @@ export const updateKategoriController = async (request, h) => {
         }).code(400);
         }
 
+        // Panggil service dengan file images jika ada
+        const newKategori = await addKategoriService(
+        { nama_kategori, deskripsi, file: images || null },
+        request.server.info.uri
+        );
+
+        return h.response({
+        status: 'success',
+        msg: 'Kategori berhasil ditambahkan',
+        data: newKategori,
+        }).code(201);
+    } catch (err) {
+        if (err.message.includes('Nama kategori sudah digunakan')) {
+        return h.response({
+            status: 'fail',
+            msg: err.message,
+        }).code(400);
+        }
+        if (
+        err.message.includes('Format gambar tidak valid') ||
+        err.message.includes('Ukuran gambar maksimal')
+        ) {
+        return Boom.badRequest(err.message);
+        }
+        console.error('addKategoriController Error:', err);
+        return Boom.internal('Terjadi kesalahan pada server');
+    }
+};
+
+export const updateKategoriController = async (request, h) => {
+    try {
         const { id } = request.params;
-        const { nama_kategori, deskripsi } = value;
-        const updatedKategori = await updateKategoriService(id, nama_kategori, deskripsi);
+        const { nama_kategori, deskripsi, images } = request.payload;
+
+        // Validasi payload
+        const schema = Joi.object({
+        nama_kategori: Joi.string().min(3).optional(),
+        deskripsi: Joi.string().allow('').optional(),
+        });
+
+        const { error } = schema.validate({ nama_kategori, deskripsi });
+        if (error) {
+        return h.response({
+            status: 'fail',
+            msg: error.details[0].message,
+        }).code(400);
+        }
+
+        const updatedKategori = await updateKategoriService(
+        id,
+        { nama_kategori, deskripsi, file: images || null },
+        request.server.info.uri
+        );
 
         return h.response({
         status: 'success',
@@ -65,10 +87,25 @@ export const updateKategoriController = async (request, h) => {
         data: updatedKategori,
         }).code(200);
     } catch (err) {
+        if (
+        err.message.includes('Kategori tidak ditemukan') ||
+        err.message.includes('Nama kategori sudah digunakan')
+        ) {
         return h.response({
-        status: 'fail',
-        msg: err.message,
+            status: 'fail',
+            msg: err.message,
         }).code(400);
+        }
+
+        if (
+        err.message.includes('Format gambar tidak valid') ||
+        err.message.includes('Ukuran gambar maksimal')
+        ) {
+        return Boom.badRequest(err.message);
+        }
+
+        console.error('updateKategoriController Error:', err);
+        return Boom.internal('Terjadi kesalahan pada server');
     }
 };
 
