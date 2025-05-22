@@ -10,14 +10,31 @@ const routeKategori = [
     {
         method: 'POST',
         path: '/api/kategori',
-        handler: addKategoriController
+        handler: addKategoriController,
+        options: {
+            payload: {
+                output: 'stream',
+                parse: true,
+                multipart: true,
+                allow: 'multipart/form-data'
+            }
+        }
     },
 
     {
         method: 'PUT',
         path: '/api/kategori/{id}',
         handler: updateKategoriController,
+        options: {
+            payload: {
+                output: 'stream',
+                parse: true,
+                multipart: true,
+                allow: 'multipart/form-data'
+            }
+        }
     },
+    
     {
         method: 'DELETE',
         path: '/api/kategori/{id}',
