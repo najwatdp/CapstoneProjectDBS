@@ -8,12 +8,10 @@ class Users {
         });
         return res.data;
     }
-
     static async Register(data) {
         const res = await instance.post('/user', data);
         return res.data;
     }
-
     static async getUser(token) {
         const res = await instance.get('/user', {
             headers: {
@@ -23,12 +21,10 @@ class Users {
 
         return res.data;
     }
-
     static async getUsers() {
         const res = await instance.get('/api/users');
         return res.data;
     }
-
     static async createUser(name, email, password) {
         const res = await instance.post('/api/users', {
             name: name,
@@ -38,14 +34,18 @@ class Users {
 
         return res.data;
     }
-
     static async deleteUser(id) {
         const res = await instance.delete(`/api/users/${id}`);
         return res.data;
     }
-
     static async EditUser(id, data) {
         const res = await instance.put(`/api/users/${id}`, data);
+        return res.data;
+    }
+    static async searchUser(email) {
+        const res = await instance.post('/api/search-email', {
+            email: email
+        });
         return res.data;
     }
 }

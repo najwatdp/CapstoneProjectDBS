@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Button, ProgressBar, Table } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import { FaCog, FaUser, FaHome } from "react-icons/fa";
@@ -8,8 +8,25 @@ import {
 } from 'react-icons/fa';
 import '../Dashboard/layouts/MainLayout.css';
 import '../Dashboard/Dashboard.css';
+import DashboardPresenter from '../../Presenter/DashboardPresenter';
+import Model from '../../Model/Model';
 
 const Dashboard = () => {
+
+  const [users, setUsers] = useState(null);
+  const date = new Date;
+
+  const presenter = new DashboardPresenter({
+    model: Model,
+    view: {
+      setUsers: setUsers
+    }
+  });
+  useEffect(() => {
+    presenter.getUser();
+  }, []);
+
+
   return (
     <div className="dashboard-container">
       <div className="page-header mb-4">
@@ -30,10 +47,14 @@ const Dashboard = () => {
                   <div style={{ fontWeight: 'bold'}} className="text-primary text-uppercase mb-1">
                     Total Pengguna
                   </div>
-                  <div className="h5 mb-0 font-weight-bold">#</div>
+                  <div className="h5 mb-0 font-weight-bold">{ users !== null ? users.length : 0 }</div>
                   <div className="mt-2 small">
                     <span className="text-success me-2">+12%</span>
                     <span className="text-muted">sejak bulan lalu</span>
+                  </div>
+                  { users !== null ? users[0].createdAt : 0 }
+                  <div>
+                    { date }
                   </div>
                 </Col>
                 <Col xs="auto">

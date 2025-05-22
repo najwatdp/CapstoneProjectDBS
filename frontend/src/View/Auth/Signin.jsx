@@ -3,6 +3,8 @@ import LoadingBerputar from "../../Animation Loading/LoadingBerputar";
 import Users from "../../Model/users";
 import RegisterPresenter from "../../Presenter/RegisterPresenter";
 import { useNavigate } from "react-router";
+import { FaCross } from "react-icons/fa";
+import { FaCircleCheck, FaCircleXmark } from 'react-icons/fa6';
 
 
 export default function Register() {
@@ -16,6 +18,9 @@ export default function Register() {
     const [message, setMessage] = useState('');
     const [Loading, setLoading] = useState(false);
     const [disable, setDisable] = useState(true);
+    const [LoadingCheck, setLoadingCheck] = useState(false);
+    const [showCheck, setShowCheck] = useState(false);
+    const [emailAvailable, setEmailAvailable] = useState(true);
 
     const presenter = new RegisterPresenter({
         model: Users,
@@ -24,7 +29,10 @@ export default function Register() {
             setLoading: setLoading,
             setMessage: setMessage,
             setDisable: setDisable,
-            navigate: navigate
+            navigate: navigate,
+            setShowCheck: setShowCheck,
+            setLoadingCheck: setLoadingCheck,
+            setEmailAvailable: setEmailAvailable
         }
     })
 
@@ -35,6 +43,13 @@ export default function Register() {
     async function Submit(e) {
         e.preventDefault();
         await presenter.Register(name, email, password, confirmPassword);
+    }
+
+    async function hanldeInputEmail(e) {
+        setEmail(e.target.value);
+        setTimeout( async () => {
+            await presenter.searchEmail(e.target.value);
+        }, 500);
     }
 
     return (
@@ -69,7 +84,13 @@ export default function Register() {
                                 </div>
                                 <div className="mb-20px">
                                     <label htmlFor="email">Email Address</label>
-                                    <input type="email" name="email" id="email" onChange={(e) => setEmail(e.target.value)} placeholder="example@gmail.com" className="d-block w-100 p-8px pi-15 rounded-20px mb-5px border border-0 outline-1" disabled={Loading} />
+                                    <div className="d-flex align-items-center justify-content-center w-100 p-8px pi-15 rounded-20px mb-5px border border-0 outline-1">
+                                        <input type="email" name="email" id="email" onChange={hanldeInputEmail} placeholder="example@gmail.com" className="border border-0 outline-0 w-95" disabled={Loading} />
+                                        { showCheck ? 
+                                        <>
+                                        { LoadingCheck ? <div className="w-20px"><LoadingBerputar wdith={20} hiegth={20} /></div> : emailAvailable ? <div className="c-red"><FaCircleXmark/></div> : <div className="c-green"><FaCircleCheck /></div>}
+                                        </> : <></> }
+                                    </div>
                                 </div>
                                 <button onClick={Next} className="w-100 btn btn-primary text-light rounded-20px mb-20px fs-6 border border-0 p-8px text-align-center" disabled={Loading}>
                                     {Loading ? (
