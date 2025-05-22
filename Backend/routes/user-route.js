@@ -17,7 +17,7 @@ const routeUser = [
     {
         method: 'PUT',
         path: '/api/users/{id}',
-        handler: updateUser
+        handler: updateUser,
     },
 
     {
@@ -33,9 +33,12 @@ const routeUser = [
         options: {
             payload: {
                 parse: true,
-                allow: 'application/json',
-            },
-    },
+                allow: ['multipart/form-data', 'application/json'], 
+                multipart: true,  
+                maxBytes: 10 * 1024 * 1024, 
+                output: 'stream' 
+            }
+        }
     }
 ]
 

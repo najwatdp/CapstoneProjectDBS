@@ -3,6 +3,7 @@
 import Hapi, { server } from '@hapi/hapi'
 import routeAuth from './routes/auth-route.js';
 import db from './config/db.js';
+import Inert from '@hapi/inert';
 import routePenyakit from './routes/penyakit-route.js';
 import Penyakit from './models/penyakit-model.js';
 import KategoriKesehatan from './models/kategori-kesehatan.js';
@@ -13,6 +14,7 @@ import KonsultasiPenyakit from './models/konsultasi-penyakit.js';
 import routeUser from './routes/user-route.js';
 import routeKategori from './routes/kategori-route.js';
 import Artikel from './models/artikel-model.js';
+import routeArtikel from './routes/artikel-route.js';
 
 const init = async () => {
 
@@ -28,6 +30,20 @@ const init = async () => {
         }
     });
 
+    await server.register(Inert);
+
+    server.route({
+    method: 'GET',
+    path: '/images/{param*}',
+    handler: {
+        directory: {
+            path: 'public/images',
+            listing: false,
+            index: false,
+        },
+    },
+  });
+
     server.state('refreshToken', {
         ttl: null,
         isSecure: false, // ubah ke true kalau sudah pakai https
@@ -39,13 +55,13 @@ const init = async () => {
     try {
         await db.authenticate();
         console.log('Database Connected...');
-        // await db.sync({ alter: true });
+        await db.sync({ alter: true });
         // await Artikel.sync({ alter: true });
     } catch (error) {
         
     }
     
-
+    server.route(routeArtikel)
     server.route(routeKategori);
     server.route(routeUser)
     server.route(routePenyakit);

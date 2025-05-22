@@ -4,7 +4,7 @@ import KategoriKesehatan from './kategori-kesehatan.js';
 
 // Definisi Model Artikel
 const Artikel = db.define('artikel', {
-    ketegori_id: {
+    kategori_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -35,18 +35,6 @@ const Artikel = db.define('artikel', {
     }, {
     tableName: 'artikel',
     timestamps: false,
-    });
-
-    // Relasi Artikel -> belongsTo -> KategoriKesehatan
-    Artikel.belongsTo(KategoriKesehatan, {
-    foreignKey: 'ketegori_id',
-    as: 'kategori',
-    });
-
-    // Relasi KategoriKesehatan -> hasMany -> Artikel
-    KategoriKesehatan.hasMany(Artikel, {
-    foreignKey: 'ketegori_id',
-    as: 'artikels',
     });
 
 export default Artikel;

@@ -2,12 +2,12 @@ import { instance } from ".";
 
 export default class Dashboard {
 
-    async getKategori() {
+    static async getKategori() {
         const res = await instance.get('/api/kategori');
         return res.data;
     }
 
-    async createKategori(kategori, deskripsi) {
+    static async createKategori(kategori, deskripsi) {
         const res = await instance.post('/api/kategori', {
             nama_kategori: kategori,
             deskripsi: deskripsi
@@ -15,7 +15,7 @@ export default class Dashboard {
         return res.data;
     }
 
-    async editKategori(id, kategori, deskripsi) {
+    static async editKategori(id, kategori, deskripsi) {
         const res = await instance.put(`/api/kategori/${id}`, {
             nama_kategori: kategori,
             deskripsi: deskripsi
@@ -24,7 +24,7 @@ export default class Dashboard {
         return res.data;
     }
     
-    async deleteKategori(id) {
+    static async deleteKategori(id) {
         const res = await instance.delete(`/api/kategori/${id}`);
         return res.data;
     }
