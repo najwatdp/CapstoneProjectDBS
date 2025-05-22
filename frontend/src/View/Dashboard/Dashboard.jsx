@@ -14,7 +14,6 @@ import Model from '../../Model/Model';
 const Dashboard = () => {
 
   const [users, setUsers] = useState(null);
-  const date = new Date;
 
   const presenter = new DashboardPresenter({
     model: Model,
@@ -51,10 +50,6 @@ const Dashboard = () => {
                   <div className="mt-2 small">
                     <span className="text-success me-2">+12%</span>
                     <span className="text-muted">sejak bulan lalu</span>
-                  </div>
-                  { users !== null ? users[0].createdAt : 0 }
-                  <div>
-                    { date }
                   </div>
                 </Col>
                 <Col xs="auto">
