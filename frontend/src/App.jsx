@@ -1,9 +1,9 @@
 import { Routes, Route } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Login from './View/Auth/Login';
+import Login from "./View/Auth/Login";
 import Register from "./View/Auth/Signin";
 import ForgotPassword from "./View/Auth/ForgotPassword";
-import Home from "./Home";
+import Home from "./Pages/Home";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "./View/Dashboard/Dashboard";
 import MainLayout from "./View/Dashboard/layouts/MainLayout";
@@ -21,14 +21,15 @@ import SetupRoleUser from "./SetupRoleUser";
 function App() {
   return (
     <Routes>
+      <Route path="/home" element={<Home />} />
       {/* Auth */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
       {/* Home */}
-      <Route
-        path="/"
+      {/* <Route
+        path="/home"
         element={
           <PrivateRoute>
             <SetupRoleUser>
@@ -36,7 +37,7 @@ function App() {
             </SetupRoleUser>
           </PrivateRoute>
         }
-      />
+      /> */}
 
       {/* Dashboard */}
       <Route
