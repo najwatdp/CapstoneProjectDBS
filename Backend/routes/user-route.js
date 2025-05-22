@@ -1,4 +1,4 @@
-import { addUser, deleteUser, indexUser, updateUser } from "../controllers/user-controller.js"
+import { addUser, deleteUser, indexUser, searchEmailHandler, updateUser } from "../controllers/user-controller.js"
 
 
 const routeUser = [
@@ -24,7 +24,19 @@ const routeUser = [
         method: 'DELETE',
         path: '/api/users/{id}',
         handler: deleteUser
+    },
+
+    {
+        method: 'POST',
+        path: '/api/search-email',
+        handler: searchEmailHandler,
+        options: {
+            payload: {
+                parse: true,
+                allow: 'application/json',
+            },
+    },
     }
 ]
 
-export default routeUser
+export default routeUser;

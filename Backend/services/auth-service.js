@@ -109,7 +109,3 @@ export const refreshTokenServise = async (refreshToken) => {
         }
       );
 
-      return accessToken;
-    }
-  );
-};

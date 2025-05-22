@@ -101,3 +101,12 @@ PUT http://localhost:5000/api/kategori/1
     "nama_kategori":"ketegori naru update",
     "deskripsi": "deskripsi kategori baru update"
 }
+
+###
+
+POST http://localhost:5000/api/search-email
+Content-Type: application/json
+
+{
+    "email":"admin@gmail.com"
+}
