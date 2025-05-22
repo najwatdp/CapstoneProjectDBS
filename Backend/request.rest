@@ -115,7 +115,7 @@ Content-Type: application/json
 ###
 
 //API UNTUK MENAMPILKAN DATA ARTIKEL
-GET http://localhost:5000/api/
+GET http://localhost:5000/api/artikel
 
 
 ###
