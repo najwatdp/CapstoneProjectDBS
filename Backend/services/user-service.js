@@ -65,3 +65,7 @@ export const deleteUserService = async (id) => {
     await user.destroy();
     return { message: 'Pengguna berhasil dihapus' };
 };
+
+export async function searchEmailService(email) {
+    return await Users.findOne({ where: { email } });
+}

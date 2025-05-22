@@ -12,6 +12,7 @@ import Kehamilan from './models/kehamilan-model.js';
 import KonsultasiPenyakit from './models/konsultasi-penyakit.js';
 import routeUser from './routes/user-route.js';
 import routeKategori from './routes/kategori-route.js';
+import Artikel from './models/artikel-model.js';
 
 const init = async () => {
 
@@ -38,7 +39,8 @@ const init = async () => {
     try {
         await db.authenticate();
         console.log('Database Connected...');
-        await db.sync();
+        // await db.sync({ alter: true });
+        // await Artikel.sync({ alter: true });
     } catch (error) {
         
     }

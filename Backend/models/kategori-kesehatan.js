@@ -8,6 +8,10 @@ const KategoriKesehatan = db.define('kategori_kesehatan', {
         primaryKey: true,
         autoIncrement: true, // Menggunakan auto increment untuk id
     },
+    images: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     nama_kategori: {
         type: DataTypes.STRING(100),
         allowNull: false, // Nama kategori tidak boleh null

@@ -1,4 +1,4 @@
-import { addUserService, indexUsersSerice, updateUserService, deleteUserService } from "../services/User-service.js";
+import { addUserService, indexUsersSerice, updateUserService, deleteUserService, searchEmailService } from "../services/User-service.js";
 import Joi from "joi";
 
 export const indexUser = async (request, h) => {
@@ -88,3 +88,28 @@ export const deleteUser = async (request, h) => {
     }
 };
 
+export const searchEmailHandler = async (request, h) => {
+    const { email } = request.payload;
+
+    try {
+        const emailFromDatabase = await searchEmailService(email);
+
+        if (!emailFromDatabase) {
+        return h.response({
+            message: "Email belum ada",
+            email: false,
+        }).code(200);
+        }
+
+        return h.response({
+        message: "Email telah tersedia",
+        email: true,
+        }).code(200);
+
+    } catch (err) {
+        return h.response({
+        message: "Terjadi kesalahan",
+        error: err.message,
+        }).code(500);
+    }
+};
