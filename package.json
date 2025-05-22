@@ -17,5 +17,11 @@
   "bugs": {
     "url": "https://github.com/Adam22166002/CapstoneProjectDBS/issues"
   },
-  "homepage": "https://github.com/Adam22166002/CapstoneProjectDBS#readme"
+  "homepage": "https://github.com/Adam22166002/CapstoneProjectDBS#readme",
+  "dependencies": {
+    "bootstrap": "^5.3.6",
+    "react-bootstrap": "^2.10.10",
+    "react-icons": "^5.5.0",
+    "recharts": "^2.15.3"
+  }
 }

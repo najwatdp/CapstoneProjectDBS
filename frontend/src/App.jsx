@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./Auth/Login";
 import Register from "./Auth/Signin";
 import ForgotPassword from "./Auth/ForgotPassword";
-import Home from "./Home";
+import Home from "./Pages/Home";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "./Dashboard/Dashboard";
 import LoadingSpinner from "./Animation Loading/loadingSpinner";
@@ -20,20 +20,21 @@ import Profile from "./Dashboard/Profile";
 function App() {
   return (
     <Routes>
+      <Route path="/home" element={<Home />} />
       {/* Auth */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
       {/* Home */}
-      <Route
-        path="/"
+      {/* <Route
+        path="/home"
         element={
           <PrivateRoute>
             <Home />
           </PrivateRoute>
         }
-      />
+      /> */}
 
       {/* Dashboard */}
       <Route
