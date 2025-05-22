@@ -91,7 +91,7 @@ Content-Type: application/json
 
 //API UNTUK MENGHAPUS DATA KATEGORI
 ###
-DELETE http://localhost:5000/api/kategori/1
+DELETE http://localhost:5000/api/kategori/8
 
 
 //API UNTUK MENGEDIT DATA KATEGORI
@@ -112,6 +112,8 @@ Content-Type: application/json
     "email":"admin@gmail.com"
 }
 
+
+//////////////////////////////////////////////////////// CRUD ARTIKEL //////////////////////////////////////////////////
 ###
 
 //API UNTUK MENAMPILKAN DATA ARTIKEL
@@ -119,6 +121,7 @@ GET http://localhost:5000/api/artikel
 
 
 ###
+//API UNTUK MENAMPILKAN DATA ARTIKEL DENGAN ID
 GET http://localhost:5000/api/artikel/3
 
 
@@ -127,16 +130,13 @@ GET http://localhost:5000/api/artikel/3
 POST http://localhost:5000/api/artikel
 Content-Type: application/json
 
-{
-    "judul": "Artikel 1",
-    "isi": "Ini adalah isi artikel 1",
-    "kategori_id": 1
-}
 
 
 ###
+//API UNTUK MENGUPDATE DATA ARTIKEL
 PUT http://localhost:5000/api/artikel
 
 
 ###
+//API UNTUK MENGHAPUS DATA ARTIKEL
 DELETE http://localhost:5000/api/artikel/4
