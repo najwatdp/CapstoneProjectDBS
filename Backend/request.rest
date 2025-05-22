@@ -84,7 +84,8 @@ Content-Type: application/json
 
 {
     "nama_kategori": "Nutrisi Kehamilan",
-    "deskripsi": "nutrisi kehamilan"
+    "deskripsi": "nutrisi kehamilan",
+    "images":"https://example.com/image.jpg"
 }
 
 
@@ -110,3 +111,32 @@ Content-Type: application/json
 {
     "email":"admin@gmail.com"
 }
+
+###
+
+//API UNTUK MENAMPILKAN DATA ARTIKEL
+GET http://localhost:5000/api/
+
+
+###
+GET http://localhost:5000/api/artikel/3
+
+
+//API UNTUK MENAMBAHKAN DATA ARTIKEL
+###
+POST http://localhost:5000/api/artikel
+Content-Type: application/json
+
+{
+    "judul": "Artikel 1",
+    "isi": "Ini adalah isi artikel 1",
+    "kategori_id": 1
+}
+
+
+###
+PUT http://localhost:5000/api/artikel
+
+
+###
+DELETE http://localhost:5000/api/artikel/4
