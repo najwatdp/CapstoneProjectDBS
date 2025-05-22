@@ -1,9 +1,9 @@
 import { Routes, Route } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Login from "./Auth/Login";
-import Register from "./Auth/Signin";
-import ForgotPassword from "./Auth/ForgotPassword";
-import Home from "./Home";
+import Login from "./View/Auth/Login";
+import Register from "./View/Auth/Signin";
+import ForgotPassword from "./View/Auth/ForgotPassword";
+import Home from "./Pages/Home";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "./View/Dashboard/Dashboard";
 import MainLayout from "./View/Dashboard/layouts/MainLayout";
