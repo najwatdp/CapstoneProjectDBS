@@ -3,19 +3,20 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./Auth/Login";
 import Register from "./Auth/Signin";
 import ForgotPassword from "./Auth/ForgotPassword";
-import Home from "./Pages/Home";
+import Home from "./Home";
 import PrivateRoute from "./PrivateRoute";
-import Dashboard from "./Dashboard/Dashboard";
-import LoadingSpinner from "./Animation Loading/loadingSpinner";
-import MainLayout from "./Dashboard/layouts/MainLayout";
-import CreateArticle from "./Dashboard/CreateArticle";
-import CreateUser from "./Dashboard/CreateUser";
-import Categories from "./Dashboard/Categories";
-import UserList from "./Dashboard/UserList";
-import ArticleList from "./Dashboard/ArticleList";
-import Settings from "./Dashboard/Settings";
-import Analytics from "./Dashboard/Analytics";
-import Profile from "./Dashboard/Profile";
+import Dashboard from "./View/Dashboard/Dashboard";
+import MainLayout from "./View/Dashboard/layouts/MainLayout";
+import CreateArticle from "./View/Dashboard/CreateArticle";
+import CreateUser from "./View/Dashboard/CreateUser";
+import Categories from "./View/Dashboard/Categories";
+import UserList from "./View/Dashboard/UserList";
+import ArticleList from "./View/Dashboard/ArticleList";
+import Settings from "./View/Dashboard/Settings";
+import Analytics from "./View/Dashboard/Analytics";
+import Profile from "./View/Dashboard/Profile";
+import SetupRoleAdmin from "./SetupRoleAdmin";
+import SetupRoleUser from "./SetupRoleUser";
 
 function App() {
   return (
@@ -31,7 +32,9 @@ function App() {
         path="/home"
         element={
           <PrivateRoute>
-            <Home />
+            <SetupRoleUser>
+              <Home />
+            </SetupRoleUser>
           </PrivateRoute>
         }
       /> */}
@@ -41,7 +44,9 @@ function App() {
         path="/dashboard"
         element={
           <PrivateRoute>
-            <MainLayout />
+            <SetupRoleAdmin>
+              <MainLayout />
+            </SetupRoleAdmin>
           </PrivateRoute>
         }
       >
@@ -59,7 +64,7 @@ function App() {
       {/* loading */}
       <Route
         path="/percobaan"
-        element={<LoadingSpinner Width={20} Height={2} />}
+        element={<SetupRoleAdmin/>}
       />
     </Routes>
   );

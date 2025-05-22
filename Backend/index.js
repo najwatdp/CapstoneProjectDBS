@@ -10,6 +10,8 @@ import CekKesehatan from './models/cekKesehatan-model.js';
 import Kulit from './models/kulit-model.js';
 import Kehamilan from './models/kehamilan-model.js';
 import KonsultasiPenyakit from './models/konsultasi-penyakit.js';
+import routeUser from './routes/user-route.js';
+import routeKategori from './routes/kategori-route.js';
 
 const init = async () => {
 
@@ -42,6 +44,8 @@ const init = async () => {
     }
     
 
+    server.route(routeKategori);
+    server.route(routeUser)
     server.route(routePenyakit);
     server.route(routeAuth);
 

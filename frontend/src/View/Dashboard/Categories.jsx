@@ -1,33 +1,55 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Table, Button, Modal, Form } from 'react-bootstrap';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+import CategoriPresenter from '../../Presenter/CategoriePresenter';
+import modelDashboard from '../../Model/modelDashboard';
+import LoadingSpinner from '../../Animation Loading/loadingSpinner';
+import LoadingBerputar from '../../Animation Loading/LoadingBerputar';
 
 const Categories = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalTitle, setModalTitle] = useState('Tambah Kategori');
   const [editId, setEditId] = useState(null);
-  
-  // Data statis untuk kategori
-  const categories = [
-    { id: 1, name: 'Kesehatan Jantung', articles: 15, created: '02 Jan 2025' },
-    { id: 2, name: 'Kesehatan Anak', articles: 12, created: '15 Jan 2025' },
-    { id: 3, name: 'Nutrisi', articles: 18, created: '10 Feb 2025' },
-    { id: 4, name: 'Penyakit Kronis', articles: 8, created: '20 Feb 2025' },
-    { id: 5, name: 'Kesehatan Mental', articles: 10, created: '05 Mar 2025' },
-  ];
+  const [kategoris, setKategoris] = useState(null);
+  const [Loading, setLoading] = useState(false);
+  const [kategori, setKategori] = useState(null);
+  const [deskripsi, setDeskripsi] = useState(null);
 
-  const handleAddCategory = () => {
+
+
+  const presenter = new CategoriPresenter({
+    model: new modelDashboard,
+    view: {
+      Kategoris: setKategoris,
+      setShowModal: setShowModal,
+      EditId: setEditId,
+      modelTitle: setModalTitle,
+      setLoading: setLoading,
+    }
+  });
+  function handleAddCategory() {
     setModalTitle('Tambah Kategori');
     setEditId(null);
     setShowModal(true);
   };
 
-  const handleEditCategory = (id) => {
+  function handleEditCategory(id) {
     setModalTitle('Edit Kategori');
     setEditId(id);
     setShowModal(true);
   };
 
+  async function SimpanKategori() {
+    await presenter.simpanKategori(editId, kategori, deskripsi, kategoris);
+  }
+
+  async function handleDelete(id) {
+    await presenter.deleteKategori(id);
+  }
+
+  useEffect(() => {
+    presenter.getKategori();
+  }, []);
   return (
     <Container fluid>
       <Row className="mb-4">
@@ -51,27 +73,27 @@ const Categories = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {categories.map(category => (
-                    <tr key={category.id}>
-                      <td>{category.id}</td>
-                      <td>{category.name}</td>
-                      <td>{category.articles}</td>
-                      <td>{category.created}</td>
+                  {kategoris !== null ? kategoris.map(kategori => (
+                    <tr key={kategori?.id}>
+                      <td>{kategori?.id}</td>
+                      <td>{kategori?.nama_kategori}</td>
+                      <td>{kategori?.deskripsi}</td>
+                      <td>{kategori?.createdAt}</td>
                       <td>
-                        <Button 
-                          variant="warning" 
-                          size="sm" 
+                        <Button
+                          variant="warning"
+                          size="sm"
                           className="me-1"
-                          onClick={() => handleEditCategory(category.id)}
+                          onClick={() => handleEditCategory(kategori.id)}
                         >
                           <FaEdit />
                         </Button>
-                        <Button variant="danger" size="sm">
+                        <Button variant="danger" size="sm" onClick={() => handleDelete(kategori.id)}>
                           <FaTrash />
                         </Button>
                       </td>
                     </tr>
-                  ))}
+                  )) : <></>}
                 </tbody>
               </Table>
             </Card.Body>
@@ -88,18 +110,20 @@ const Categories = () => {
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Nama Kategori</Form.Label>
-              <Form.Control 
-                type="text" 
+              <Form.Control
+                type="text"
                 placeholder="Masukkan nama kategori"
-                defaultValue={editId ? categories.find(c => c.id === editId)?.name : ''}
+                defaultValue={editId ? kategoris.find(c => c.id === editId)?.nama_kategori : ''}
+                onChange={(e) => setKategori(e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Deskripsi</Form.Label>
-              <Form.Control 
-                as="textarea" 
-                rows={3} 
+              <Form.Control
+                as="textarea"
+                rows={3}
                 placeholder="Deskripsi kategori (opsional)"
+                onChange={(e) => setDeskripsi(e.target.value)}
               />
             </Form.Group>
           </Form>
@@ -108,8 +132,8 @@ const Categories = () => {
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Batal
           </Button>
-          <Button variant="primary">
-            Simpan
+          <Button variant="primary" onClick={SimpanKategori} className="d-flex align-items-center gap-1" disabled={Loading ? true : false}>
+            {Loading ? <LoadingBerputar wdith={20} hiegth={20} /> : <></>}Simpan
           </Button>
         </Modal.Footer>
       </Modal>

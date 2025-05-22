@@ -30,3 +30,74 @@ GET http://localhost:5000/token
 //API PENYAKIT
 
 GET http://localhost:5000/penyakit
+
+
+//////////////////////////////////////////////////////// CRUD USER //////////////////////////////////////////////////
+
+###
+// API Menampilkan semua data users
+GET http://localhost:5000/api/users
+
+
+###
+// API Menambahkan data user
+POST http://localhost:5000/api/users
+Content-Type: application/json
+
+{
+    "name":"test",
+    "email":"test@gmail.com",
+    "password": "12345678"
+}
+
+###
+//API Menghapus data user
+DELETE http://localhost:5000/api/users/8
+
+
+###
+// API Mengubah data user
+PUT http://localhost:5000/api/users/8
+Content-Type: application/json
+
+{
+    "name":"test update",
+    "email":"testUpdate@gmail.com",
+    "password": "12345678"
+}
+
+
+###
+
+/////////////////////////////////////////////// KATEGORI API ////////////////////////////////////////////////////
+
+
+//API UNTUK MENAMPILKAN DATA KATEGORI
+GET http://localhost:5000/api/kategori
+
+
+
+//API UNTUK MENAMBAHKAN DATA KATEGORI
+###
+POST http://localhost:5000/api/kategori
+Content-Type: application/json
+
+{
+    "nama_kategori": "Nutrisi Kehamilan",
+    "deskripsi": "nutrisi kehamilan"
+}
+
+
+//API UNTUK MENGHAPUS DATA KATEGORI
+###
+DELETE http://localhost:5000/api/kategori/1
+
+
+//API UNTUK MENGEDIT DATA KATEGORI
+###
+PUT http://localhost:5000/api/kategori/1
+
+{
+    "nama_kategori":"ketegori naru update",
+    "deskripsi": "deskripsi kategori baru update"
+}

@@ -1,6 +1,6 @@
 import { Navigate } from "react-router";
 import { useState, useEffect } from "react";
-import Cookie from "./API/accessCookie";
+import Cookie from "./Model/accessCookie";
 import LoadingSpinner from "./Animation Loading/loadingSpinner";
 
 export default function PrivateRoute({ children }) {
