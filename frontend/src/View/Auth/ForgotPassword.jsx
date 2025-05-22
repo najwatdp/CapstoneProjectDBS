@@ -1,5 +1,5 @@
 import { useState } from "react";
-import LoadingBerputar from "../Animation Loading/LoadingBerputar";
+import LoadingBerputar from "../../Animation Loading/LoadingBerputar";
 
 export default function ForgotPassword() {
 
