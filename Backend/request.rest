@@ -83,8 +83,8 @@ POST http://localhost:5000/api/kategori
 Content-Type: application/json
 
 {
-    "nama_kategori": "kategori baru",
-    "deskripsi": "deskripsi kategori baru"
+    "nama_kategori": "Nutrisi Kehamilan",
+    "deskripsi": "nutrisi kehamilan"
 }
 
 

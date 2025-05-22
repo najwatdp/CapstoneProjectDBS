@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/Adam22166002/CapstoneProjectDBS/issues"
   },
-  "homepage": "https://github.com/Adam22166002/CapstoneProjectDBS#readme"
+  "homepage": "https://github.com/Adam22166002/CapstoneProjectDBS#readme",
+  "dependencies": {
+    "capstoneprojectdbs": "file:"
+  }
 }
