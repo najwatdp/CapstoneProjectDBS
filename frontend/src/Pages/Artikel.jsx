@@ -1,130 +1,156 @@
-import React, { useState } from 'react';
-import { Navbar, Container, Row, Col, Card, Button, Form, Badge, Nav, InputGroup } from 'react-bootstrap';
+import React, { useState, useEffect  } from 'react';
+import axios from 'axios';
+import { Dropdown, NavDropdown, Navbar, Container, Row, Col, Card, Button, Form, Badge, Nav, InputGroup } from 'react-bootstrap';
 import { 
   FaPhoneAlt, FaComments, FaStethoscope, FaHeartbeat, FaSearch, FaBookmark, FaShare, 
   FaFacebook, FaTwitter, FaWhatsapp, FaInstagram, FaEnvelope 
 } from 'react-icons/fa';
 
-// Dummy data untuk kategori Kehamilan
-const pregnancyArticles = [
-  {
-    id: 1,
-    title: "Panduan Lengkap Nutrisi untuk Ibu Hamil Trimester Pertama",
-    excerpt: "Kebutuhan nutrisi yang tepat sangat penting bagi perkembangan janin dan kesehatan ibu selama kehamilan awal.",
-    image: "/image/test.webp",
-    category: "Kehamilan",
-    subcategory: "Nutrisi",
-    author: "dr. Anita Widjaja",
-    date: "17 Mei 2025",
-    readTime: "7 menit baca"
-  },
-  {
-    id: 2,
-    title: "5 Olahraga Aman untuk Ibu Hamil",
-    excerpt: "Tetap aktif selama kehamilan bisa memberikan banyak manfaat bagi kesehatan ibu dan perkembangan janin.",
-    image: "/image/test.webp",
-    category: "Kehamilan",
-    subcategory: "Olahraga",
-    author: "dr. Budi Santoso, Sp.OG",
-    date: "15 Mei 2025",
-    readTime: "5 menit baca"
-  },
-  {
-    id: 3,
-    title: "Perubahan Tubuh yang Normal Terjadi Selama Kehamilan",
-    excerpt: "Mengenal berbagai perubahan fisik dan psikologis yang umum dialami selama masa kehamilan.",
-    image: "/image/test.webp",
-    category: "Kehamilan",
-    subcategory: "Kesehatan",
-    author: "dr. Diana Safitri",
-    date: "12 Mei 2025",
-    readTime: "6 menit baca"
-  },
-  {
-    id: 4,
-    title: "Cara Mengatasi Morning Sickness saat Hamil",
-    excerpt: "Tips dan trik efektif untuk meredakan mual dan muntah yang sering terjadi di awal kehamilan.",
-    image: "/image/test.webp",
-    category: "Kehamilan",
-    subcategory: "Kesehatan",
-    author: "dr. Endang Rahayu, Sp.OG",
-    date: "10 Mei 2025",
-    readTime: "4 menit baca"
-  },
-  {
-    id: 5,
-    title: "Panduan Tidur Nyaman untuk Ibu Hamil",
-    excerpt: "Posisi tidur dan tips untuk mendapatkan istirahat berkualitas selama masa kehamilan.",
-    image: "/image/test.webp",
-    category: "Kehamilan",
-    subcategory: "Tidur",
-    author: "dr. Faisal Rahman",
-    date: "8 Mei 2025",
-    readTime: "5 menit baca"
-  },
-  {
-    id: 6,
-    title: "Pemeriksaan Kehamilan: Kapan dan Berapa Kali Harus Dilakukan",
-    excerpt: "Jadwal dan jenis pemeriksaan yang perlu dilakukan selama kehamilan untuk memastikan kesehatan ibu dan janin.",
-    image: "/image/test.webp",
-    category: "Kehamilan",
-    subcategory: "Perawatan",
-    author: "dr. Gita Pratiwi, Sp.OG",
-    date: "5 Mei 2025",
-    readTime: "8 menit baca"
-  }
-];
 
-// Subcategori kehamilan
-const pregnancySubcategories = [
-  { id: 1, name: "Semua", count: 53 },
-  { id: 2, name: "Kesuburan", count: 8 },
-  { id: 3, name: "Perencanaan", count: 5 },
-  { id: 4, name: "Trimester Pertama", count: 12 },
-  { id: 5, name: "Trimester Kedua", count: 10 },
-  { id: 6, name: "Trimester Ketiga", count: 11 },
-  { id: 7, name: "Persalinan", count: 7 },
-];
-
-// Trending tags
-const trendingTags = [
-  "Morning Sickness", "Nutrisi Ibu Hamil", "Perkembangan Janin", 
-  "USG Kehamilan", "Olahraga Ibu Hamil", "Suplemen Kehamilan"
-];
-
-const ArticleCategoryDetail = () => {
+const ArticleCategory = () => {
+  const [artikel, setArtikel] = useState([]);
+  const [kategoriKesehatan, setKategoriKesehatan] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeSubcategory, setActiveSubcategory] = useState("Semua");
-  const categoryName = "Kehamilan";
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Ambil data artikel dan kategori sekaligus
+  const fetchData = async () => {
+    try {
+      const [artikelRes, kategoriRes] = await Promise.all([
+        axios.get("http://localhost:5000/api/artikel"),
+        axios.get("http://localhost:5000/api/kategori"),
+      ]);
+
+      // Set artikel
+      const artikelData = artikelRes.data;
+      if (Array.isArray(artikelData)) {
+        setArtikel(artikelData);
+      } else if (Array.isArray(artikelData.artikel)) {
+        setArtikel(artikelData.artikel);
+      } else if (Array.isArray(artikelData.data)) {
+        setArtikel(artikelData.data);
+      } else {
+        setArtikel([]);
+        console.error("Struktur data artikel tidak dikenali:", artikelData);
+      }
+
+      // Set kategori
+      const kategoriData = kategoriRes.data;
+      if (Array.isArray(kategoriData)) {
+        setKategoriKesehatan(kategoriData);
+      } else if (Array.isArray(kategoriData.kategori)) {
+        setKategoriKesehatan(kategoriData.kategori);
+      } else if (Array.isArray(kategoriData.data)) {
+        setKategoriKesehatan(kategoriData.data);
+      } else {
+        setKategoriKesehatan([]);
+        console.error("Struktur data kategori tidak dikenali:", kategoriData);
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoading(false);
+    }
+  };
+
+  // Fungsi filter artikel berdasarkan kategori aktif
+  const filteredArticles = activeSubcategory === "Semua"
+    ? artikel
+    : artikel.filter(a => {
+      const kategori = kategoriKesehatan.find(k => k.id === a.kategori_id);
+      return kategori && kategori.nama_kategori === activeSubcategory;
+    });
+
+  // Hitung jumlah artikel per kategori (untuk badge count)
+  const kategoriWithCount = kategoriKesehatan.map(kategori => ({
+    ...kategori,
+    count: artikel.filter(a => a.kategori_id === kategori.id).length,
+  }));
+
+  // Untuk subkategori navigasi, tambahkan opsi "Semua" sebagai default
+  const pregnancySubcategories = [
+    { id: 'semua', name: 'Semua', count: artikel.length },
+    ...kategoriWithCount.map(k => ({
+      id: k.id,
+      name: k.nama_kategori,
+      count: k.count,
+    })),
+  ];
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{height: '100vh'}}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="">
-            {/* Navbar */}
-          <Navbar bg="white" expand="lg" className="py-3 shadow-none sticky-top">
+      {/* Navbar */}
+      <Navbar bg="white" expand="lg" className="py-3 shadow-sm sticky-top">
               <Container>
-              <Navbar.Brand href="/home" className="text-primary">
-                  <img width="100" height="auto" src="/image/LogoHealth.png" alt="LogoKesehatanKu" /><span>
-                      <img width="100" height="auto" src="/image/kementrian-sehat.webp" alt="LogoKementrian" />
+                <Navbar.Brand href="/home" className="text-primary">
+                  <img
+                    width="100"
+                    height="auto"
+                    src="/image/LogoHealth.png"
+                    alt="LogoKesehatanKu"
+                  />
+                  <span>
+                    <img
+                      width="100"
+                      height="auto"
+                      src="/image/kementrian-sehat.webp"
+                      alt="LogoKementrian"
+                    />
                   </span>
-              </Navbar.Brand>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
-              <Navbar.Collapse id="basic-navbar-nav">
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
                   <Nav className="mx-auto">
-                  <Nav.Link href="#" className="mx-2 d-flex align-items-center">
-                      <FaHeartbeat className="me-1" /> 
-                      <span>Kategori Kesehatan</span>
-                  </Nav.Link>
-                  <Nav.Link href="#" className="mx-2 d-flex align-items-center">
-                      <FaStethoscope className="me-1" /> 
+                    <Navbar.Toggle aria-controls="navbar-dark-example" />
+                    <Navbar.Collapse id="navbar-dark-example">
+                      <Nav>
+                        <NavDropdown id="nav-dropdown-dark-example" title="Kategori Kesehatan" menuVariant="light" className="no-hover">
+                          {kategoriKesehatan.length > 0 ? (
+                          kategoriKesehatan.map((kategori) => (
+                          <Dropdown.Item key={kategori.id} href={`/kategori/${kategori.id}`} className="d-flex align-items-center">
+                              <img 
+                                src={kategori.image_url || kategori.image || 'default-image.png'} 
+                                alt={kategori.nama_kategori} 
+                                style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', marginRight: 10 }} 
+                              />
+                              {kategori.nama_kategori}
+                            </Dropdown.Item>
+                          ))
+                        ) : (
+                          <Dropdown.Item disabled>Tidak ada kategori</Dropdown.Item>
+                        )}
+                        </NavDropdown>
+                      </Nav>
+                    </Navbar.Collapse>
+                    <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+                      <FaStethoscope className="me-1" />
                       <span>Cek Kesehatan</span>
-                  </Nav.Link>
-                  <Nav.Link href="/kontak" className="mx-2 d-flex align-items-center">
-                    <FaPhoneAlt className="me-1" /> 
+                    </Nav.Link>
+                    <Nav.Link
+                      href="/kontak"
+                      className="mx-2 d-flex align-items-center"
+                    >
+                      <FaPhoneAlt className="me-1" />
                       <span>Kontak</span>
-                  </Nav.Link>
-                  <Nav.Link href="#" className="mx-2 d-flex align-items-center">
-                      <FaComments className="me-1" /> 
+                    </Nav.Link>
+                    <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+                      <FaComments className="me-1" />
                       <span>Konsultasi Kesehatan</span>
-                  </Nav.Link>
+                    </Nav.Link>
                   </Nav>
                   <Form className="d-flex me-2">
                     <InputGroup>
@@ -138,75 +164,85 @@ const ArticleCategoryDetail = () => {
                       </Button>
                     </InputGroup>
                   </Form>
-                  <Button variant="light" href="/login" className="border-grey text-grey">Masuk</Button>
+                  <Button
+                    variant="light"
+                    href="/login"
+                    className="border-grey text-grey"
+                  >
+                    Masuk
+                  </Button>
                 </Navbar.Collapse>
               </Container>
-            </Navbar>
+      </Navbar>
 
       <Container className="py-4">
-              {/* Subcategory Navigation */}
+      {/* Subcategory Navigation */}
       <div className="bg-white border-bottom mb-2">
-        <Container>
-          <div className="overflow-auto">
-            <Nav className="flex-nowrap py-2" style={{ whiteSpace: 'nowrap' }}>
-              {pregnancySubcategories.map(subcat => (
-                <Nav.Item key={subcat.id}>
-                  <Nav.Link 
-                    className={`mx-2 ${activeSubcategory === subcat.name ? 'fw-bold text-primary border-bottom border-primary border-3' : 'text-dark'}`}
-                    onClick={() => setActiveSubcategory(subcat.name)}
-                  >
-                    {subcat.name} <span className="text-muted">({subcat.count})</span>
-                  </Nav.Link>
-                </Nav.Item>
-              ))}
-            </Nav>
-          </div>
-        </Container>
+          <Container>
+            <div className="overflow-auto">
+              <Nav className="flex-nowrap py-2" style={{ whiteSpace: 'nowrap' }}>
+                {pregnancySubcategories.map(subcat => (
+                  <Nav.Item key={subcat.id}>
+                    <Nav.Link 
+                      className={`mx-2 ${activeSubcategory === subcat.name ? 'fw-bold text-primary border-bottom border-primary border-3' : 'text-dark'}`}
+                      onClick={() => setActiveSubcategory(subcat.name)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      {subcat.name} <span className="text-muted">({subcat.count})</span>
+                    </Nav.Link>
+                  </Nav.Item>
+                ))}
+              </Nav>
+            </div>
+          </Container>
       </div>
+
         <Row>
           {/* Main Content */}
           <Col lg={8}>
             {/* Featured Article */}
+            {filteredArticles.length > 0 && (
             <Card className="mb-4 border-0 shadow-none">
               <Row className="g-0">
                 <Col md={6}>
                   <Card.Img 
-                    src="/image/test.webp" 
-                    alt="Artikel Unggulan Kehamilan"
-                    className="h-100 object-fit-cover"
-                  />
+                      src={filteredArticles[0].image_url || filteredArticles[0].image || '/image/default-image.png'} 
+                      alt={filteredArticles[0].judul}
+                      className="h-100 object-fit-cover"
+                    />
                 </Col>
                 <Col md={6}>
                   <Card.Body className="d-flex flex-column h-100">
                     <div className="mb-2">
-                      <Badge bg="primary" className="me-2">Kehamilan</Badge>
+                      <Badge bg="primary" className="me-2">{getNamaKategori(filteredArticles[0].kategori_id)}</Badge>
                       <Badge bg="secondary">Recommended</Badge>
                     </div>
-                    <Card.Title className="h4 fw-bold">Panduan Lengkap untuk Mempersiapkan Kehamilan yang Sehat</Card.Title>
+                    <Card.Title className="h4 fw-bold">{filteredArticles[0].judul}</Card.Title>
                     <Card.Text className="text-muted">
-                      Persiapan yang matang sebelum kehamilan dapat meningkatkan peluang kehamilan yang sehat dan mengurangi komplikasi.
+                      {filteredArticles[0].excerpt || filteredArticles[0].isi?.slice(0, 100) + '...'}
                     </Card.Text>
                     <div className="mt-auto">
                       <small className="text-muted">
-                        dr. Nina Hartanti, Sp.OG • 19 Mei 2025 • 10 menit baca
+                        {filteredArticles[0].author || 'Admin'} • {new Date(filteredArticles[0].created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} • 10 menit baca
                       </small>
                     </div>
                   </Card.Body>
                 </Col>
               </Row>
             </Card>
+            )}
 
             {/* Article List */}
             <div className="d-flex justify-content-between align-items-center">
-            <h2 className="h4 mb-3">Artikel {categoryName} Terbaru</h2>
+            <h2 className="h4 mb-3">Artikel {activeSubcategory} Terbaru</h2>
             <a href='#' className="px-4 text-decoration-none">Lihat Lebih Banyak</a>
             </div>
             <Row className="g-4">
-              {pregnancyArticles.map(article => (
-                <Col md={6} key={article.id}>
+              {filteredArticles.slice(1).map((art) => (
+                <Col md={6} key={art.id}>
                   <Card className="h-100 border-0 shadow-none">
                     <div className="position-relative">
-                      <Card.Img variant="top" src={article.image} />
+                      <Card.Img variant="top" src={art.image} alt={art.judul}/>
                       <div className="position-absolute top-0 end-0 m-2">
                         <Button variant="light" size="sm" className="rounded-circle p-1">
                           <FaBookmark className="text-primary" />
@@ -215,15 +251,15 @@ const ArticleCategoryDetail = () => {
                     </div>
                     <Card.Body>
                       <div className="mb-2">
-                        <Badge bg="primary" className="me-1">{article.category}</Badge>
-                        <Badge bg="light" text="dark">{article.subcategory}</Badge>
+                        <Badge bg="primary" className="me-1">{getNamaKategori(art.kategori_id)}</Badge>
+                        {/* Kamu bisa tambahkan subkategori jika ada */}
                       </div>
-                      <Card.Title className="h5">{article.title}</Card.Title>
-                      <Card.Text className="text-muted small">{article.excerpt}</Card.Text>
+                      <Card.Title className="h5">{art.judul}</Card.Title>
+                      <Card.Text className="text-muted small">{art.excerpt || art.isi?.slice(0, 100) + '...'}</Card.Text>
                     </Card.Body>
                     <Card.Footer className="bg-white border-0">
                       <small className="text-muted">
-                        {article.author} • {article.date} • {article.readTime}
+                        {art.author || 'Admin'} • {new Date(art.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} • 10 menit baca
                       </small>
                     </Card.Footer>
                   </Card>
@@ -238,7 +274,7 @@ const ArticleCategoryDetail = () => {
             <div className="bg-white p-3 rounded shadow-none mb-4">
               <h3 className="h5 mb-3">Trending Tags</h3>
               <div className="d-flex flex-wrap gap-2">
-                {trendingTags.map((tag, index) => (
+                {['Sehat', 'Gizi', 'Kehamilan', 'Mental', 'Covid'].map((tag, index) => (
                   <Badge 
                     key={index} 
                     bg="light" 
@@ -413,6 +449,11 @@ const ArticleCategoryDetail = () => {
             </footer>
     </div>
   );
+  // Fungsi untuk mendapatkan nama kategori berdasarkan ID
+  function getNamaKategori(kategoriId) {
+    const kategori = kategoriKesehatan.find(k => k.id === kategoriId);
+    return kategori ? kategori.nama_kategori : 'Kategori Tidak Ditemukan';
+  }
 };
 
-export default ArticleCategoryDetail;
+export default ArticleCategory;

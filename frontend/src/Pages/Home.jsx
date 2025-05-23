@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router";
+
 import React from "react";
 import {
   Navbar,
@@ -12,6 +13,8 @@ import {
   Col,
   Form,
   InputGroup,
+  Dropdown,
+  NavDropdown,
 } from "react-bootstrap";
 import {
   FaSearch,
@@ -29,98 +32,116 @@ export default function Home() {
 
   return role ? <ContainerHome /> : <Navigate to="/dashboard" />;
 }
-// Dummy data untuk simulasi konten dinamis
-const trendingArticles = [
-  {
-    id: 1,
-    title: "10 Cara Menjaga Kesehatan Jantung di Usia Muda",
-    excerpt:
-      "Temukan langkah-langkah pencegahan penyakit jantung sejak dini yang bisa Anda terapkan dalam kehidupan sehari-hari.",
-    image: "/image/test.webp",
-    category: "Jantung",
-    date: "18 Mei 2025",
-  },
-  {
-    id: 2,
-    title: "Panduan Lengkap Nutrisi untuk Ibu Hamil Trimester Pertama",
-    excerpt:
-      "Kebutuhan nutrisi yang tepat sangat penting bagi perkembangan janin dan kesehatan ibu selama kehamilan awal.",
-    image: "/image/test.webp",
-    category: "Kehamilan",
-    date: "17 Mei 2025",
-  },
-  {
-    id: 3,
-    title: "Kenali Gejala Diabetes dan Cara Pencegahannya",
-    excerpt:
-      "Deteksi dini dan perubahan gaya hidup dapat membantu mencegah dan mengelola diabetes dengan lebih baik.",
-    image: "/image/test.webp",
-    category: "Diabetes",
-    date: "16 Mei 2025",
-  },
-];
-
-const recentArticles = [
-  {
-    id: 4,
-    title: "Tips Menjaga Kesehatan Mental di Tengah Pandemi",
-    image: "/image/test.webp",
-    category: "Kesehatan Mental",
-  },
-  {
-    id: 5,
-    title: "Olahraga Ringan untuk Lansia: Aman dan Bermanfaat",
-    image: "/image/test.webp",
-    category: "Lansia",
-  },
-  {
-    id: 6,
-    title: "Makanan Sehat untuk Penderita Hipertensi",
-    image: "/image/test.webp",
-    category: "Hipertensi",
-  },
-  {
-    id: 7,
-    title: "Cara Efektif Mengatasi Insomnia Tanpa Obat",
-    image: "/image/test.webp",
-    category: "Tidur",
-  },
-];
-
-const healthCategories = [
-  { id: 1, name: "Jantung", icon: <FaHeartbeat />, count: 42 },
-  { id: 2, name: "Diabetes", icon: <FaHeartbeat />, count: 38 },
-  { id: 3, name: "Kehamilan", icon: <FaHeartbeat />, count: 53 },
-  { id: 4, name: "Kesehatan Mental", icon: <FaHeartbeat />, count: 29 },
-  { id: 5, name: "COVID-19", icon: <FaHeartbeat />, count: 47 },
-  { id: 6, name: "Nutrisi", icon: <FaHeartbeat />, count: 61 },
-];
 
 function ContainerHome() {
   const [artikel, setArtikel] = useState([]);
+  const [kategoriKesehatan, setKategoriKesehatan] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getArtikel();
+    fetchData();
   }, []);
 
+  // Fungsi untuk mengambil semua data
+  const fetchData = async () => {
+    try {
+      await Promise.all([getArtikel(), getKategoriKesehatan()]);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoading(false);
+    }
+  };
+
+  // Fungsi untuk mengambil data artikel
   const getArtikel = async () => {
     try {
       const response = await axios.get("http://localhost:5000/api/artikel");
-
       const data = response.data;
 
       if (Array.isArray(data)) {
-        setArtikel(data);
-      } else if (Array.isArray(data.artikel)) {
-        setArtikel(data.artikel);
-      } else {
-        console.error("Struktur data tidak dikenali:", data);
-        setArtikel([]);
-      }
+      setArtikel(data);
+    } else if (Array.isArray(data.artikel)) {
+      setArtikel(data.artikel);
+    } else if (Array.isArray(data.data)) {
+      setArtikel(data.data);
+    } else {
+      console.error("Struktur data artikel tidak dikenali:", data);
+      setArtikel([]);
+    }
     } catch (err) {
       console.error("Gagal fetch artikel:", err);
+      setArtikel([]);
     }
   };
+
+  // Fungsi untuk mengambil data kategori kesehatan
+  const getKategoriKesehatan = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/kategori");
+      const data = response.data;
+
+      if (Array.isArray(data)) {
+        setKategoriKesehatan(data);
+      } else if (Array.isArray(data.kategori)) {
+        setKategoriKesehatan(data.kategori);
+      } else if (Array.isArray(data.data)) {
+        setKategoriKesehatan(data.data);
+      } else {
+        console.error("Struktur data kategori tidak dikenali:", data);
+        setKategoriKesehatan([]);
+      }
+    } catch (err) {
+      console.error("Gagal fetch kategori kesehatan:", err);
+      setKategoriKesehatan([]);
+    }
+  };
+  // Fungsi untuk mengacak artikel
+  const shuffleArray = (array) => {
+    return array.sort(() => Math.random() - 0.5);
+  };
+
+  // Fungsi untuk mengurutkan artikel berdasarkan tanggal
+  const sortArticlesByDate = (articles) => {
+    return articles.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  };
+
+  // Hitung jumlah artikel per kategori
+  const artikelCountPerKategori = kategoriKesehatan.map((kategori) => {
+    const count = artikel.filter((art) => art.kategori_id === kategori.id).length;
+    return { ...kategori, count };
+  });
+
+  // Urutkan berdasarkan jumlah artikel terbanyak dan ambil 3 teratas
+  const top3Kategori = artikelCountPerKategori
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3);
+
+  // Mengacak artikel
+  const shuffledArticles = shuffleArray(artikel);
+  // Mengurutkan artikel berdasarkan tanggal
+  const sortedArticles = sortArticlesByDate(artikel);
+
+  // Fungsi untuk mendapatkan nama kategori berdasarkan ID
+  const getNamaKategori = (kategoriId) => {
+    const kategori = kategoriKesehatan.find(k => k.id === kategoriId);
+    return kategori ? kategori.nama_kategori : 'Kategori Tidak Ditemukan';
+  };
+
+  // Fungsi untuk menghitung jumlah artikel per kategori
+  // const hitungArtikelPerKategori = (kategoriId) => {
+  //   return artikel.filter(art => art.kategori_id === kategoriId).length;
+  // };
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{height: '100vh'}}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="homepage">
@@ -146,10 +167,27 @@ function ContainerHome() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mx-auto">
-              <Nav.Link href="#" className="mx-2 d-flex align-items-center">
-                <FaHeartbeat className="me-1" />
-                <span>Kategori Kesehatan</span>
-              </Nav.Link>
+              <Navbar.Toggle aria-controls="navbar-dark-example" />
+              <Navbar.Collapse id="navbar-dark-example">
+                <Nav>
+                  <NavDropdown id="nav-dropdown-dark-example" title="Kategori Kesehatan" menuVariant="light" className="no-hover">
+                    {kategoriKesehatan.length > 0 ? (
+                    kategoriKesehatan.map((kategori) => (
+                    <Dropdown.Item key={kategori.id} href={`/kategori/${kategori.id}`} className="d-flex align-items-center">
+                        <img 
+                          src={kategori.image_url || kategori.image || 'default-image.png'} 
+                          alt={kategori.nama_kategori} 
+                          style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', marginRight: 10 }} 
+                        />
+                        {kategori.nama_kategori}
+                      </Dropdown.Item>
+                    ))
+                  ) : (
+                    <Dropdown.Item disabled>Tidak ada kategori</Dropdown.Item>
+                  )}
+                  </NavDropdown>
+                </Nav>
+              </Navbar.Collapse>
               <Nav.Link href="#" className="mx-2 d-flex align-items-center">
                 <FaStethoscope className="me-1" />
                 <span>Cek Kesehatan</span>
@@ -245,27 +283,28 @@ function ContainerHome() {
         <Row>
           <Col md={9}>
             <Row>
-              {trendingArticles.map((article) => (
-                <Col md={4} className="mb-4" key={article.id}>
+              {shuffledArticles.slice(0, 3).map((artikel) => (
+                <Col md={4} className="mb-4" key={artikel.id}>
                   <Card className="h-100 border-0 shadow-none">
-                    <Card.Img variant="top" src={article.image} />
+                    <Card.Img variant="top" src={artikel.image_url || artikel.image || 'default-image.png'} />
                     <Card.Body>
                       <div className="d-flex justify-content-between mb-2">
                         <span className="badge bg-primary">
-                          {article.category}
+                          {getNamaKategori(artikel.kategori_id)}
                         </span>
-                        <small className="text-muted">{article.date}</small>
+                        <small className="text-muted">{new Date(artikel.created_at).toLocaleDateString()}</small>
                       </div>
                       <Card.Title className="fw-bold">
-                        {article.title}
+                        {artikel.judul}
                       </Card.Title>
                       <Card.Text className="text-muted">
-                        {article.excerpt}
+                        {artikel.isi.length > 100 ? artikel.isi.substring(0, 100) + "..." : artikel.isi}
                       </Card.Text>
                     </Card.Body>
                     <Card.Footer className="bg-white border-0">
                       <Button
                         variant="link"
+                        href={`/artikel/${artikel.id}`}
                         className="text-decoration-none p-0"
                       >
                         Baca Selengkapnya
@@ -283,20 +322,23 @@ function ContainerHome() {
               </Card.Header>
               <Card.Body className="p-0">
                 <ul className="list-group list-group-flush">
-                  {healthCategories.map((category) => (
-                    <li
-                      key={category.id}
-                      className="list-group-item d-flex justify-content-between align-items-center"
-                    >
-                      <div className="d-flex align-items-center">
-                        <span className="me-2">{category.icon}</span>
-                        {category.name}
-                      </div>
-                      <span className="badge bg-light text-dark rounded-pill">
-                        {category.count}
-                      </span>
-                    </li>
-                  ))}
+                  {kategoriKesehatan.map(kategori => {
+                    const count = artikelCountPerKategori.find(k => k.id === kategori.id)?.count || 0;
+                    return (
+                      <li
+                        key={kategori.id}
+                        className="list-group-item d-flex justify-content-between align-items-center"
+                      >
+                        <div className="d-flex align-items-center">
+                          <span className="me-2">{kategori.icon}</span>
+                          {kategori.nama_kategori}
+                        </div>
+                        <span className="badge bg-light text-dark rounded-pill">
+                          {count}
+                        </span>
+                      </li>
+                    )
+                  })}
                 </ul>
               </Card.Body>
             </Card>
@@ -311,6 +353,7 @@ function ContainerHome() {
             <h2 className="fw-bold">Informasi Kesehatan Terbaru</h2>
             <Button
               variant="link"
+              href="/artikel"
               className="text-decoration-none d-flex align-items-center"
             >
               Lihat Semua <FaArrowRight className="ms-2" />
@@ -318,19 +361,20 @@ function ContainerHome() {
           </div>
           <div className="recent-articles">
             <Row>
-              {recentArticles.map((article) => (
-                <Col lg={3} md={6} className="mb-4" key={article.id}>
+              {sortedArticles.slice(0, 4).map((artikel) => (
+                <Col lg={3} md={6} className="mb-4" key={artikel.id}>
                   <Card className="border-0 shadow-none h-100">
-                    <Card.Img variant="top" src={article.image} />
+                    <Card.Img variant="top" src={artikel.image} />
                     <Card.Body>
-                      <span className="badge bg-secondary mb-2">
-                        {article.category}
+                      <span className="badge bg-primary">
+                        {getNamaKategori(artikel.kategori_id)}
                       </span>
                       <Card.Title className="fw-bold">
-                        {article.title}
+                        {artikel.judul}
                       </Card.Title>
                       <Button
                         variant="link"
+                        href={`/artikel/${artikel.id}`}
                         className="text-decoration-none p-0"
                       >
                         Baca Selengkapnya
@@ -344,7 +388,7 @@ function ContainerHome() {
         </Container>
       </div>
 
-      {artikel.map((response) => {
+      {/* {artikel.map((response) => {
         return (
           <div className="bg-light py-5">
             <Container>
@@ -383,7 +427,7 @@ function ContainerHome() {
             </Container>
           </div>
         );
-      })}
+      })} */}
 
       {/* Middle Banner */}
       <div className="position-relative">
@@ -410,48 +454,25 @@ function ContainerHome() {
       <Container className="py-5">
         <h2 className="fw-bold mb-4">Kategori Rekomendasi</h2>
         <Row className="g-4">
-          <Col md={4}>
+          {top3Kategori.map((kategori) => (
+          <Col md={4} key={kategori.id}>
             <Card className="text-white border-0 shadow-sm">
-              <Card.Img
-                src="/api/placeholder/400/250"
-                alt="Kesehatan Jantung"
-              />
-              <Card.ImgOverlay className="d-flex align-items-end bg-dark bg-opacity-50">
-                <div>
-                  <Card.Title className="fw-bold">Kesehatan Jantung</Card.Title>
-                  <Button variant="light" size="sm">
-                    Jelajahi
-                  </Button>
-                </div>
-              </Card.ImgOverlay>
-            </Card>
+                <Card.Img
+                  src={kategori.image || "/api/placeholder/400/250"}
+                  alt={kategori.nama_kategori}
+                  style={{ objectFit: "cover", height: "250px" }}
+                />
+                <Card.ImgOverlay className="d-flex align-items-end bg-dark bg-opacity-50">
+                  <div>
+                    <Card.Title className="fw-bold">{kategori.nama_kategori}</Card.Title>
+                    <Button variant="light" size="sm" href={`/kategori/${kategori.id}`}>
+                      Jelajahi
+                    </Button>
+                  </div>
+                </Card.ImgOverlay>
+              </Card>
           </Col>
-          <Col md={4}>
-            <Card className="text-white border-0 shadow-sm">
-              <Card.Img src="/api/placeholder/400/250" alt="Nutrisi Seimbang" />
-              <Card.ImgOverlay className="d-flex align-items-end bg-dark bg-opacity-50">
-                <div>
-                  <Card.Title className="fw-bold">Nutrisi Seimbang</Card.Title>
-                  <Button variant="light" size="sm">
-                    Jelajahi
-                  </Button>
-                </div>
-              </Card.ImgOverlay>
-            </Card>
-          </Col>
-          <Col md={4}>
-            <Card className="text-white border-0 shadow-sm">
-              <Card.Img src="/api/placeholder/400/250" alt="Kesehatan Mental" />
-              <Card.ImgOverlay className="d-flex align-items-end bg-dark bg-opacity-50">
-                <div>
-                  <Card.Title className="fw-bold">Kesehatan Mental</Card.Title>
-                  <Button variant="light" size="sm">
-                    Jelajahi
-                  </Button>
-                </div>
-              </Card.ImgOverlay>
-            </Card>
-          </Col>
+          ))}
         </Row>
       </Container>
 
@@ -703,17 +724,6 @@ function ContainerHome() {
           </div>
         </Container>
       </footer>
-
-      {/* Custom CSS for angled card transformation effect */}
-      <style jsx>{`
-        .transform-card {
-          transition: transform 0.3s ease;
-        }
-        /* Make sure images in cards are properly sized */
-        .object-fit-cover {
-          object-fit: cover;
-        }
-      `}</style>
     </div>
   );
 }

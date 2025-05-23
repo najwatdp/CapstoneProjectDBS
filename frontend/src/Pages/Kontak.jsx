@@ -88,67 +88,84 @@ export default function ContactPage() {
     <div className="min-vh-100 d-flex flex-column">
       {/* Navbar */}
       <Navbar bg="white" expand="lg" className="py-3 shadow-sm sticky-top">
-        <Container>
-          <Navbar.Brand href="/home" className="text-primary">
-            <img
-              width="100"
-              height="auto"
-              src="/image/LogoHealth.png"
-              alt="LogoKesehatanKu"
-            />
-            <span>
-              <img
-                width="100"
-                height="auto"
-                src="/image/kementrian-sehat.webp"
-                alt="LogoKementrian"
-              />
-            </span>
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mx-auto">
-              <Nav.Link href="#" className="mx-2 d-flex align-items-center">
-                <FaHeartbeat className="me-1" />
-                <span>Kategori Kesehatan</span>
-              </Nav.Link>
-              <Nav.Link href="#" className="mx-2 d-flex align-items-center">
-                <FaStethoscope className="me-1" />
-                <span>Cek Kesehatan</span>
-              </Nav.Link>
-              <Nav.Link
-                href="/kontak"
-                className="mx-2 d-flex align-items-center"
-              >
-                <FaPhoneAlt className="me-1" />
-                <span>Kontak</span>
-              </Nav.Link>
-              <Nav.Link href="#" className="mx-2 d-flex align-items-center">
-                <FaComments className="me-1" />
-                <span>Konsultasi Kesehatan</span>
-              </Nav.Link>
-            </Nav>
-            <Form className="d-flex me-2">
-              <InputGroup>
-                <Form.Control
-                  type="search"
-                  placeholder="Cari informasi kesehatan..."
-                  aria-label="Search"
-                />
-                <Button variant="outline-primary">
-                  <FaSearch />
-                </Button>
-              </InputGroup>
-            </Form>
-            <Button
-              variant="light"
-              href="/login"
-              className="border-grey text-grey"
-            >
-              Masuk
-            </Button>
-          </Navbar.Collapse>
-        </Container>
+              <Container>
+                <Navbar.Brand href="/home" className="text-primary">
+                  <img
+                    width="100"
+                    height="auto"
+                    src="/image/LogoHealth.png"
+                    alt="LogoKesehatanKu"
+                  />
+                  <span>
+                    <img
+                      width="100"
+                      height="auto"
+                      src="/image/kementrian-sehat.webp"
+                      alt="LogoKementrian"
+                    />
+                  </span>
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                  <Nav className="mx-auto">
+                    <Navbar.Toggle aria-controls="navbar-dark-example" />
+                    <Navbar.Collapse id="navbar-dark-example">
+                      <Nav>
+                        <NavDropdown id="nav-dropdown-dark-example" title="Kategori Kesehatan" menuVariant="light" className="no-hover">
+                          {kategoriKesehatan.length > 0 ? (
+                          kategoriKesehatan.map((kategori) => (
+                          <Dropdown.Item key={kategori.id} href={`/kategori/${kategori.id}`} className="d-flex align-items-center">
+                              <img 
+                                src={kategori.image_url || kategori.image || 'default-image.png'} 
+                                alt={kategori.nama_kategori} 
+                                style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', marginRight: 10 }} 
+                              />
+                              {kategori.nama_kategori}
+                            </Dropdown.Item>
+                          ))
+                        ) : (
+                          <Dropdown.Item disabled>Tidak ada kategori</Dropdown.Item>
+                        )}
+                        </NavDropdown>
+                      </Nav>
+                    </Navbar.Collapse>
+                    <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+                      <FaStethoscope className="me-1" />
+                      <span>Cek Kesehatan</span>
+                    </Nav.Link>
+                    <Nav.Link
+                      href="/kontak"
+                      className="mx-2 d-flex align-items-center"
+                    >
+                      <FaPhoneAlt className="me-1" />
+                      <span>Kontak</span>
+                    </Nav.Link>
+                    <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+                      <FaComments className="me-1" />
+                      <span>Konsultasi Kesehatan</span>
+                    </Nav.Link>
+                  </Nav>
+                  <Form className="d-flex me-2">
+                    <InputGroup>
+                      <Form.Control
+                        type="search"
+                        placeholder="Cari informasi kesehatan..."
+                        aria-label="Search"
+                      />
+                      <Button variant="outline-primary">
+                        <FaSearch />
+                      </Button>
+                    </InputGroup>
+                  </Form>
+                  <Button
+                    variant="light"
+                    href="/login"
+                    className="border-grey text-grey"
+                  >
+                    Masuk
+                  </Button>
+                </Navbar.Collapse>
+              </Container>
       </Navbar>
 
       {/* Hero Section */}

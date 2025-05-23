@@ -255,3 +255,8 @@ footer a:hover {
 .btn:active {
   animation: pulse 0.3s ease-in-out;
 }
+.no-underline-hover:hover {
+  text-decoration: none !important;
+  box-shadow: none !important; 
+  border-bottom: none !important;
+}
