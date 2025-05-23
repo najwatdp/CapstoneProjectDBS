@@ -15,6 +15,7 @@ class Users {
     static async getUser(token) {
         const res = await instance.get('/user', {
             headers: {
+                "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`
             }
         })
