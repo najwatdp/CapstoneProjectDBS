@@ -21,10 +21,14 @@ export default class CategoriPresenter {
         }
     }
 
-    async createKategori(kategori, deskripsi) {
+    async createKategori(kategori, deskripsi, image) {
         this.#view.setLoading(true);
         try {
-            const res = await this.#model.createKategori(kategori, deskripsi);
+            const data = new FormData();
+            data.append("nama_kategori", kategori);
+            data.append("deskripsi", deskripsi);
+            data.append("images", image);
+            const res = await this.#model.createKategori(data);
             this.getKategori();
             console.log(res);
         } catch (err) {
@@ -34,11 +38,16 @@ export default class CategoriPresenter {
         }
     }
 
-    async editKategori(id, kategori, deskripsi) {
+    async editKategori(id, kategori, deskripsi, image) {
         this.#view.setLoading(true);
 
         try {
-            const res = await this.#model.editKategori(id, kategori, deskripsi);
+            const data = new FormData();
+            data.append("nama_kategori", kategori);
+            data.append("deskripsi", deskripsi);
+            data.append("images", image);
+            const res = await this.#model.editKategori(id, data);
+            console.log(res);
             this.getKategori();
         } catch (err) {
             console.error(err);
@@ -68,14 +77,15 @@ export default class CategoriPresenter {
             this.#view.setLoading(false);
         }
     }
-    async simpanKategori(id, kategori, deskripsi, kategoris) {
+    async simpanKategori(id, kategori, deskripsi, kategoris, image) {
         if (id !== null) {
             const searchKategoriById = kategoris.find(value => value.id === id);
-            await this.editKategori(id, searchKategoriById.nama_kategori, deskripsi);
+            image = image ? image : searchKategoriById.images;
+            await this.editKategori(id, searchKategoriById.nama_kategori, searchKategoriById.deskripsi, image);
             this.#view.setShowModal(false);
             return;
         }
-        await this.createKategori(kategori, deskripsi);
+        await this.createKategori(kategori, deskripsi, image);
         this.#view.setShowModal(false);
     }
 }

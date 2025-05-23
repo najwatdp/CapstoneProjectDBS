@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Table, Button, Modal, Form } from 'react-bootstrap';
+import { Container, Row, Col, Card, Table, Button, Modal, Form, Image } from 'react-bootstrap';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
 import CategoriPresenter from '../../Presenter/CategoriePresenter';
 import modelDashboard from '../../Model/modelDashboard';
@@ -14,6 +14,7 @@ const Categories = () => {
   const [Loading, setLoading] = useState(false);
   const [kategori, setKategori] = useState(null);
   const [deskripsi, setDeskripsi] = useState(null);
+  const [imageKategori, setImageKategori] = useState(null);
 
 
 
@@ -40,7 +41,7 @@ const Categories = () => {
   };
 
   async function SimpanKategori() {
-    await presenter.simpanKategori(editId, kategori, deskripsi, kategoris);
+    await presenter.simpanKategori(editId, kategori, deskripsi, kategoris, imageKategori);
   }
 
   async function handleDelete(id) {
@@ -66,6 +67,7 @@ const Categories = () => {
                 <thead>
                   <tr>
                     <th>#</th>
+                    <th>Image</th>
                     <th>Nama Kategori</th>
                     <th>Jumlah Artikel</th>
                     <th>Tanggal Dibuat</th>
@@ -76,6 +78,7 @@ const Categories = () => {
                   {kategoris !== null ? kategoris.map(kategori => (
                     <tr key={kategori?.id}>
                       <td>{kategori?.id}</td>
+                      <td><Image src={kategori?.images} width={60} height={60} rounded/></td>
                       <td>{kategori?.nama_kategori}</td>
                       <td>{kategori?.deskripsi}</td>
                       <td>{kategori?.createdAt}</td>
@@ -108,6 +111,14 @@ const Categories = () => {
         </Modal.Header>
         <Modal.Body>
           <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Nama Kategori</Form.Label>
+              <Form.Control
+                type="file"
+                placeholder="Masukkan nama kategori"
+                onChange={(e) => setImageKategori(e.target.files[0])}
+              />
+            </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Nama Kategori</Form.Label>
               <Form.Control
