@@ -18,7 +18,7 @@ const Categories = () => {
 
 
   const presenter = new CategoriPresenter({
-    model: new modelDashboard,
+    model: modelDashboard,
     view: {
       Kategoris: setKategoris,
       setShowModal: setShowModal,

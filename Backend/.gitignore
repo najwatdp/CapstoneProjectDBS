@@ -2,3 +2,5 @@
 
 .env
 node_modules/
+public/images/artikel
+public/images/kategori

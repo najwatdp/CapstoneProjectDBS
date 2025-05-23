@@ -53,4 +53,23 @@ export default class RegisterPresenter {
             this.#view.setLoading(false);
         }, 500);
     }
+
+    async searchEmail(value) {
+
+        if (value === "" || null) {
+            this.#view.setShowCheck(false);
+            return;
+        }
+
+        this.#view.setShowCheck(true);
+        this.#view.setLoadingCheck(true);
+        try {
+            const res = await this.#model.searchUser(value);
+            this.#view.setEmailAvailable(res.email);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            this.#view.setLoadingCheck(false);
+        }
+    }
 }

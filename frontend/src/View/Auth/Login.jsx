@@ -64,7 +64,7 @@ export default function Login() {
                                 <span>Keep me logged in</span>
                             </div>
                             <button type="submit" className="w-100 btn btn-primary d-flex align-items-center justify-content-center text-light rounded-20px mb-20px fs-6 border p-8px" disabled={LoadingButton}>
-                                { LoadingButton ? <LoadingBerputar wdith={20} hiegth={20}/> : <><span>Login</span></>}
+                                { LoadingButton ? <LoadingBerputar wdith={16} hiegth={16}/> : <><span>Login</span></>}
                             </button>
                             <div className="text-center mb-10px">
                                 <span>Don't have account? <a href="/register">Sign Up</a></span>

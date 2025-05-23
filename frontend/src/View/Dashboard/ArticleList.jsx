@@ -1,58 +1,33 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Container, Row, Col, Card, Table, Button, Form, InputGroup, Badge, Pagination, Image } from 'react-bootstrap';
 import { FaSearch, FaEdit, FaTrash, FaPlus, FaEye } from 'react-icons/fa';
+import ArticlePresenter from '../../Presenter/ArticlePresenter';
+import Dashboard from '../../Model/modelDashboard';
 
 const ArticleList = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [articles, setArticle] = useState(null);
+  const navigate = useNavigate();
   
-  // Data statis untuk daftar artikel
-  const articles = [
-    { 
-      id: 1, 
-      title: 'Tips Menjaga Kesehatan Jantung', 
-      thumbnail: 'https://via.placeholder.com/50', 
-      category: 'Kesehatan Jantung', 
-      author: 'Dr. Ahmad Fauzi', 
-      published: '12 Mei 2025',
-      status: 'Published'
-    },
-    { 
-      id: 2, 
-      title: 'Pentingnya Vaksinasi untuk Anak', 
-      thumbnail: 'https://via.placeholder.com/50', 
-      category: 'Kesehatan Anak', 
-      author: 'Dr. Budi Santoso', 
-      published: '10 Mei 2025',
-      status: 'Published'
-    },
-    { 
-      id: 3, 
-      title: 'Makanan untuk Meningkatkan Sistem Imun', 
-      thumbnail: 'https://via.placeholder.com/50', 
-      category: 'Nutrisi', 
-      author: 'Cindy Permata', 
-      published: '08 Mei 2025',
-      status: 'Draft'
-    },
-    { 
-      id: 4, 
-      title: 'Mengenal Diabetes Tipe 2', 
-      thumbnail: 'https://via.placeholder.com/50', 
-      category: 'Penyakit Kronis', 
-      author: 'Dr. Doni Pratama', 
-      published: '05 Mei 2025',
-      status: 'Published'
-    },
-    { 
-      id: 5, 
-      title: 'Manfaat Olahraga untuk Kesehatan Mental', 
-      thumbnail: 'https://via.placeholder.com/50', 
-      category: 'Kesehatan Mental', 
-      author: 'Eva Sari', 
-      published: '03 Mei 2025',
-      status: 'Review'
-    },
-  ];
+
+  const presenter = new ArticlePresenter({
+    model: Dashboard,
+    view: {
+      setArticle: setArticle
+    }
+  })
+  async function handleDelete(id) {
+    await presenter.deleteArticle(id);
+  }
+  async function handleEdit(id) {
+    const articlById = articles.find(value => value.id == id);
+    navigate("/dashboard/health-info/create", { state: articlById })
+  }
+
+  useEffect(() => {
+    presenter.getArticle();
+  }, []);
 
   return (
     <Container fluid>
@@ -113,37 +88,37 @@ const ArticleList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {articles.map(article => (
-                    <tr key={article.id}>
-                      <td>{article.id}</td>
+                  {articles !== null ? articles.map(article => (
+                    <tr key={article?.id}>
+                      <td>{article?.id}</td>
                       <td>
-                        <Image src={article.thumbnail} rounded width={50} height={50} />
+                        <Image src={article?.images} rounded width={50} height={50} />
                       </td>
-                      <td>{article.title}</td>
-                      <td>{article.category}</td>
-                      <td>{article.author}</td>
-                      <td>{article.published}</td>
+                      <td>{article?.judul}</td>
+                      <td>{article?.category}</td>
+                      <td>{article?.author}</td>
+                      <td>{article?.published}</td>
                       <td>
                         <Badge bg={
-                          article.status === 'Published' ? 'success' : 
-                          article.status === 'Draft' ? 'secondary' : 'warning'
+                          article?.status === 'Published' ? 'success' : 
+                          article?.status === 'Draft' ? 'secondary' : 'warning'
                         }>
-                          {article.status}
+                          {article?.status}
                         </Badge>
                       </td>
                       <td>
                         <Button variant="info" size="sm" className="me-1">
                           <FaEye />
                         </Button>
-                        <Button variant="warning" size="sm" className="me-1">
+                        <Button variant="warning" size="sm" className="me-1" onClick={() => handleEdit(article.id)}>
                           <FaEdit />
                         </Button>
-                        <Button variant="danger" size="sm">
+                        <Button variant="danger" size="sm" onClick={() => handleDelete(article?.id)}>
                           <FaTrash />
                         </Button>
                       </td>
                     </tr>
-                  ))}
+                  )) : <></>}
                 </tbody>
               </Table>
               
