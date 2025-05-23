@@ -7,18 +7,20 @@ export default class Dashboard {
         return res.data;
     }
 
-    static async createKategori(kategori, deskripsi) {
-        const res = await instance.post('/api/kategori', {
-            nama_kategori: kategori,
-            deskripsi: deskripsi
+    static async createKategori(data) {
+        const res = await instance.post('/api/kategori', data, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
         })
         return res.data;
     }
 
-    static async editKategori(id, kategori, deskripsi) {
-        const res = await instance.put(`/api/kategori/${id}`, {
-            nama_kategori: kategori,
-            deskripsi: deskripsi
+    static async editKategori(id, data) {
+        const res = await instance.put(`/api/kategori/${id}`, data, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
         })
 
         return res.data;
