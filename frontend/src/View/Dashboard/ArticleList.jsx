@@ -8,13 +8,17 @@ import Dashboard from '../../Model/modelDashboard';
 const ArticleList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [articles, setArticle] = useState(null);
+  const [kategoris, setKategoris] = useState(null);
+  const [renderArticle, setRenderArticle] = useState(null);
   const navigate = useNavigate();
   
 
   const presenter = new ArticlePresenter({
     model: Dashboard,
     view: {
-      setArticle: setArticle
+      setArticle: setArticle,
+      setKategoris: setKategoris,
+      setRenderArticle: setRenderArticle
     }
   })
   async function handleDelete(id) {
@@ -24,9 +28,19 @@ const ArticleList = () => {
     const articlById = articles.find(value => value.id == id);
     navigate("/dashboard/health-info/create", { state: articlById })
   }
+  function handleFilterKategori(e) {
+    if (e.target.value === "") {
+      setRenderArticle(articles);
+      return;
+    }
+    const article = articles.filter(value => value.kategori_id == e.target.value);
+    console.log(e.target.value);
+    setRenderArticle(article);
+  }
 
   useEffect(() => {
     presenter.getArticle();
+    presenter.getKategori();
   }, []);
 
   return (
@@ -50,13 +64,11 @@ const ArticleList = () => {
                   </InputGroup>
                 </Col>
                 <Col md={3}>
-                  <Form.Select>
+                  <Form.Select onChange={handleFilterKategori}>
                     <option value="">Filter Kategori</option>
-                    <option value="jantung">Kesehatan Jantung</option>
-                    <option value="anak">Kesehatan Anak</option>
-                    <option value="nutrisi">Nutrisi</option>
-                    <option value="kronis">Penyakit Kronis</option>
-                    <option value="mental">Kesehatan Mental</option>
+                    { kategoris ? kategoris.map(value => (
+                      <option value={ value.id } key={ value.id }>{ value.nama_kategori }</option>
+                    )) : <></> }
                   </Form.Select>
                 </Col>
                 <Col md={2}>
@@ -88,14 +100,14 @@ const ArticleList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {articles !== null ? articles.map(article => (
+                  {articles !== null ? renderArticle.map((article, index) => (
                     <tr key={article?.id}>
-                      <td>{article?.id}</td>
+                      <td>{ index + 1 }</td>
                       <td>
                         <Image src={article?.images} rounded width={50} height={50} />
                       </td>
                       <td>{article?.judul}</td>
-                      <td>{article?.kategori_id}</td>
+                      <td>{article?.category}</td>
                       <td>{article?.author}</td>
                       <td>
                         {new Date(article?.createdAt).toLocaleDateString('id-ID', {

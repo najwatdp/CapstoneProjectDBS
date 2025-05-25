@@ -1,4 +1,4 @@
-// presenters/homePresenter.js
+
 import { HomeModel } from "../Model/modelHome";
 
 export class HomePresenter {
@@ -105,3 +105,4 @@ export class HomePresenter {
     return text.substring(0, maxLength) + "...";
   }
 }
+

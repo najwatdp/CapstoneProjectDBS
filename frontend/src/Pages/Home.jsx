@@ -486,7 +486,6 @@ function HomeView() {
           </Button>
         </Container>
       </div>
-
       {/* Footer */}
       <footer className="bg-dark text-white pt-5 pb-3">
         <Container>
@@ -553,6 +552,9 @@ function HomeView() {
                     Kehamilan
                   </a>
                 </li>
+                {/* {top3Kategori.map(categori => (
+                  <li className="mb-2"><a href="#" className="text-white text-decoration-none">{ categori.nama_kategori }</a></li>
+                )) : <></> } */}
               </ul>
             </Col>
             <Col md={2} className="mb-4">

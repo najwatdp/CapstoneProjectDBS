@@ -55,13 +55,13 @@ const init = async () => {
     try {
         await db.authenticate();
         console.log('Database Connected...');
-        await db.sync({ alter: true });
+        await db.sync();
         // await Artikel.sync({ alter: true });
     } catch (error) {
         
     }
     
-    server.route(routeArtikel)
+    server.route(routeArtikel);
     server.route(routeKategori);
     server.route(routeUser)
     server.route(routePenyakit);

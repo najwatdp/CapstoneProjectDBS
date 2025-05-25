@@ -6,12 +6,19 @@ import {
   FaCog, FaChartBar, FaBars, FaBell, FaSignOutAlt, 
   FaUser, FaPlus, FaListUl, FaSearch, FaMoon, FaSun
 } from 'react-icons/fa';
+import MainLayoutPresenter from '../../../Presenter/MainLayoutPresenter';
+import Model from '../../../Model/Model';
 
 const MainLayout = ({ children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+
+  const presenter = new MainLayoutPresenter({
+    model: Model.Users
+  })
 
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
@@ -28,10 +35,7 @@ const MainLayout = ({ children }) => {
   };
 
   const handleLogout = () => {
-    // Implementasi logout di sini
-    // Contoh: menghapus token dari localStorage
-    localStorage.removeItem('token');
-    navigate('/login');
+    navigate("/login")
   };
 
   // Menu navigasi untuk sidebar

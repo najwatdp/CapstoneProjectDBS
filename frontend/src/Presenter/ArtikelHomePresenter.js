@@ -1,4 +1,3 @@
-// Presenter - ArticlePresenter.js
 import { useState, useEffect } from 'react';
 import ArticleModel from '../Model/ArtikelModel';
 
@@ -184,4 +183,4 @@ class ArticlePresenter {
 
 // Export singleton instance
 const articlePresenter = new ArticlePresenter();
-export default articlePresenter;
+export { articlePresenter };

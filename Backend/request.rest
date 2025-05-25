@@ -132,7 +132,10 @@ Content-Type: application/json
 
 ###
 //API UNTUK MENGUPDATE DATA ARTIKEL
-PUT http://localhost:5000/api/artikel
+PUT http://localhost:5000/api/artikel/1
+Content-Type: application/json
+
+
 
 
 ###

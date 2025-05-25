@@ -4,7 +4,7 @@ import {
   FaPhoneAlt, FaComments, FaStethoscope, FaHeartbeat, FaSearch, FaBookmark, FaShare, 
   FaFacebook, FaTwitter, FaWhatsapp, FaInstagram, FaEnvelope, FaCalendarAlt  
 } from 'react-icons/fa';
-import articlePresenter from '../Presenter/ArtikelHomePresenter';
+import { articlePresenter } from '../Presenter/ArtikelHomePresenter';
 
 const ArticleCategoryView = () => {
   // Menggunakan presenter untuk mendapatkan data dan logic

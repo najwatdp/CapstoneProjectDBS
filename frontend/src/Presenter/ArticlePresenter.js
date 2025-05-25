@@ -32,6 +32,7 @@ export default class ArticlePresenter {
         try {
             const res = await this.#model.getArticle();
             console.log(res);
+            this.#view.setRenderArticle(res.data);
             this.#view.setArticle(res.data);
         } catch (err) {
             console.error(err);

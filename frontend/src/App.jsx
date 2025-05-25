@@ -5,9 +5,9 @@ import Register from "./View/Auth/Signin";
 import ForgotPassword from "./View/Auth/ForgotPassword";
 import Home from "./Pages/Home";
 import Artikel from "./Pages/Artikel";
-import DetailArtikel from "./Pages/ArtikelDetail";
-import Kategori from "./Pages/Kategori"
+import ArtikelDetail from "./Pages/ArtikelDetail";
 import Kontak from "./Pages/Kontak";
+import Kategori from "./Pages/Kategori";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "./View/Dashboard/Dashboard";
 import MainLayout from "./View/Dashboard/layouts/MainLayout";
@@ -21,15 +21,16 @@ import Analytics from "./View/Dashboard/Analytics";
 import Profile from "./View/Dashboard/Profile";
 import SetupRoleAdmin from "./SetupRoleAdmin";
 import SetupRoleUser from "./SetupRoleUser";
+import Error404 from "./View/Errors/404";
 
 function App() {
   return (
     <Routes>
       <Route path="/home" element={<Home />} />
       <Route path="/artikel" element={<Artikel />} />
-      <Route path="/artikel/:id" element={<DetailArtikel />} />
-      <Route path="/kategori" element={<Kategori />} />
+      <Route path="/artikel/:id" element={<ArtikelDetail />} />
       <Route path="/kontak" element={<Kontak />} />
+      <Route path="/kategori" element={<Kategori />} />
       {/* Auth */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

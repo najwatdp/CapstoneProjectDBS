@@ -8,6 +8,9 @@ class Users {
         });
         return res.data;
     }
+    static async Logout() {
+        
+    }
     static async Register(data) {
         const res = await instance.post('/user', data);
         return res.data;
