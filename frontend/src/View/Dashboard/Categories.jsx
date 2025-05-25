@@ -47,6 +47,7 @@ const Categories = () => {
   async function handleDelete(id) {
     await presenter.deleteKategori(id);
   }
+  
 
   useEffect(() => {
     presenter.getKategori();
@@ -69,8 +70,8 @@ const Categories = () => {
                     <th>#</th>
                     <th>Image</th>
                     <th>Nama Kategori</th>
-                    <th>Jumlah Artikel</th>
-                    <th>Tanggal Dibuat</th>
+                    <th>Deskripsi</th>
+                    <th>Tanggal Publikasi</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
@@ -81,7 +82,14 @@ const Categories = () => {
                       <td><Image src={kategori?.images} width={60} height={60} rounded/></td>
                       <td>{kategori?.nama_kategori}</td>
                       <td>{kategori?.deskripsi}</td>
-                      <td>{kategori?.createdAt}</td>
+                      <td>
+                        {new Date(kategori?.createdAt).toLocaleDateString('id-ID', {
+                          weekday: 'long',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </td>
                       <td>
                         <Button
                           variant="warning"

@@ -90,7 +90,7 @@ const ArticleList = () => {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Thumbnail</th>
+                    <th>Gambar</th>
                     <th>Judul</th>
                     <th>Kategori</th>
                     <th>Penulis</th>
@@ -107,9 +107,16 @@ const ArticleList = () => {
                         <Image src={article?.images} rounded width={50} height={50} />
                       </td>
                       <td>{article?.judul}</td>
-                      <td>{ kategoris ? kategoris.find(value => value.id === article.kategori_id).nama_kategori : <></> }</td>
+                      <td>{article?.category}</td>
                       <td>{article?.author}</td>
-                      <td>{article?.published}</td>
+                      <td>
+                        {new Date(article?.createdAt).toLocaleDateString('id-ID', {
+                          weekday: 'long',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </td>
                       <td>
                         <Badge bg={
                           article?.status === 'publish' ? 'success' : 

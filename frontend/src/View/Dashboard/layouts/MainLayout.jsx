@@ -70,9 +70,14 @@ const MainLayout = ({ children }) => {
       {/* Sidebar */}
       <div className={`sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
-          <h2 className="logo">
-            {sidebarCollapsed ? 'SK' : 'Kesehatanku'}
-            <FaUserMd className="logo-icon" />
+          <h2 className="logo d-flex align-items-center">
+            <img 
+            onClick={toggleSidebar}
+              src={sidebarCollapsed ? "/image/logo-healt.png" : "/image/logo-healt.png"} 
+              alt="Logo" 
+              className="logo-img"
+              style={{ height: "60px" }} 
+            />
           </h2>
           <Button 
             variant="link" 

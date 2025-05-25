@@ -3,7 +3,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./View/Auth/Login";
 import Register from "./View/Auth/Signin";
 import ForgotPassword from "./View/Auth/ForgotPassword";
-import Home from "./View/Pages/Home";
+import Home from "./Pages/Home";
+import Artikel from "./Pages/Artikel";
+import ArtikelDetail from "./Pages/ArtikelDetail";
+import Kontak from "./Pages/Kontak";
+import Kategori from "./Pages/Kategori";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "./View/Dashboard/Dashboard";
 import MainLayout from "./View/Dashboard/layouts/MainLayout";
@@ -22,7 +26,11 @@ import Error404 from "./View/Errors/404";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/artikel" element={<Artikel />} />
+      <Route path="/artikel/:id" element={<ArtikelDetail />} />
+      <Route path="/kontak" element={<Kontak />} />
+      <Route path="/kategori" element={<Kategori />} />
       {/* Auth */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -63,10 +71,7 @@ function App() {
       </Route>
 
       {/* loading */}
-      <Route
-        path="/percobaan"
-        element={<SetupRoleAdmin/>}
-      />
+      <Route path="/percobaan" element={<SetupRoleAdmin />} />
     </Routes>
   );
 }
