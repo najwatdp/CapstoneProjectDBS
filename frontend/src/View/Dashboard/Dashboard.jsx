@@ -129,7 +129,7 @@ const Dashboard = () => {
 
       {/* Analytics Charts */}
       <Row>
-        <Col xl={8} lg={7}>
+        {/* <Col xl={8} lg={7}>
           <Card className="mb-4">
             <Card.Header className="d-flex justify-content-between align-items-center">
               <h6 className="m-0 font-weight-bold">Statistik Kunjungan</h6>
@@ -150,9 +150,8 @@ const Dashboard = () => {
               </div>
             </Card.Body>
           </Card>
-        </Col>
-        
-        <Col xl={4} lg={5}>
+        </Col> */}
+        {/* <Col xl={4} lg={5}>
           <Card className="mb-4">
             <Card.Header className="d-flex justify-content-between align-items-center">
               <h6 className="m-0 font-weight-bold">Distribusi Artikel</h6>
@@ -195,16 +194,15 @@ const Dashboard = () => {
               </div>
             </Card.Body>
           </Card>
-        </Col>
+        </Col> */}
       </Row>
 
       {/* Recent Content and Activities */}
       <Row>
-        <Col xl={6} className="mb-4">
+        <Col xl={8} className="mb-4">
           <Card>
             <Card.Header className="d-flex justify-content-between align-items-center">
               <h6 className="m-0 font-weight-bold">Artikel Terbaru</h6>
-              <Button variant="primary" size="sm">Lihat Semua</Button>
             </Card.Header>
             <Card.Body>
               <Table responsive hover className="recent-articles">
@@ -258,11 +256,10 @@ const Dashboard = () => {
             </Card.Body>
           </Card>
         </Col>
-        <Col xl={6} className="mb-4">
+        <Col xl={4} className="mb-4">
           <Card>
             <Card.Header className="d-flex justify-content-between align-items-center">
               <h6 className="m-0 font-weight-bold">Aktivitas Terbaru</h6>
-              <Button variant="primary" size="sm">Lihat Semua</Button>
             </Card.Header>
             <Card.Body>
               <div className="activity-timeline">

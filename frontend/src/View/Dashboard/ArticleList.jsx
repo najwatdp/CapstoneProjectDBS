@@ -78,7 +78,7 @@ const ArticleList = () => {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Thumbnail</th>
+                    <th>Gambar</th>
                     <th>Judul</th>
                     <th>Kategori</th>
                     <th>Penulis</th>
@@ -97,7 +97,14 @@ const ArticleList = () => {
                       <td>{article?.judul}</td>
                       <td>{article?.kategori_id}</td>
                       <td>{article?.author}</td>
-                      <td>{article?.published}</td>
+                      <td>
+                        {new Date(article?.createdAt).toLocaleDateString('id-ID', {
+                          weekday: 'long',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </td>
                       <td>
                         <Badge bg={
                           article?.status === 'publish' ? 'success' : 

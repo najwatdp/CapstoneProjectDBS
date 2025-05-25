@@ -47,6 +47,7 @@ const Categories = () => {
   async function handleDelete(id) {
     await presenter.deleteKategori(id);
   }
+  
 
   useEffect(() => {
     presenter.getKategori();
@@ -70,7 +71,7 @@ const Categories = () => {
                     <th>Image</th>
                     <th>Nama Kategori</th>
                     <th>Deskripsi</th>
-                    <th>Jumlah Artikel</th>
+                    <th>Tanggal Publikasi</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
