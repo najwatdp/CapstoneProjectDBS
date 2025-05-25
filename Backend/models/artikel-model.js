@@ -34,7 +34,7 @@ const Artikel = db.define('artikel', {
     },
     }, {
     tableName: 'artikel',
-    timestamps: false,
+    timestamps: true,
     });
 
 export default Artikel;

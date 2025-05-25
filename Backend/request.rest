@@ -130,8 +130,6 @@ GET http://localhost:5000/api/artikel/3
 POST http://localhost:5000/api/artikel
 Content-Type: application/json
 
-
-
 ###
 //API UNTUK MENGUPDATE DATA ARTIKEL
 PUT http://localhost:5000/api/artikel
@@ -139,4 +137,4 @@ PUT http://localhost:5000/api/artikel
 
 ###
 //API UNTUK MENGHAPUS DATA ARTIKEL
-DELETE http://localhost:5000/api/artikel/4
+DELETE http://localhost:5000/api/artikel/7
