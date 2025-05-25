@@ -1,82 +1,70 @@
-import React, { useState,useEffect } from "react";
-import axios from 'axios';
-import {FaHeartbeat,FaStethoscope,FaPhoneAlt,FaComments,FaSearch,FaMapMarkerAlt,FaEnvelope,FaClock,FaPhone,FaWhatsapp,FaFax,FaPaperPlane,FaUserMd,FaQuestionCircle,FaExclamationTriangle,} from "react-icons/fa";
-import { Dropdown, NavDropdown,Navbar,Nav,Container,Button,Card,Carousel,Row,Col,Form,InputGroup,} from "react-bootstrap";
+// views/ContactView.js
+import React, { useState, useEffect, useRef } from "react";
+import {
+  FaHeartbeat, FaStethoscope, FaPhoneAlt, FaComments, FaSearch,
+  FaMapMarkerAlt, FaEnvelope, FaClock, FaPhone, FaWhatsapp,
+  FaPaperPlane, FaUserMd
+} from "react-icons/fa";
+import {
+  Dropdown, NavDropdown, Navbar, Nav, Container, Button,
+  Card, Row, Col, Form, InputGroup
+} from "react-bootstrap";
+import { ContactPresenter } from '../Presenter/ContactPresenter';
 
-export default function ContactPage() {
-  const [formData, setFormData] = useState({name: "",email: "",phone: "",subject: "",category: "",message: "",});
+export default function ContactView() {
+  const [formData, setFormData] = useState({});
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
   const [kategoriList, setKategoriList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  
+  const presenterRef = useRef(null);
 
-  const fetchKategori = async () => {
-    try {
-      const kategoriRes = await axios.get("http://localhost:5000/api/kategori");
-      const artikelRes = await axios.get("http://localhost:5000/api/artikel");
-
-      const kategoriData = kategoriRes.data.data;
-      const artikelData = artikelRes.data.data;
-
-      const kategoriWithCount = kategoriData.map(k => {
-        const count = artikelData.filter(a => String(a.kategori_id) === String(k.id)).length;
-        return { ...k, count };
-      });
-
-      setKategoriList(kategoriWithCount);
-    } catch (err) {
-      console.error("Gagal mengambil kategori:", err);
-    } finally {
-      setLoading(false);
-    }
+  // View interface methods that presenter will call
+  const viewInterface = {
+    setLoading: (isLoading) => setLoading(isLoading),
+    setCategories: (categories) => setKategoriList(categories),
+    showAlert: (type, message) => {
+      setAlertType(type);
+      setAlertMessage(message);
+      setShowAlert(true);
+      // Auto hide after 5 seconds
+      setTimeout(() => setShowAlert(false), 5000);
+    },
+    hideAlert: () => setShowAlert(false),
+    updateFormField: (name, value) => {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    },
+    resetForm: () => {
+      if (presenterRef.current) {
+        setFormData(presenterRef.current.getInitialFormState());
+      }
+    },
+    setSubmitting: (isSubmitting) => setSubmitting(isSubmitting)
   };
+
+  useEffect(() => {
+    // Initialize presenter with view interface
+    presenterRef.current = new ContactPresenter(viewInterface);
+    // Set initial form state
+    setFormData(presenterRef.current.getInitialFormState());
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (presenterRef.current) {
+      presenterRef.current.handleInputChange(name, value);
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Validasi sederhana
-    if (!formData.name || !formData.email || !formData.message) {
-      setAlertType("danger");
-      setAlertMessage("Mohon lengkapi semua field yang wajib diisi!");
-      setShowAlert(true);
-      return;
+    if (presenterRef.current) {
+      presenterRef.current.handleSubmit(formData);
     }
-
-    // Simulasi pengiriman form
-    setAlertType("success");
-    setAlertMessage(
-      "Pesan Anda berhasil dikirim! Tim kami akan segera menghubungi Anda."
-    );
-    setShowAlert(true);
-
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      category: "",
-      message: "",
-    });
-
-    // Hide alert after 5 seconds
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 5000);
   };
-
-  useEffect(() => {
-  fetchKategori();
-}, []);
 
   if (loading) {
     return (
@@ -87,88 +75,77 @@ export default function ContactPage() {
       </div>
     );
   }
+
   return (
     <div className="min-vh-100 d-flex flex-column">
       {/* Navbar */}
       <Navbar bg="white" expand="lg" className="py-3 shadow-sm sticky-top">
-              <Container>
-                <Navbar.Brand href="/home" className="primary">
-                  <img
-                    width="100"
-                    height="auto"
-                    src="/image/LogoHealth.png"
-                    alt="LogoKesehatanKu"
-                  />
-                  <span>
-                    <img
-                      width="100"
-                      height="auto"
-                      src="/image/kementrian-sehat.webp"
-                      alt="LogoKementrian"
-                    />
-                  </span>
-                </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                  <Nav className="mx-auto">
-                    <Navbar.Toggle aria-controls="navbar-dark-example" />
-                    <Navbar.Collapse id="navbar-dark-example">
-                      <Nav>
-                        <NavDropdown id="nav-dropdown-dark-example" title="Kategori Kesehatan" menuVariant="light" className="no-hover">
-                          {kategoriList.length > 0 ? (
-                          kategoriList.map((kategori) => (
-                          <Dropdown.Item key={kategori.id} href={`/kategori/${kategori.id}`} className="d-flex align-items-center">
-                              <img 
-                                src={kategori.images || 'default-image.png'} 
-                                alt={kategori.nama_kategori} 
-                                style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', marginRight: 10 }} 
-                              />
-                              {kategori.nama_kategori}
-                            </Dropdown.Item>
-                          ))
-                        ) : (
-                          <Dropdown.Item disabled>Tidak ada kategori</Dropdown.Item>
-                        )}
-                        </NavDropdown>
-                      </Nav>
-                    </Navbar.Collapse>
-                    <Nav.Link href="#" className="mx-2 d-flex align-items-center">
-                      <FaStethoscope className="me-1" />
-                      <span>Cek Kesehatan</span>
-                    </Nav.Link>
-                    <Nav.Link
-                      href="/kontak"
-                      className="mx-2 d-flex align-items-center"
-                    >
-                      <FaPhoneAlt className="me-1" />
-                      <span>Kontak</span>
-                    </Nav.Link>
-                    <Nav.Link href="#" className="mx-2 d-flex align-items-center">
-                      <FaComments className="me-1" />
-                      <span>Konsultasi Kesehatan</span>
-                    </Nav.Link>
-                  </Nav>
-                  <Form className="d-flex me-2">
-                    <InputGroup>
-                      <Form.Control
-                        type="search"
-                        placeholder="Cari informasi kesehatan..."
-                        aria-label="Search"
+        <Container>
+          <Navbar.Brand href="/home" className="primary">
+            <img
+              width="100"
+              height="auto"
+              src="/image/LogoHealth.png"
+              alt="LogoKesehatanKu"
+            />
+            <span>
+              <img
+                width="100"
+                height="auto"
+                src="/image/kementrian-sehat.webp"
+                alt="LogoKementrian"
+              />
+            </span>
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mx-auto">
+              <NavDropdown id="nav-dropdown-dark-example" title="Kategori Kesehatan" menuVariant="light" className="no-hover">
+                {kategoriList.length > 0 ? (
+                  kategoriList.map((kategori) => (
+                    <Dropdown.Item key={kategori.id} href={`/kategori/${kategori.id}`} className="d-flex align-items-center">
+                      <img 
+                        src={kategori.images || 'default-image.png'} 
+                        alt={kategori.nama_kategori} 
+                        style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', marginRight: 10 }} 
                       />
-                      <Button className="btn-primary">
-                        <FaSearch />
-                      </Button>
-                    </InputGroup>
-                  </Form>
-                  <Button
-                    variant="light"
-                    href="/login"
-                    className="border-grey text-grey"
-                  >
-                    Masuk
-                  </Button>
-                </Navbar.Collapse>
-              </Container>
+                      {kategori.nama_kategori}
+                    </Dropdown.Item>
+                  ))
+                ) : (
+                  <Dropdown.Item disabled>Tidak ada kategori</Dropdown.Item>
+                )}
+              </NavDropdown>
+              <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+                <FaStethoscope className="me-1" />
+                <span>Cek Kesehatan</span>
+              </Nav.Link>
+              <Nav.Link href="/kontak" className="mx-2 d-flex align-items-center">
+                <FaPhoneAlt className="me-1" />
+                <span>Kontak</span>
+              </Nav.Link>
+              <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+                <FaComments className="me-1" />
+                <span>Konsultasi Kesehatan</span>
+              </Nav.Link>
+            </Nav>
+            <Form className="d-flex me-2">
+              <InputGroup>
+                <Form.Control
+                  type="search"
+                  placeholder="Cari informasi kesehatan..."
+                  aria-label="Search"
+                />
+                <Button className="btn-primary">
+                  <FaSearch />
+                </Button>
+              </InputGroup>
+            </Form>
+            <Button variant="light" href="/login" className="border-grey text-grey">
+              Masuk
+            </Button>
+          </Navbar.Collapse>
+        </Container>
       </Navbar>
 
       {/* Hero Section */}
@@ -176,7 +153,13 @@ export default function ContactPage() {
         <div className="container">
           <div className="row align-items-center">
             <div className="col-lg-8">
-              <h1 className="display-4 fw-bold mb-3" style={{background: 'linear-gradient(135deg, #1573b7 10%, #0c54b7 90%)',WebkitBackgroundClip: 'text',WebkitTextFillColor: 'transparent',}}>Hubungi Kami</h1>
+              <h1 className="display-4 fw-bold mb-3" style={{
+                background: 'linear-gradient(135deg, #1573b7 10%, #0c54b7 90%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}>
+                Hubungi Kami
+              </h1>
               <p className="lead mb-4">
                 Tim KesehatanKU siap membantu Anda dengan pertanyaan seputar
                 kesehatan. Hubungi kami melalui berbagai channel yang tersedia
@@ -184,7 +167,11 @@ export default function ContactPage() {
               </p>
             </div>
             <div className="col-lg-4 text-center">
-              <FaPhoneAlt size={120} style={{background: 'linear-gradient(135deg, #1573b7 10%, #0c54b7 90%)',WebkitBackgroundClip: 'text',WebkitTextFillColor: 'transparent',}}  className="opacity-75" />
+              <FaPhoneAlt size={120} style={{
+                background: 'linear-gradient(135deg, #1573b7 10%, #0c54b7 90%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }} className="opacity-75" />
             </div>
           </div>
         </div>
@@ -198,21 +185,18 @@ export default function ContactPage() {
             <div className="card shadow-none">
               <div className="card-body p-4">
                 {showAlert && (
-                  <div
-                    className={`alert alert-${alertType} alert-dismissible fade show mb-4`}
-                    role="alert"
-                  >
+                  <div className={`alert alert-${alertType} alert-dismissible fade show mb-4`} role="alert">
                     {alertMessage}
                     <button
                       type="button"
                       className="btn-close"
-                      onClick={() => setShowAlert(false)}
+                      onClick={() => presenterRef.current?.hideAlert()}
                       aria-label="Close"
                     ></button>
                   </div>
                 )}
 
-                <div onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>
                   <div className="row">
                     <div className="col-md-6">
                       <div className="mb-3">
@@ -223,7 +207,7 @@ export default function ContactPage() {
                           type="text"
                           className="form-control form-control-lg"
                           name="name"
-                          value={formData.name}
+                          value={formData.name || ''}
                           onChange={handleInputChange}
                           placeholder="Masukkan nama lengkap Anda"
                         />
@@ -238,7 +222,7 @@ export default function ContactPage() {
                           type="email"
                           className="form-control form-control-lg"
                           name="email"
-                          value={formData.email}
+                          value={formData.email || ''}
                           onChange={handleInputChange}
                           placeholder="nama@email.com"
                         />
@@ -249,14 +233,12 @@ export default function ContactPage() {
                   <div className="row">
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="form-label fw-semibold">
-                          Nomor Telepon
-                        </label>
+                        <label className="form-label fw-semibold">Nomor Telepon</label>
                         <input
                           type="tel"
                           className="form-control form-control-lg"
                           name="phone"
-                          value={formData.phone}
+                          value={formData.phone || ''}
                           onChange={handleInputChange}
                           placeholder="+62 xxx xxxx xxxx"
                         />
@@ -264,22 +246,19 @@ export default function ContactPage() {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="form-label fw-semibold">
-                          Kategori Pertanyaan
-                        </label>
+                        <label className="form-label fw-semibold">Kategori Pertanyaan</label>
                         <select
                           className="form-select form-select-lg"
                           name="category"
-                          value={formData.category}
+                          value={formData.category || ''}
                           onChange={handleInputChange}
                         >
                           <option value="">Pilih kategori...</option>
-                          {kategoriList.length > 0 &&
-                            kategoriList.map((kategori) => (
-                              <option key={kategori.id} value={kategori.id}>
-                                {kategori.nama_kategori}
-                              </option>
-                            ))}
+                          {kategoriList.map((kategori) => (
+                            <option key={kategori.id} value={kategori.id}>
+                              {kategori.nama_kategori}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>
@@ -291,7 +270,7 @@ export default function ContactPage() {
                       type="text"
                       className="form-control form-control-lg"
                       name="subject"
-                      value={formData.subject}
+                      value={formData.subject || ''}
                       onChange={handleInputChange}
                       placeholder="Subjek pesan Anda"
                     />
@@ -305,34 +284,32 @@ export default function ContactPage() {
                       className="form-control"
                       rows={5}
                       name="message"
-                      value={formData.message}
+                      value={formData.message || ''}
                       onChange={handleInputChange}
                       placeholder="Tuliskan pesan atau pertanyaan Anda di sini..."
                     />
                     <div className="form-text text-muted">
-                      Minimum 10 karakter. Jelaskan pertanyaan Anda dengan
-                      detail.
+                      Minimum 10 karakter. Jelaskan pertanyaan Anda dengan detail.
                     </div>
                   </div>
 
                   <div className="d-grid">
                     <button
-                      type="button"
+                      type="submit"
                       className="btn btn-primary btn-sm py-3"
-                      onClick={handleSubmit}
+                      disabled={submitting}
                     >
                       <FaPaperPlane className="me-2" />
-                      Kirim Pesan
+                      {submitting ? 'Mengirim...' : 'Kirim Pesan'}
                     </button>
                   </div>
-                </div>
+                </form>
               </div>
             </div>
           </div>
 
           {/* Contact Info */}
           <div className="col-lg-4">
-            {/* Contact Details */}
             <div className="card shadow-none mb-4">
               <h5 className="mb-0 px-4 py-4 align-items-center">
                 <FaPhoneAlt className="me-2" />
@@ -345,10 +322,8 @@ export default function ContactPage() {
                     Alamat Kantor
                   </h6>
                   <p className="mb-0 text-muted">
-                    Jl. H.R. Rasuna Said Kav. X5 No. 4-9
-                    <br />
-                    Kuningan, Jakarta Selatan 12950
-                    <br />
+                    Jl. H.R. Rasuna Said Kav. X5 No. 4-9<br />
+                    Kuningan, Jakarta Selatan 12950<br />
                     Indonesia
                   </p>
                 </div>
@@ -359,10 +334,7 @@ export default function ContactPage() {
                     Telepon
                   </h6>
                   <p className="mb-1">
-                    <a
-                      href="tel:+622150829999"
-                      className="text-decoration-none"
-                    >
+                    <a href="tel:+622150829999" className="text-decoration-none">
                       +62 21 5082 9999
                     </a>
                   </p>
@@ -377,10 +349,7 @@ export default function ContactPage() {
                     WhatsApp
                   </h6>
                   <p className="mb-0">
-                    <a
-                      href="https://wa.me/6281234567890"
-                      className="text-decoration-none text-success"
-                    >
+                    <a href="https://wa.me/6281234567890" className="text-decoration-none text-success">
                       +62 812 3456 7890
                     </a>
                   </p>
@@ -392,18 +361,12 @@ export default function ContactPage() {
                     Email
                   </h6>
                   <p className="mb-1">
-                    <a
-                      href="mailto:info@kesehatanku.id"
-                      className="text-decoration-none"
-                    >
+                    <a href="mailto:info@kesehatanku.id" className="text-decoration-none">
                       info@kesehatanku.id
                     </a>
                   </p>
                   <p className="mb-0">
-                    <a
-                      href="mailto:konsultasi@kesehatanku.id"
-                      className="text-decoration-none"
-                    >
+                    <a href="mailto:konsultasi@kesehatanku.id" className="text-decoration-none">
                       konsultasi@kesehatanku.id
                     </a>
                   </p>
@@ -475,24 +438,15 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
+
       {/* Footer */}
       <footer className="bg-dark text-white pt-5 pb-3">
         <Container>
           <Row className="mb-5">
             <Col md={4} className="mb-4">
-              <img
-                width="100"
-                height="auto"
-                src="/image/LogoHealth.png"
-                alt="LogoKesehatanKu"
-              />
+              <img width="100" height="auto" src="/image/LogoHealth.png" alt="LogoKesehatanKu" />
               <span>
-                <img
-                  width="100"
-                  height="auto"
-                  src="/image/kementrian-sehat.webp"
-                  alt="LogoKementrian"
-                />
+                <img width="100" height="auto" src="/image/kementrian-sehat.webp" alt="LogoKementrian" />
               </span>
               <p>
                 Sumber informasi kesehatan terpercaya dan terverifikasi untuk
@@ -517,29 +471,19 @@ export default function ContactPage() {
               <h5 className="fw-bold mb-4">Kategori</h5>
               <ul className="list-unstyled">
                 <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">
-                    Jantung
-                  </a>
+                  <a href="#" className="text-white text-decoration-none">Jantung</a>
                 </li>
                 <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">
-                    Diabetes
-                  </a>
+                  <a href="#" className="text-white text-decoration-none">Diabetes</a>
                 </li>
                 <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">
-                    Kesehatan Mental
-                  </a>
+                  <a href="#" className="text-white text-decoration-none">Kesehatan Mental</a>
                 </li>
                 <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">
-                    COVID-19
-                  </a>
+                  <a href="#" className="text-white text-decoration-none">COVID-19</a>
                 </li>
                 <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">
-                    Kehamilan
-                  </a>
+                  <a href="#" className="text-white text-decoration-none">Kehamilan</a>
                 </li>
               </ul>
             </Col>
@@ -547,24 +491,16 @@ export default function ContactPage() {
               <h5 className="fw-bold mb-4">Layanan</h5>
               <ul className="list-unstyled">
                 <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">
-                    Konsultasi Online
-                  </a>
+                  <a href="#" className="text-white text-decoration-none">Konsultasi Online</a>
                 </li>
                 <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">
-                    Cek Kesehatan
-                  </a>
+                  <a href="#" className="text-white text-decoration-none">Cek Kesehatan</a>
                 </li>
                 <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">
-                    Direktori Dokter
-                  </a>
+                  <a href="#" className="text-white text-decoration-none">Direktori Dokter</a>
                 </li>
                 <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">
-                    Kalkulator Kesehatan
-                  </a>
+                  <a href="#" className="text-white text-decoration-none">Kalkulator Kesehatan</a>
                 </li>
               </ul>
             </Col>
@@ -573,10 +509,7 @@ export default function ContactPage() {
               <p>Dapatkan informasi kesehatan terbaru langsung ke email Anda</p>
               <Form className="mt-3">
                 <InputGroup className="mb-3">
-                  <Form.Control
-                    placeholder="Alamat email Anda"
-                    aria-label="Email address"
-                  />
+                  <Form.Control placeholder="Alamat email Anda" aria-label="Email address" />
                   <Button variant="primary">Langganan</Button>
                 </InputGroup>
               </Form>
@@ -584,44 +517,37 @@ export default function ContactPage() {
           </Row>
           <hr />
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center">
-            <p className="mb-2 mb-md-0">
-              © 2025 KesehatanKU. Hak Cipta Dilindungi.
-            </p>
+            <p className="mb-2 mb-md-0">© 2025 KesehatanKU. Hak Cipta Dilindungi.</p>
             <div>
-              <a href="#" className="text-white text-decoration-none me-3">
-                Syarat dan Ketentuan
-              </a>
-              <a href="#" className="text-white text-decoration-none me-3">
-                Kebijakan Privasi
-              </a>
-              <a href="#" className="text-white text-decoration-none">
-                Kontak
-              </a>
+              <a href="#" className="text-white text-decoration-none me-3">Syarat dan Ketentuan</a>
+              <a href="#" className="text-white text-decoration-none me-3">Kebijakan Privasi</a>
+              <a href="#" className="text-white text-decoration-none">Kontak</a>
             </div>
           </div>
         </Container>
       </footer>
+
       <style jsx>{`
         .bg-gradient {
-        background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%) !important;
+          background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%) !important;
         }
         .btn-primary {
-        background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%);
-        color: white;
-        border: none;
-        transition: all 0.3s ease;
+          background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%);
+          color: white;
+          border: none;
+          transition: all 0.3s ease;
         }
         .primary {
-        color: #0c54b7;
+          color: #0c54b7;
         }
         .border_primary {
-        border-bottom: 2px solid #0c54b7;
+          border-bottom: 2px solid #0c54b7;
         }
         .btn-primary:hover {
-        background: linear-gradient(135deg, #1573b1 10%, #1d53b1 90%);
-    color: white;
-    }
-    `}</style>
+          background: linear-gradient(135deg, #1573b1 10%, #1d53b1 90%);
+          color: white;
+        }
+      `}</style>
     </div>
   );
 }

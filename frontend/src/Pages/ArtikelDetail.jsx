@@ -1,74 +1,77 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useParams } from 'react-router';
 import { Dropdown, NavDropdown, Navbar, Container, Row, Col, Card, Button, Form, Badge, Nav, InputGroup } from 'react-bootstrap';
-import { FaSearch, FaPhoneAlt, FaComments, FaStethoscope,FaHeartbeat, FaCalendarAlt, FaUser, FaShare, FaBookmark, FaPrint, FaThumbsUp, FaThumbsDown, FaEye, FaClock, FaTag, FaArrowLeft, FaHome, FaChevronRight } from 'react-icons/fa';
+import { FaSearch, FaPhoneAlt, FaComments, FaStethoscope, FaHeartbeat, FaCalendarAlt, FaUser, FaShare, FaBookmark, FaPrint, FaThumbsUp, FaThumbsDown, FaEye, FaClock, FaTag, FaArrowLeft, FaHome, FaChevronRight } from 'react-icons/fa';
+import { ArticlePresenter } from '../Presenter/DetailArtikelPresenter';
 
 const ArticleDetailPage = () => {
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [likeStatus, handleLike] = useState(null);
-  const [showShareAlert, setShowShareAlert] = useState(false);
-  const [email, setEmail] = useState('');
+  // State management
   const [loading, setLoading] = useState(true);
   const [artikel, setArtikel] = useState(null);
   const [allArticles, setAllArticles] = useState([]);
   const [kategoriKesehatan, setKategoriKesehatan] = useState([]);
+  const [randomArticles, setRandomArticles] = useState([]);
+  const [popularArticles, setPopularArticles] = useState([]);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [likeStatus, setLikeStatus] = useState(null);
+  const [showShareAlert, setShowShareAlert] = useState(false);
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState(null);
+
   const { id } = useParams();
+  const presenter = new ArticlePresenter();
+
+  // View interface untuk presenter
+  const viewInterface = {
+    setLoading: (loading) => setLoading(loading),
+    setArticleData: (data) => setArtikel(data),
+    setCategories: (categories) => setKategoriKesehatan(categories),
+    setRelatedArticles: (articles) => setRandomArticles(articles),
+    setPopularArticles: (articles) => setPopularArticles(articles),
+    showError: (message) => setError(message),
+    updateLikeStatus: (status, likes, dislikes) => {
+      setLikeStatus(status);
+      if (artikel) {
+        setArtikel(prev => ({ ...prev, likes, dislikes }));
+      }
+    },
+    updateBookmarkStatus: (status) => setIsBookmarked(status),
+    showShareSuccess: () => {
+      setShowShareAlert(true);
+      setTimeout(() => setShowShareAlert(false), 3000);
+    },
+    showShareError: () => alert('Gagal menyalin link'),
+    showNewsletterSuccess: (message) => alert(message),
+    showNewsletterError: (message) => alert(message),
+    clearNewsletterEmail: () => setEmail('')
+  };
 
   useEffect(() => {
-    console.log("ID artikel:", id);
-    fetchData();
+    presenter.setView(viewInterface);
+    presenter.loadArticleData(id);
   }, [id]);
-  
-  const fetchData = async () => {
-    try {
-      const artikelRes = await axios.get(`http://localhost:5000/api/artikel/${id}`);
-      const kategoriRes = await axios.get("http://localhost:5000/api/kategori");
-      const semuaArtikelRes = await axios.get("http://localhost:5000/api/artikel");
-      console.log("Artikel Response:", artikelRes.data);
-      console.log("Kategori Response:", kategoriRes.data);
-      // Set artikel
-      setArtikel(artikelRes.data.data || artikelRes.data);
-      setAllArticles(semuaArtikelRes.data.data || semuaArtikelRes.data);
-  
-      // Set kategori
-      const kategoriData = kategoriRes.data.data;
-      if (Array.isArray(kategoriData)) {
-        setKategoriKesehatan(kategoriData);
-      } else {
-        setKategoriKesehatan([]);
-      }
 
-      // Hitung jumlah artikel per kategori
-      const semuaArtikel = semuaArtikelRes.data.data || semuaArtikelRes.data;
-    const kategoriWithCount = kategoriData.map(kategori => {
-      const count = semuaArtikel.filter(
-        a => String(a.kategori_id) === String(kategori.id)
-      ).length;
-      return { ...kategori, count };
-    });
-
-    setKategoriKesehatan(kategoriWithCount);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setLoading(false);
-    }
+  // Event handlers
+  const handleLike = (status) => {
+    presenter.handleLike(likeStatus, status, artikel);
   };
-  const getKategoriName = (id) => {
-  if (!kategoriKesehatan || kategoriKesehatan.length === 0) return 'Memuat kategori...';
-  const kategori = kategoriKesehatan.find(k => String(k.id) === String(id));
-  return kategori ? kategori.nama_kategori : 'Kategori tidak ditemukan';
-};
-  const randomArticles = allArticles
-  .filter(a => a.kategori_id !== artikel.kategori_id && a.id !== artikel.id)
-  .sort(() => 0.5 - Math.random()) // acak array
-  .slice(0, 3);
 
-const popularArticles = allArticles
-  .filter(a => a.id !== artikel.id)
-  .sort((a, b) => b.id - a.id)
-  .slice(0, 3);
+  const handleBookmark = () => {
+    presenter.handleBookmark(isBookmarked);
+  };
+
+  const handleShare = () => {
+    presenter.handleShare();
+  };
+
+  const handlePrint = () => {
+    presenter.handlePrint();
+  };
+
+  const handleNewsletterSubmit = (e) => {
+    e.preventDefault();
+    presenter.handleNewsletterSubmit(email);
+  };
 
   if (loading) {
     return (
@@ -79,30 +82,14 @@ const popularArticles = allArticles
       </div>
     );
   }
-  const handleShare = async () => {
-  const articleUrl = window.location.href; 
-      await navigator.clipboard.writeText(articleUrl); 
-      setShowShareAlert(true);
-      setTimeout(() => setShowShareAlert(false), 3000);
-    }
-    const handleNewsletterSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    // Kirim email ke backend untuk langganan newsletter
-    await axios.post("", { email });
-    alert('Berhasil berlangganan!'); // Tampilkan pesan sukses
-    setEmail(''); // Kosongkan input email setelah berhasil
-  } catch (error) {
-    console.error("Error subscribing to newsletter:", error);
-    alert('Gagal berlangganan. Coba lagi!');
-  }
-};
-// Hitung jumlah artikel per kategori (untuk badge count)
-  // const kategoriWithCount = kategoriKesehatan.map(kategori => ({
-  //   ...kategori,
-  //   count: artikel.filter(a => a.kategori_id === kategori.id).length,
-  // }));
 
+  if (error) {
+    return (
+      <div className="text-center mt-5">
+        <h4>{error}</h4>
+      </div>
+    );
+  }
 
   if (!artikel) {
     return (
@@ -113,50 +100,52 @@ const popularArticles = allArticles
   }
 
   return (
-    <div className=" min-vh-100">
+    <div className="min-vh-100">
+      {/* Navbar */}
       <Navbar bg="white" expand="lg" className="py-3 shadow-sm sticky-top">
         <Container>
-        <Navbar.Brand href="/home" className="primary">
-            <img width="100" height="auto" src="/image/LogoHealth.png" alt="LogoKesehatanKu" /><span>
-                <img width="100" height="auto" src="/image/kementrian-sehat.webp" alt="LogoKementrian" />
+          <Navbar.Brand href="/home" className="primary">
+            <img width="100" height="auto" src="/image/LogoHealth.png" alt="LogoKesehatanKu" />
+            <span>
+              <img width="100" height="auto" src="/image/kementrian-sehat.webp" alt="LogoKementrian" />
             </span>
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mx-auto">
-            <Navbar.Toggle aria-controls="navbar-dark-example" />
+              <Navbar.Toggle aria-controls="navbar-dark-example" />
               <Navbar.Collapse id="navbar-dark-example">
                 <Nav>
                   <NavDropdown id="nav-dropdown-dark-example" title="Kategori Kesehatan" menuVariant="light" className="no-hover">
                     {kategoriKesehatan.length > 0 ? (
-                    kategoriKesehatan.map((kategori) => (
-                    <Dropdown.Item key={kategori.id} href={`/kategori/${kategori.id}`} className="d-flex align-items-center">
-                        <img 
-                          src={kategori.image_url || kategori.image || 'default-image.png'} 
-                          alt={kategori.nama_kategori} 
-                          style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', marginRight: 10 }} 
-                        />
-                        {kategori.nama_kategori}
-                      </Dropdown.Item>
-                    ))
-                  ) : (
-                    <Dropdown.Item disabled>Tidak ada kategori</Dropdown.Item>
-                  )}
+                      kategoriKesehatan.map((kategori) => (
+                        <Dropdown.Item key={kategori.id} href={`/kategori/${kategori.id}`} className="d-flex align-items-center">
+                          <img 
+                            src={kategori.image_url || kategori.image || 'default-image.png'} 
+                            alt={kategori.nama_kategori} 
+                            style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', marginRight: 10 }} 
+                          />
+                          {kategori.nama_kategori}
+                        </Dropdown.Item>
+                      ))
+                    ) : (
+                      <Dropdown.Item disabled>Tidak ada kategori</Dropdown.Item>
+                    )}
                   </NavDropdown>
                 </Nav>
               </Navbar.Collapse>
-            <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+              <Nav.Link href="#" className="mx-2 d-flex align-items-center">
                 <FaStethoscope className="me-1" /> 
                 <span>Cek Kesehatan</span>
-            </Nav.Link>
-            <Nav.Link href="/kontak" className="mx-2 d-flex align-items-center">
-              <FaPhoneAlt className="me-1" /> 
+              </Nav.Link>
+              <Nav.Link href="/kontak" className="mx-2 d-flex align-items-center">
+                <FaPhoneAlt className="me-1" /> 
                 <span>Kontak</span>
-            </Nav.Link>
-            <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+              </Nav.Link>
+              <Nav.Link href="#" className="mx-2 d-flex align-items-center">
                 <FaComments className="me-1" /> 
                 <span>Konsultasi Kesehatan</span>
-            </Nav.Link>
+              </Nav.Link>
             </Nav>
             <Form className="d-flex me-2">
               <InputGroup>
@@ -175,15 +164,18 @@ const popularArticles = allArticles
         </Container>
       </Navbar>
 
+      {/* Main Content */}
       <div className="container pt-5 pb-5">
         <div className="row">
-          {/* Main Content */}
+          {/* Article Content */}
           <div className="col-lg-8">
             <div className="mb-4">
               <div className="card-body p-4">
                 {/* Article Header */}
                 <div className="mb-3">
-                  <span className="badge bg-gradient mb-1"style={{ width: '100px' }}>{getKategoriName(artikel.kategori_id)}</span>
+                  <span className="badge bg-gradient mb-1" style={{ width: '100px' }}>
+                    {presenter.getCategoryName(kategoriKesehatan, artikel.kategori_id)}
+                  </span>
                   <h1 className="h2 mb-3">{artikel.judul}</h1>
                   <p className="text-muted lead">{artikel.isi}</p>
                 </div>
@@ -196,12 +188,10 @@ const popularArticles = allArticles
                   </div>
                   <div className="me-4 mb-2">
                     <FaCalendarAlt className="me-1" />
-                    {/* Format tanggal sesuai dengan format API */}
                     {artikel.created_at}
                   </div>
                   <div className="me-4 mb-2">
                     <FaClock className="me-1" />
-                    {/* Jika ada waktu baca, tambahkan */}
                     {artikel.read_time || '5 menit'}
                   </div>
                   <div className="me-4 mb-2">
@@ -217,18 +207,18 @@ const popularArticles = allArticles
                     onClick={() => handleLike('like')}
                   >
                     <FaThumbsUp className="me-1" />
-                    {artikel.likes + (likeStatus === 'like' ? 1 : 0)}
+                    {artikel.likes}
                   </button>
                   <button 
                     className={`btn ${likeStatus === 'dislike' ? 'btn-danger' : 'btn-outline-danger'} btn-sm`}
                     onClick={() => handleLike('dislike')}
                   >
                     <FaThumbsDown className="me-1" />
-                    {artikel.dislikes + (likeStatus === 'dislike' ? 1 : 0)}
+                    {artikel.dislikes}
                   </button>
                   <button 
                     className={`btn ${isBookmarked ? 'btn-warning' : 'btn-outline-warning'} btn-sm`}
-                    onClick={() => setIsBookmarked(!isBookmarked)}
+                    onClick={handleBookmark}
                   >
                     <FaBookmark className="me-1" />
                     {isBookmarked ? 'Tersimpan' : 'Simpan'}
@@ -237,7 +227,7 @@ const popularArticles = allArticles
                     <FaShare className="me-1" />
                     Bagikan
                   </button>
-                  <button className="btn btn-outline-secondary btn-sm">
+                  <button className="btn btn-outline-secondary btn-sm" onClick={handlePrint}>
                     <FaPrint className="me-1" />
                     Cetak
                   </button>
@@ -300,7 +290,7 @@ const popularArticles = allArticles
                         <div className="small text-muted">
                           <span className="me-3">
                             <FaTag className="me-1" />
-                            {getKategoriName(popularArticle.kategori_id)}
+                            {presenter.getCategoryName(kategoriKesehatan, popularArticle.kategori_id)}
                           </span>
                           <span>
                             <FaEye className="me-1" />
@@ -320,8 +310,8 @@ const popularArticles = allArticles
                 <h5 className="mb-0">Kategori Kesehatan</h5>
               </div>
               <div className="list-group list-group-flush">
-                {kategoriKesehatan.map((category, id) => (
-                  <a key={id} href="#" className="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center">
+                {kategoriKesehatan.map((category, index) => (
+                  <a key={index} href="#" className="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center">
                     <div>
                       <FaHeartbeat className="me-2 primary" />
                       {category.nama_kategori}
@@ -358,7 +348,7 @@ const popularArticles = allArticles
               </div>
             </div>
 
-            {/* Artikel Lainnya 2 */}
+            {/* Artikel Lainnya */}
             <div className="bg-white mt-4 mb-3">
               <h4 className="mb-0">Semua Artikel</h4>
             </div>
@@ -367,34 +357,31 @@ const popularArticles = allArticles
                 {randomArticles.map((item) => (
                   <div key={item.id} className="col-12 mb-3">
                     <a href={`/artikel/${item.id}`} className='text-black'>
-                    <div className="d-flex rounded overflow-hidden shadow-none">
-                      <img
-                        src={item.images || 'default-image.png'}
-                        className="img-fluid"
-                        alt={item.judul}
-                        style={{
-                          width: '120px',
-                          height: '100px',
-                          objectFit: 'cover',
-                          flexShrink: 0,
-                        }}
-                      />
-                      <div className="p-2 d-flex flex-column justify-content-between">
-                        <div>
-                          {/* <span className="badge bg-primary mb-1 small">
-                            {item.kategori_id}
-                          </span> */}
-                          <h6 className="mb-1">{item.judul}</h6>
-                          <p className="text-muted small mb-1">
-                            {item.isi?.slice(0, 70) + '...'}
+                      <div className="d-flex rounded overflow-hidden shadow-none">
+                        <img
+                          src={item.images || 'default-image.png'}
+                          className="img-fluid"
+                          alt={item.judul}
+                          style={{
+                            width: '120px',
+                            height: '100px',
+                            objectFit: 'cover',
+                            flexShrink: 0,
+                          }}
+                        />
+                        <div className="p-2 d-flex flex-column justify-content-between">
+                          <div>
+                            <h6 className="mb-1">{item.judul}</h6>
+                            <p className="text-muted small mb-1">
+                              {item.isi?.slice(0, 70) + '...'}
+                            </p>
+                          </div>
+                          <p className="card-text small text-muted mb-0">
+                            <FaCalendarAlt className="me-1" />
+                            {presenter.formatDate(item.created_at)}
                           </p>
                         </div>
-                        <p className="card-text small text-muted mb-0">
-                          <FaCalendarAlt className="me-1" />
-                          {new Date(item.created_at).toLocaleDateString()}
-                        </p>
                       </div>
-                    </div>
                     </a>
                   </div>
                 ))}
@@ -403,8 +390,8 @@ const popularArticles = allArticles
           </div>
         </div>
         
+        {/* Related Articles Section */}
         <div className="row">
-          {/* Related Articles */}
           <div className="bg-white">
             <h3 className="mb-3">Artikel Terkait</h3>
           </div>
@@ -413,35 +400,36 @@ const popularArticles = allArticles
               {randomArticles.map((item) => (
                 <div key={item.id} className="col-12 mb-4">
                   <a href={`/artikel/${item.id}`} className='text-black'>
-                  <div className="row h-100 shadow-none">
-                    <div className="col-12 col-md-6">
-                      <img
-                        src={item.images || 'default-image.png'}
-                        className="img-fluid w-100"
-                        alt={item.judul}
-                        style={{ height: '100%', maxHeight: '300px', objectFit: 'cover' }}
-                      />
-                    </div>
-                    <div className="col-12 col-md-6 d-flex flex-column justify-content-center p-3">
-                      <span className="badge bg-gradient mb-1"style={{ width: '100px' }}>{getKategoriName(artikel.kategori_id)}</span>
-                      <h3 className="card-title">{item.judul}</h3>
-                      <p className="text">{(item.isi?.slice(0, 400) + '...')}</p>
-                      <div className='col-12 col-md-6 d-flex gap-x-px justify-content-start align-items-start'>
-                      <p className="text">{item.author}</p>
-                      <p className="card-text text-muted">
-                        <FaCalendarAlt className="me-1" />
-                        {new Date(item.created_at).toLocaleDateString()}
-                      </p>
+                    <div className="row h-100 shadow-none">
+                      <div className="col-12 col-md-6">
+                        <img
+                          src={item.images || 'default-image.png'}
+                          className="img-fluid w-100"
+                          alt={item.judul}
+                          style={{ height: '100%', maxHeight: '300px', objectFit: 'cover' }}
+                        />
+                      </div>
+                      <div className="col-12 col-md-6 d-flex flex-column justify-content-center p-3">
+                        <span className="badge bg-gradient mb-1" style={{ width: '100px' }}>
+                          {presenter.getCategoryName(kategoriKesehatan, item.kategori_id)}
+                        </span>
+                        <h3 className="card-title">{item.judul}</h3>
+                        <p className="text">{(item.isi?.slice(0, 400) + '...')}</p>
+                        <div className='col-12 col-md-6 d-flex gap-x-px justify-content-start align-items-start'>
+                          <p className="text">{item.author}</p>
+                          <p className="card-text text-muted">
+                            <FaCalendarAlt className="me-1" />
+                            {presenter.formatDate(item.created_at)}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
                   </a>
                 </div>
               ))}
             </div>
           </div>
         </div>
-
       </div>
       {/* Footer */}
       <footer className="bg-dark text-white pt-5 pb-3">

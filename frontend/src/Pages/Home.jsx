@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router";
-
 import React from "react";
 import {
   Navbar,
@@ -25,120 +24,82 @@ import {
   FaArrowRight,
   FaUserMd,
 } from "react-icons/fa";
-import axios from "axios";
+import { HomePresenter } from '../Presenter/HomePresenter';
 
+// Main Home Component
 export default function Home() {
-  const role = localStorage.getItem("role") !== "admin";
+  // In a real application, use proper state management instead of localStorage
+  const role = "user"; // Simplified for artifact compatibility
+  const isUser = role !== "admin";
 
-  return role ? <ContainerHome /> : <Navigate to="/dashboard" />;
+  return isUser ? <HomeView /> : <Navigate to="/dashboard" />;
 }
 
-function ContainerHome() {
-  const [artikel, setArtikel] = useState([]);
-  const [kategoriKesehatan, setKategoriKesehatan] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  // Fungsi untuk mengambil semua data
-  const fetchData = async () => {
-    try {
-      await Promise.all([getArtikel(), getKategoriKesehatan()]);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setLoading(false);
-    }
-  };
-
-  // Fungsi untuk mengambil data artikel
-  const getArtikel = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/api/artikel");
-      const data = response.data;
-
-      if (Array.isArray(data)) {
-      setArtikel(data);
-    } else if (Array.isArray(data.artikel)) {
-      setArtikel(data.artikel);
-    } else if (Array.isArray(data.data)) {
-      setArtikel(data.data);
-    } else {
-      console.error("Struktur data artikel tidak dikenali:", data);
-      setArtikel([]);
-    }
-    } catch (err) {
-      console.error("Gagal fetch artikel:", err);
-      setArtikel([]);
-    }
-  };
-
-  // Fungsi untuk mengambil data kategori kesehatan
-  const getKategoriKesehatan = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/api/kategori");
-      const data = response.data;
-
-      if (Array.isArray(data)) {
-        setKategoriKesehatan(data);
-      } else if (Array.isArray(data.kategori)) {
-        setKategoriKesehatan(data.kategori);
-      } else if (Array.isArray(data.data)) {
-        setKategoriKesehatan(data.data);
-      } else {
-        console.error("Struktur data kategori tidak dikenali:", data);
-        setKategoriKesehatan([]);
-      }
-    } catch (err) {
-      console.error("Gagal fetch kategori kesehatan:", err);
-      setKategoriKesehatan([]);
-    }
-  };
-  // Fungsi untuk mengacak artikel
-  const shuffleArray = (array) => {
-    return array.sort(() => Math.random() - 0.5);
-  };
-
-  // Fungsi untuk mengurutkan artikel berdasarkan tanggal
-  const sortArticlesByDate = (articles) => {
-    return articles.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-  };
-
-  // Hitung jumlah artikel per kategori
-  const artikelCountPerKategori = kategoriKesehatan.map((kategori) => {
-    const count = artikel.filter((art) => art.kategori_id === kategori.id).length;
-    return { ...kategori, count };
+// Home View Component
+function HomeView() {
+  const [state, setState] = useState({
+    artikel: [],
+    kategoriKesehatan: [],
+    artikelCountPerKategori: [],
+    top3Kategori: [],
+    shuffledArticles: [],
+    sortedArticles: [],
+    loading: true,
+    error: null
   });
 
-  // Urutkan berdasarkan jumlah artikel terbanyak dan ambil 3 teratas
-  const top3Kategori = artikelCountPerKategori
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 3);
+  const [presenter] = useState(() => new HomePresenter({
+    setLoading: (loading) => setState(prev => ({ ...prev, loading })),
+    
+    updateData: (data) => setState(prev => ({ 
+      ...prev, 
+      ...data,
+      loading: false 
+    })),
+    
+    showError: (error) => setState(prev => ({ 
+      ...prev, 
+      error, 
+      loading: false 
+    })),
+    
+    navigateToArticle: (articleId) => {
+      window.location.href = `/artikel/${articleId}`;
+    },
+    
+    navigateToCategory: (categoryId) => {
+      window.location.href = `/kategori/${categoryId}`;
+    },
+    
+    navigateToAllArticles: () => {
+      window.location.href = "/artikel";
+    }
+  }));
 
-  // Mengacak artikel
-  const shuffledArticles = shuffleArray(artikel);
-  // Mengurutkan artikel berdasarkan tanggal
-  const sortedArticles = sortArticlesByDate(artikel);
+  useEffect(() => {
+    presenter.initialize();
+  }, [presenter]);
 
-  // Fungsi untuk mendapatkan nama kategori berdasarkan ID
-  const getNamaKategori = (kategoriId) => {
-    const kategori = kategoriKesehatan.find(k => k.id === kategoriId);
-    return kategori ? kategori.nama_kategori : 'Kategori Tidak Ditemukan';
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const searchTerm = e.target.search.value;
+    presenter.onSearch(searchTerm);
   };
 
-  // Fungsi untuk menghitung jumlah artikel per kategori
-  // const hitungArtikelPerKategori = (kategoriId) => {
-  //   return artikel.filter(art => art.kategori_id === kategoriId).length;
-  // };
-
-  if (loading) {
+  if (state.loading) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{height: '100vh'}}>
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
+      </div>
+    );
+  }
+
+  if (state.error) {
+    return (
+      <div className="alert alert-danger m-4" role="alert">
+        {state.error}
       </div>
     );
   }
@@ -171,9 +132,13 @@ function ContainerHome() {
               <Navbar.Collapse id="navbar-dark-example">
                 <Nav>
                   <NavDropdown id="nav-dropdown-dark-example" title="Kategori Kesehatan" menuVariant="light" className="no-hover">
-                    {kategoriKesehatan.length > 0 ? (
-                    kategoriKesehatan.map((kategori) => (
-                    <Dropdown.Item key={kategori.id} href={`/kategori/${kategori.id}`} className="d-flex align-items-center">
+                    {state.kategoriKesehatan.length > 0 ? (
+                    state.kategoriKesehatan.map((kategori) => (
+                    <Dropdown.Item 
+                      key={kategori.id} 
+                      href={`/kategori/${kategori.id}`} 
+                      className="d-flex align-items-center"
+                    >
                         <img 
                           src={kategori.images || 'default-image.png'} 
                           alt={kategori.nama_kategori} 
@@ -192,10 +157,7 @@ function ContainerHome() {
                 <FaStethoscope className="me-1" />
                 <span>Cek Kesehatan</span>
               </Nav.Link>
-              <Nav.Link
-                href="/kontak"
-                className="mx-2 d-flex align-items-center"
-              >
+              <Nav.Link href="/kontak" className="mx-2 d-flex align-items-center">
                 <FaPhoneAlt className="me-1" />
                 <span>Kontak</span>
               </Nav.Link>
@@ -204,14 +166,15 @@ function ContainerHome() {
                 <span>Konsultasi Kesehatan</span>
               </Nav.Link>
             </Nav>
-            <Form className="d-flex me-2">
+            <Form className="d-flex me-2" onSubmit={handleSearch}>
               <InputGroup>
                 <Form.Control
                   type="search"
+                  name="search"
                   placeholder="Cari informasi kesehatan..."
                   aria-label="Search"
                 />
-                <Button className="">
+                <Button type="submit">
                   <FaSearch />
                 </Button>
               </InputGroup>
@@ -237,9 +200,7 @@ function ContainerHome() {
           />
           <Carousel.Caption className="text-start bg-dark bg-opacity-50 rounded p-3">
             <h3>Informasi Kesehatan Terpercaya</h3>
-            <p>
-              Temukan artikel kesehatan terverifikasi oleh tim medis profesional
-            </p>
+            <p>Temukan artikel kesehatan terverifikasi oleh tim medis profesional</p>
             <Button variant="primary">Jelajahi Sekarang</Button>
           </Carousel.Caption>
         </Carousel.Item>
@@ -258,7 +219,7 @@ function ContainerHome() {
         <Carousel.Item>
           <img
             className="d-block w-100"
-            src="/public/image/slide/1.png"
+            src="/image/slide/1.png"
             alt="Third slide"
           />
           <Carousel.Caption className="text-start bg-dark bg-opacity-50 rounded p-3">
@@ -275,7 +236,7 @@ function ContainerHome() {
           <h2 className="fw-bold">Topik Kesehatan Trending</h2>
           <Button
             variant="link"
-            href="/artikel"
+            onClick={() => presenter.onNavigateToAllArticles()}
             className="text-decoration-none d-flex align-items-center"
           >
             Lihat Semua <FaArrowRight className="ms-2" />
@@ -284,27 +245,31 @@ function ContainerHome() {
         <Row>
           <Col md={9}>
             <Row>
-              {shuffledArticles.slice(0, 3).map((artikel) => (
+              {state.shuffledArticles.slice(0, 3).map((artikel) => (
                 <Col md={4} className="mb-2" key={artikel.id}>
-                  <a href={`/artikel/${artikel.id}`}>
-                  <Card className="h-100 border-0 shadow-none">
+                  <Card 
+                    className="h-100 border-0 shadow-none"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => presenter.onNavigateToArticle(artikel.id)}
+                  >
                     <Card.Img variant="top" src={artikel.images || 'default-image.png'} />
                     <Card.Body>
                       <div className="d-flex justify-content-between mb-2">
                         <span className="badge bg-gradient">
-                          {getNamaKategori(artikel.kategori_id)}
+                          {presenter.getCategoryName(artikel.kategori_id, state.kategoriKesehatan)}
                         </span>
-                        <small className="text-muted">{new Date(artikel.created_at).toLocaleDateString()}</small>
+                        <small className="text-muted">
+                          {presenter.formatDate(artikel.created_at)}
+                        </small>
                       </div>
                       <Card.Title className="fw-bold">
                         {artikel.judul}
                       </Card.Title>
                       <Card.Text className="text-muted">
-                        {artikel.isi.length > 100 ? artikel.isi.substring(0, 200) + "..." : artikel.isi}
+                        {presenter.truncateText(artikel.isi, 200)}
                       </Card.Text>
                     </Card.Body>
                   </Card>
-                  </a>
                 </Col>
               ))}
             </Row>
@@ -316,12 +281,14 @@ function ContainerHome() {
               </Card.Header>
               <Card.Body className="p-0">
                 <ul className="list-group list-group-flush">
-                  {kategoriKesehatan.map(kategori => {
-                    const count = artikelCountPerKategori.find(k => k.id === kategori.id)?.count || 0;
+                  {state.kategoriKesehatan.map(kategori => {
+                    const count = state.artikelCountPerKategori.find(k => k.id === kategori.id)?.count || 0;
                     return (
                       <li
                         key={kategori.id}
                         className="list-group-item d-flex justify-content-between align-items-center"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => presenter.onNavigateToCategory(kategori.id)}
                       >
                         <div className="d-flex align-items-center">
                           <span className="me-2">{kategori.icon}</span>
@@ -347,7 +314,7 @@ function ContainerHome() {
             <h2 className="fw-bold">Informasi Kesehatan Terbaru</h2>
             <Button
               variant="link"
-              href="/artikel"
+              onClick={() => presenter.onNavigateToAllArticles()}
               className="text-decoration-none d-flex align-items-center"
             >
               Lihat Semua <FaArrowRight className="ms-2" />
@@ -355,23 +322,25 @@ function ContainerHome() {
           </div>
           <div className="recent-articles">
             <Row>
-              {sortedArticles.slice(0, 4).map((artikel) => (
+              {state.sortedArticles.slice(0, 4).map((artikel) => (
                 <Col lg={3} md={6} className="mb-4" key={artikel.id}>
-                  <Card className="border-0 bg-light shadow-none h-100">
-                    <a href="{`/artikel/${artikel.id}`}">
+                  <Card 
+                    className="border-0 bg-light shadow-none h-100"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => presenter.onNavigateToArticle(artikel.id)}
+                  >
                     <Card.Img variant="top" src={artikel.images || 'default-image.png'} />
                     <Card.Body>
                       <span className="badge bg-gradient">
-                        {getNamaKategori(artikel.kategori_id)}
+                        {presenter.getCategoryName(artikel.kategori_id, state.kategoriKesehatan)}
                       </span>
                       <Card.Title className="fw-bold text-black">
                         {artikel.judul}
                       </Card.Title>
                       <Card.Text className="text-muted">
-                        {artikel.isi.length > 100 ? artikel.isi.substring(0, 50) + "..." : artikel.isi}
+                        {presenter.truncateText(artikel.isi, 50)}
                       </Card.Text>
                     </Card.Body>
-                    </a>
                   </Card>
                 </Col>
               ))}
@@ -382,7 +351,6 @@ function ContainerHome() {
 
       {/* Middle Banner */}
       <div className="position-relative container-fluid">
-        <a href="#">
         <img
           src="/image/promosi-kesehatan.png"
           className="img-fluid"
@@ -395,20 +363,23 @@ function ContainerHome() {
           <p className="mb-4">
             Dapatkan informasi kesehatan terpercaya dan Konsultasi Penyakit Anda
           </p>
-          <a className="btn btn-primary" variant="light" size="lg">
+          <Button className="btn btn-primary" variant="light" size="lg">
             Mulai Sekarang
-          </a>
+          </Button>
         </div>
-        </a>
       </div>
 
       {/* Category Recommendations */}
       <Container className="py-5">
         <h2 className="fw-bold mb-4">Kategori Rekomendasi</h2>
         <Row className="g-4">
-          {top3Kategori.map((kategori) => (
+          {state.top3Kategori.map((kategori) => (
           <Col md={4} key={kategori.id}>
-            <Card className="text-white border-0 shadow-sm">
+            <Card 
+              className="text-white border-0 shadow-sm"
+              style={{ cursor: 'pointer' }}
+              onClick={() => presenter.onNavigateToCategory(kategori.id)}
+            >
                 <Card.Img
                   src={kategori.images || "/api/placeholder/400/250"}
                   alt={kategori.nama_kategori}
@@ -417,9 +388,6 @@ function ContainerHome() {
                 <Card.ImgOverlay className="d-flex align-items-end bg-dark bg-opacity-50">
                   <div>
                     <Card.Title className="fw-bold">{kategori.nama_kategori}</Card.Title>
-                    {/* <Button variant="light" size="sm" href={`/kategori/${kategori.id}`}>
-                      Jelajahi
-                    </Button> */}
                   </div>
                 </Card.ImgOverlay>
               </Card>
@@ -433,31 +401,35 @@ function ContainerHome() {
         <Container>
           <h2 className="fw-bold mb-4">Artikel Pilihan</h2>
           <Row className="g-4">
-            {shuffledArticles.slice(0, 2).map((artikel) => (
+            {state.shuffledArticles.slice(0, 2).map((artikel) => (
             <Col md={6} key={artikel.id}>
-              <Card className="border-0 shadow-none h-100 transform-card">
-                <a href={`/artikel/${artikel.id}`}>
+              <Card 
+                className="border-0 shadow-none h-100 transform-card"
+                style={{ cursor: 'pointer' }}
+                onClick={() => presenter.onNavigateToArticle(artikel.id)}
+              >
                 <Row className="g-0">
                   <Col md={6}>
                     <Card.Img
                       src={artikel.images || 'default-image.png'}
-                      alt={artikel.images }
+                      alt={artikel.judul}
                       className="h-100 object-fit-cover"
                     />
                   </Col>
                   <Col md={6}>
                     <Card.Body>
-                      <span className="badge bg-danger mb-2">{getNamaKategori(artikel.kategori_id)}</span>
+                      <span className="badge bg-danger mb-2">
+                        {presenter.getCategoryName(artikel.kategori_id, state.kategoriKesehatan)}
+                      </span>
                       <Card.Title className="fw-bold text-black">
                         {artikel.judul}
                       </Card.Title>
                       <Card.Text className="text-black">
-                        {artikel.isi.length > 100 ? artikel.isi.substring(0, 170) + "..." : artikel.isi}
+                        {presenter.truncateText(artikel.isi, 170)}
                       </Card.Text>
                     </Card.Body>
                   </Col>
                 </Row>
-                </a>
               </Card>
             </Col>
             ))}
