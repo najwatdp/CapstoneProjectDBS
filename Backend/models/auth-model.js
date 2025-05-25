@@ -45,6 +45,8 @@ const Users = db.define("users", {
     refresh_token:{
         type:DataTypes.TEXT
     }
+}, {
+    freezeTableName: true
 });
 
 Roles.hasMany(Users, { foreignKey: "roleId" });

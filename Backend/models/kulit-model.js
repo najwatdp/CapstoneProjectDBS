@@ -28,7 +28,7 @@ const Kulit = db.define('kulit', {
     },
     }, {
     tableName: 'kulit',
-    timestamps: false,
+    timestamps: true,
     });
 
 Kulit.belongsTo(KategoriKesehatan, { foreignKey: 'id_kategori' });

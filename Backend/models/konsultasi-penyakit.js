@@ -44,7 +44,7 @@ const KonsultasiPenyakit = db.define('konsultasi', {
         },
     }, {
         tableName: 'konsultasi',
-        timestamps: false,
+        timestamps: true,
     });
     
     KategoriKesehatan.hasMany(Penyakit, {

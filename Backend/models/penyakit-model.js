@@ -28,7 +28,7 @@ const Penyakit = db.define('penyakit', {
     },
     }, {
     tableName: 'penyakit',
-    timestamps: false,
+    timestamps: true,
     });
 
 Penyakit.belongsTo(KategoriKesehatan, { foreignKey: 'id_kategori' });

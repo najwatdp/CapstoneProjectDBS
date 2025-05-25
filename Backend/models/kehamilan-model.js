@@ -28,7 +28,7 @@ const Kehamilan = db.define('kehamilan', {
     },
     }, {
     tableName: 'kehamilan',
-    timestamps: false,
+    timestamps: true,
     });
 
 Kehamilan.belongsTo(KategoriKesehatan, { foreignKey: 'id_kategori' });

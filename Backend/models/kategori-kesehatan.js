@@ -22,7 +22,7 @@ const KategoriKesehatan = db.define('kategori_kesehatan', {
     },
 }, {
   tableName: 'kategori_kesehatan', // Nama tabel di database
-  timestamps: false, // Tidak menambahkan kolom createdAt dan updatedAt
+  timestamps: true
 });
 
 // Export model untuk digunakan di bagian lain aplikasi
