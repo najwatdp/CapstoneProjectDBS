@@ -95,13 +95,13 @@ const ArticleList = () => {
                         <Image src={article?.images} rounded width={50} height={50} />
                       </td>
                       <td>{article?.judul}</td>
-                      <td>{article?.category}</td>
+                      <td>{article?.kategori_id}</td>
                       <td>{article?.author}</td>
                       <td>{article?.published}</td>
                       <td>
                         <Badge bg={
-                          article?.status === 'Published' ? 'success' : 
-                          article?.status === 'Draft' ? 'secondary' : 'warning'
+                          article?.status === 'publish' ? 'success' : 
+                          article?.status === 'draft' ? 'secondary' : 'warning'
                         }>
                           {article?.status}
                         </Badge>

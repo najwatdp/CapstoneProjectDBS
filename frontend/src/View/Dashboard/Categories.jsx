@@ -69,8 +69,8 @@ const Categories = () => {
                     <th>#</th>
                     <th>Image</th>
                     <th>Nama Kategori</th>
+                    <th>Deskripsi</th>
                     <th>Jumlah Artikel</th>
-                    <th>Tanggal Dibuat</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>

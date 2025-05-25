@@ -175,7 +175,7 @@ function ContainerHome() {
                     kategoriKesehatan.map((kategori) => (
                     <Dropdown.Item key={kategori.id} href={`/kategori/${kategori.id}`} className="d-flex align-items-center">
                         <img 
-                          src={kategori.image_url || kategori.image || 'default-image.png'} 
+                          src={kategori.images || 'default-image.png'} 
                           alt={kategori.nama_kategori} 
                           style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', marginRight: 10 }} 
                         />
@@ -211,7 +211,7 @@ function ContainerHome() {
                   placeholder="Cari informasi kesehatan..."
                   aria-label="Search"
                 />
-                <Button variant="outline-primary">
+                <Button className="">
                   <FaSearch />
                 </Button>
               </InputGroup>
@@ -275,6 +275,7 @@ function ContainerHome() {
           <h2 className="fw-bold">Topik Kesehatan Trending</h2>
           <Button
             variant="link"
+            href="/artikel"
             className="text-decoration-none d-flex align-items-center"
           >
             Lihat Semua <FaArrowRight className="ms-2" />
@@ -284,12 +285,13 @@ function ContainerHome() {
           <Col md={9}>
             <Row>
               {shuffledArticles.slice(0, 3).map((artikel) => (
-                <Col md={4} className="mb-4" key={artikel.id}>
+                <Col md={4} className="mb-2" key={artikel.id}>
+                  <a href={`/artikel/${artikel.id}`}>
                   <Card className="h-100 border-0 shadow-none">
-                    <Card.Img variant="top" src={artikel.image_url || artikel.image || 'default-image.png'} />
+                    <Card.Img variant="top" src={artikel.images || 'default-image.png'} />
                     <Card.Body>
                       <div className="d-flex justify-content-between mb-2">
-                        <span className="badge bg-primary">
+                        <span className="badge bg-gradient">
                           {getNamaKategori(artikel.kategori_id)}
                         </span>
                         <small className="text-muted">{new Date(artikel.created_at).toLocaleDateString()}</small>
@@ -298,26 +300,18 @@ function ContainerHome() {
                         {artikel.judul}
                       </Card.Title>
                       <Card.Text className="text-muted">
-                        {artikel.isi.length > 100 ? artikel.isi.substring(0, 100) + "..." : artikel.isi}
+                        {artikel.isi.length > 100 ? artikel.isi.substring(0, 200) + "..." : artikel.isi}
                       </Card.Text>
                     </Card.Body>
-                    <Card.Footer className="bg-white border-0">
-                      <Button
-                        variant="link"
-                        href={`/artikel/${artikel.id}`}
-                        className="text-decoration-none p-0"
-                      >
-                        Baca Selengkapnya
-                      </Button>
-                    </Card.Footer>
                   </Card>
+                  </a>
                 </Col>
               ))}
             </Row>
           </Col>
           <Col md={3}>
             <Card className="border-0 shadow-sm">
-              <Card.Header className="bg-primary text-white">
+              <Card.Header className="bg-gradient text-white">
                 <h5 className="mb-0">Kategori Populer</h5>
               </Card.Header>
               <Card.Body className="p-0">
@@ -363,23 +357,21 @@ function ContainerHome() {
             <Row>
               {sortedArticles.slice(0, 4).map((artikel) => (
                 <Col lg={3} md={6} className="mb-4" key={artikel.id}>
-                  <Card className="border-0 shadow-none h-100">
-                    <Card.Img variant="top" src={artikel.image} />
+                  <Card className="border-0 bg-light shadow-none h-100">
+                    <a href="{`/artikel/${artikel.id}`}">
+                    <Card.Img variant="top" src={artikel.images || 'default-image.png'} />
                     <Card.Body>
-                      <span className="badge bg-primary">
+                      <span className="badge bg-gradient">
                         {getNamaKategori(artikel.kategori_id)}
                       </span>
-                      <Card.Title className="fw-bold">
+                      <Card.Title className="fw-bold text-black">
                         {artikel.judul}
                       </Card.Title>
-                      <Button
-                        variant="link"
-                        href={`/artikel/${artikel.id}`}
-                        className="text-decoration-none p-0"
-                      >
-                        Baca Selengkapnya
-                      </Button>
+                      <Card.Text className="text-muted">
+                        {artikel.isi.length > 100 ? artikel.isi.substring(0, 50) + "..." : artikel.isi}
+                      </Card.Text>
                     </Card.Body>
+                    </a>
                   </Card>
                 </Col>
               ))}
@@ -388,66 +380,26 @@ function ContainerHome() {
         </Container>
       </div>
 
-      {/* {artikel.map((response) => {
-        return (
-          <div className="bg-light py-5">
-            <Container>
-              <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 className="fw-bold">Informasi Kesehatan Terbaru</h2>
-                <Button
-                  variant="link"
-                  className="text-decoration-none d-flex align-items-center"
-                >
-                  Lihat Semua <FaArrowRight className="ms-2" />
-                </Button>
-              </div>
-              <div className="recent-articles">
-                <Row>
-                  <Col lg={3} md={6} className="mb-4" key={response.id}>
-                    <Card className="border-0 shadow-none h-100">
-                      <Card.Img variant="top" src={response.image} />
-                      <Card.Body>
-                        <span className="badge bg-secondary mb-2">
-                          {response.kategori_id}
-                        </span>
-                        <Card.Title className="fw-bold">
-                          {response.judul}
-                        </Card.Title>
-                        <Button
-                          variant="link"
-                          className="text-decoration-none p-0"
-                        >
-                          Baca Selengkapnya
-                        </Button>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                </Row>
-              </div>
-            </Container>
-          </div>
-        );
-      })} */}
-
       {/* Middle Banner */}
-      <div className="position-relative">
+      <div className="position-relative container-fluid">
+        <a href="#">
         <img
-          src="/api/placeholder/1600/400"
-          className="w-100"
+          src="/image/promosi-kesehatan.png"
+          className="img-fluid"
           alt="Promosi Kesehatan"
         />
-        <div className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-50 p-5 rounded">
+        <div className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-50 p-4 rounded">
           <h2 className="fw-bold mb-3">
-            Jaga Kesehatan Anda Bersama KesehatanKU
+            Mari Mulai Hari Ini! Kesehatan Anda, Tanggung Jawab Anda.
           </h2>
           <p className="mb-4">
-            Dapatkan informasi kesehatan terpercaya dan layanan konsultasi
-            dokter
+            Dapatkan informasi kesehatan terpercaya dan Konsultasi Penyakit Anda
           </p>
-          <Button variant="primary" size="lg">
+          <a className="btn btn-primary" variant="light" size="lg">
             Mulai Sekarang
-          </Button>
+          </a>
         </div>
+        </a>
       </div>
 
       {/* Category Recommendations */}
@@ -458,16 +410,16 @@ function ContainerHome() {
           <Col md={4} key={kategori.id}>
             <Card className="text-white border-0 shadow-sm">
                 <Card.Img
-                  src={kategori.image || "/api/placeholder/400/250"}
+                  src={kategori.images || "/api/placeholder/400/250"}
                   alt={kategori.nama_kategori}
                   style={{ objectFit: "cover", height: "250px" }}
                 />
                 <Card.ImgOverlay className="d-flex align-items-end bg-dark bg-opacity-50">
                   <div>
                     <Card.Title className="fw-bold">{kategori.nama_kategori}</Card.Title>
-                    <Button variant="light" size="sm" href={`/kategori/${kategori.id}`}>
+                    {/* <Button variant="light" size="sm" href={`/kategori/${kategori.id}`}>
                       Jelajahi
-                    </Button>
+                    </Button> */}
                   </div>
                 </Card.ImgOverlay>
               </Card>
@@ -481,75 +433,40 @@ function ContainerHome() {
         <Container>
           <h2 className="fw-bold mb-4">Artikel Pilihan</h2>
           <Row className="g-4">
-            <Col md={6}>
+            {shuffledArticles.slice(0, 2).map((artikel) => (
+            <Col md={6} key={artikel.id}>
               <Card className="border-0 shadow-none h-100 transform-card">
+                <a href={`/artikel/${artikel.id}`}>
                 <Row className="g-0">
                   <Col md={6}>
                     <Card.Img
-                      src="/image/test.webp"
-                      alt="Artikel Kesehatan"
+                      src={artikel.images || 'default-image.png'}
+                      alt={artikel.images }
                       className="h-100 object-fit-cover"
                     />
                   </Col>
                   <Col md={6}>
                     <Card.Body>
-                      <span className="badge bg-danger mb-2">Penting</span>
-                      <Card.Title className="fw-bold">
-                        Waspadai Gejala Stroke Sejak Dini
+                      <span className="badge bg-danger mb-2">{getNamaKategori(artikel.kategori_id)}</span>
+                      <Card.Title className="fw-bold text-black">
+                        {artikel.judul}
                       </Card.Title>
-                      <Card.Text>
-                        Kenali tanda-tanda stroke dan langkah pertolongan
-                        pertama yang harus dilakukan untuk mencegah dampak
-                        serius.
+                      <Card.Text className="text-black">
+                        {artikel.isi.length > 100 ? artikel.isi.substring(0, 170) + "..." : artikel.isi}
                       </Card.Text>
-                      <Button
-                        variant="link"
-                        className="text-decoration-none p-0"
-                      >
-                        Baca Selengkapnya
-                      </Button>
                     </Card.Body>
                   </Col>
                 </Row>
+                </a>
               </Card>
             </Col>
-            <Col md={6}>
-              <Card className="border-0 shadow-none h-100 transform-card">
-                <Row className="g-0">
-                  <Col md={6}>
-                    <Card.Img
-                      src="/image/test.webp"
-                      alt="Artikel Kesehatan"
-                      className="h-100 object-fit-cover"
-                    />
-                  </Col>
-                  <Col md={6}>
-                    <Card.Body>
-                      <span className="badge bg-success mb-2">Lifestyle</span>
-                      <Card.Title className="fw-bold">
-                        Manfaat Yoga untuk Kesehatan Fisik dan Mental
-                      </Card.Title>
-                      <Card.Text>
-                        Temukan berbagai manfaat yoga bagi kesehatan tubuh dan
-                        pikiran Anda dalam rutinitas sehari-hari.
-                      </Card.Text>
-                      <Button
-                        variant="link"
-                        className="text-decoration-none p-0"
-                      >
-                        Baca Selengkapnya
-                      </Button>
-                    </Card.Body>
-                  </Col>
-                </Row>
-              </Card>
-            </Col>
+            ))}
           </Row>
         </Container>
       </div>
 
       {/* Information Banner */}
-      <div className="bg-primary text-white py-5">
+      <div className="bg-gradient text-white py-5">
         <Container className="text-center">
           <h2 className="fw-bold mb-4">
             KesehatanKU Memberi Anda Informasi yang Paling Dibutuhkan
@@ -700,7 +617,7 @@ function ContainerHome() {
                     placeholder="Alamat email Anda"
                     aria-label="Email address"
                   />
-                  <Button variant="primary">Langganan</Button>
+                  <Button>Langganan</Button>
                 </InputGroup>
               </Form>
             </Col>
@@ -724,6 +641,28 @@ function ContainerHome() {
           </div>
         </Container>
       </footer>
+
+      <style jsx>{`
+        .bg-gradient {
+          background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%) !important;
+        }
+        .btn-primary {
+          background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%);
+          color: white;
+          border: none;
+          transition: all 0.3s ease;
+        }
+        .primary {
+          color: #0c54b7;
+        }
+        .border_primary {
+          border-bottom: 2px solid #0c54b7;
+        }
+        .btn-primary:hover {
+          background: linear-gradient(135deg, #1573b1 10%, #1d53b1 90%);
+          color: white;
+        }
+      `}</style>
     </div>
   );
 }

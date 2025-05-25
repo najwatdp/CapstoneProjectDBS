@@ -1,84 +1,180 @@
-import React, { useState } from 'react';
-import { Navbar, Container, Row, Col, Card, Button, Form, Badge, Nav, InputGroup } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useParams } from 'react-router';
+import { Dropdown, NavDropdown, Navbar, Container, Row, Col, Card, Button, Form, Badge, Nav, InputGroup } from 'react-bootstrap';
 import { FaSearch, FaPhoneAlt, FaComments, FaStethoscope,FaHeartbeat, FaCalendarAlt, FaUser, FaShare, FaBookmark, FaPrint, FaThumbsUp, FaThumbsDown, FaEye, FaClock, FaTag, FaArrowLeft, FaHome, FaChevronRight } from 'react-icons/fa';
 
 const ArticleDetailPage = () => {
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [likeStatus, setLikeStatus] = useState(null); // null, 'like', or 'dislike'
+  const [likeStatus, handleLike] = useState(null);
   const [showShareAlert, setShowShareAlert] = useState(false);
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [artikel, setArtikel] = useState(null);
+  const [allArticles, setAllArticles] = useState([]);
+  const [kategoriKesehatan, setKategoriKesehatan] = useState([]);
+  const { id } = useParams();
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: article.title,
-        text: article.excerpt,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
+  useEffect(() => {
+    console.log("ID artikel:", id);
+    fetchData();
+  }, [id]);
+  
+  const fetchData = async () => {
+    try {
+      const artikelRes = await axios.get(`http://localhost:5000/api/artikel/${id}`);
+      const kategoriRes = await axios.get("http://localhost:5000/api/kategori");
+      const semuaArtikelRes = await axios.get("http://localhost:5000/api/artikel");
+      console.log("Artikel Response:", artikelRes.data);
+      console.log("Kategori Response:", kategoriRes.data);
+      // Set artikel
+      setArtikel(artikelRes.data.data || artikelRes.data);
+      setAllArticles(semuaArtikelRes.data.data || semuaArtikelRes.data);
+  
+      // Set kategori
+      const kategoriData = kategoriRes.data.data;
+      if (Array.isArray(kategoriData)) {
+        setKategoriKesehatan(kategoriData);
+      } else {
+        setKategoriKesehatan([]);
+      }
+
+      // Hitung jumlah artikel per kategori
+      const semuaArtikel = semuaArtikelRes.data.data || semuaArtikelRes.data;
+    const kategoriWithCount = kategoriData.map(kategori => {
+      const count = semuaArtikel.filter(
+        a => String(a.kategori_id) === String(kategori.id)
+      ).length;
+      return { ...kategori, count };
+    });
+
+    setKategoriKesehatan(kategoriWithCount);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoading(false);
+    }
+  };
+  const getKategoriName = (id) => {
+  if (!kategoriKesehatan || kategoriKesehatan.length === 0) return 'Memuat kategori...';
+  const kategori = kategoriKesehatan.find(k => String(k.id) === String(id));
+  return kategori ? kategori.nama_kategori : 'Kategori tidak ditemukan';
+};
+  const randomArticles = allArticles
+  .filter(a => a.kategori_id !== artikel.kategori_id && a.id !== artikel.id)
+  .sort(() => 0.5 - Math.random()) // acak array
+  .slice(0, 3);
+
+const popularArticles = allArticles
+  .filter(a => a.id !== artikel.id)
+  .sort((a, b) => b.id - a.id)
+  .slice(0, 3);
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{height: '100vh'}}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+  const handleShare = async () => {
+  const articleUrl = window.location.href; 
+      await navigator.clipboard.writeText(articleUrl); 
       setShowShareAlert(true);
       setTimeout(() => setShowShareAlert(false), 3000);
     }
-  };
+    const handleNewsletterSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    // Kirim email ke backend untuk langganan newsletter
+    await axios.post("", { email });
+    alert('Berhasil berlangganan!'); // Tampilkan pesan sukses
+    setEmail(''); // Kosongkan input email setelah berhasil
+  } catch (error) {
+    console.error("Error subscribing to newsletter:", error);
+    alert('Gagal berlangganan. Coba lagi!');
+  }
+};
+// Hitung jumlah artikel per kategori (untuk badge count)
+  // const kategoriWithCount = kategoriKesehatan.map(kategori => ({
+  //   ...kategori,
+  //   count: artikel.filter(a => a.kategori_id === kategori.id).length,
+  // }));
 
-  const handleLike = (type) => {
-    setLikeStatus(likeStatus === type ? null : type);
-  };
 
-  const handleNewsletterSubmit = (e) => {
-    e.preventDefault();
-    if (email) {
-      alert('Terima kasih! Anda telah berlangganan newsletter kami.');
-      setEmail('');
-    }
-  };
+  if (!artikel) {
+    return (
+      <div className="text-center mt-5">
+        <h4>Artikel tidak ditemukan</h4>
+      </div>
+    );
+  }
 
   return (
     <div className=" min-vh-100">
       <Navbar bg="white" expand="lg" className="py-3 shadow-sm sticky-top">
-                    <Container>
-                    <Navbar.Brand href="/home" className="text-primary">
-                        <img width="100" height="auto" src="/image/LogoHealth.png" alt="LogoKesehatanKu" /><span>
-                            <img width="100" height="auto" src="/image/kementrian-sehat.webp" alt="LogoKementrian" />
-                        </span>
-                    </Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="mx-auto">
-                        <Nav.Link href="#" className="mx-2 d-flex align-items-center">
-                            <FaHeartbeat className="me-1" /> 
-                            <span>Kategori Kesehatan</span>
-                        </Nav.Link>
-                        <Nav.Link href="#" className="mx-2 d-flex align-items-center">
-                            <FaStethoscope className="me-1" /> 
-                            <span>Cek Kesehatan</span>
-                        </Nav.Link>
-                        <Nav.Link href="/kontak" className="mx-2 d-flex align-items-center">
-                          <FaPhoneAlt className="me-1" /> 
-                            <span>Kontak</span>
-                        </Nav.Link>
-                        <Nav.Link href="#" className="mx-2 d-flex align-items-center">
-                            <FaComments className="me-1" /> 
-                            <span>Konsultasi Kesehatan</span>
-                        </Nav.Link>
-                        </Nav>
-                        <Form className="d-flex me-2">
-                          <InputGroup>
-                            <Form.Control
-                              type="search"
-                              placeholder="Cari informasi kesehatan..."
-                              aria-label="Search"
-                            />
-                            <Button variant="outline-primary">
-                              <FaSearch />
-                            </Button>
-                          </InputGroup>
-                        </Form>
-                        <Button variant="light" href="/login" className="border-grey text-grey">Masuk</Button>
-                      </Navbar.Collapse>
-                    </Container>
+        <Container>
+        <Navbar.Brand href="/home" className="primary">
+            <img width="100" height="auto" src="/image/LogoHealth.png" alt="LogoKesehatanKu" /><span>
+                <img width="100" height="auto" src="/image/kementrian-sehat.webp" alt="LogoKementrian" />
+            </span>
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mx-auto">
+            <Navbar.Toggle aria-controls="navbar-dark-example" />
+              <Navbar.Collapse id="navbar-dark-example">
+                <Nav>
+                  <NavDropdown id="nav-dropdown-dark-example" title="Kategori Kesehatan" menuVariant="light" className="no-hover">
+                    {kategoriKesehatan.length > 0 ? (
+                    kategoriKesehatan.map((kategori) => (
+                    <Dropdown.Item key={kategori.id} href={`/kategori/${kategori.id}`} className="d-flex align-items-center">
+                        <img 
+                          src={kategori.image_url || kategori.image || 'default-image.png'} 
+                          alt={kategori.nama_kategori} 
+                          style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', marginRight: 10 }} 
+                        />
+                        {kategori.nama_kategori}
+                      </Dropdown.Item>
+                    ))
+                  ) : (
+                    <Dropdown.Item disabled>Tidak ada kategori</Dropdown.Item>
+                  )}
+                  </NavDropdown>
+                </Nav>
+              </Navbar.Collapse>
+            <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+                <FaStethoscope className="me-1" /> 
+                <span>Cek Kesehatan</span>
+            </Nav.Link>
+            <Nav.Link href="/kontak" className="mx-2 d-flex align-items-center">
+              <FaPhoneAlt className="me-1" /> 
+                <span>Kontak</span>
+            </Nav.Link>
+            <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+                <FaComments className="me-1" /> 
+                <span>Konsultasi Kesehatan</span>
+            </Nav.Link>
+            </Nav>
+            <Form className="d-flex me-2">
+              <InputGroup>
+                <Form.Control
+                  type="search"
+                  placeholder="Cari informasi kesehatan..."
+                  aria-label="Search"
+                />
+                <Button className='btn-primary'>
+                  <FaSearch />
+                </Button>
+              </InputGroup>
+            </Form>
+            <Button variant="light" href="/login" className="border-grey text-grey">Masuk</Button>
+          </Navbar.Collapse>
+        </Container>
       </Navbar>
+
       <div className="container pt-5 pb-5">
         <div className="row">
           {/* Main Content */}
@@ -87,28 +183,30 @@ const ArticleDetailPage = () => {
               <div className="card-body p-4">
                 {/* Article Header */}
                 <div className="mb-3">
-                  <span className="badge bg-primary mb-2">{article.category}</span>
-                  <h1 className="h2 mb-3">{article.title}</h1>
-                  <p className="text-muted lead">{article.excerpt}</p>
+                  <span className="badge bg-gradient mb-1"style={{ width: '100px' }}>{getKategoriName(artikel.kategori_id)}</span>
+                  <h1 className="h2 mb-3">{artikel.judul}</h1>
+                  <p className="text-muted lead">{artikel.isi}</p>
                 </div>
 
                 {/* Article Meta */}
                 <div className="d-flex flex-wrap align-items-center mb-4 text-muted small">
                   <div className="me-4 mb-2">
                     <FaUser className="me-1" />
-                    {article.author}
+                    {artikel.author}
                   </div>
                   <div className="me-4 mb-2">
                     <FaCalendarAlt className="me-1" />
-                    {article.date}
+                    {/* Format tanggal sesuai dengan format API */}
+                    {artikel.created_at}
                   </div>
                   <div className="me-4 mb-2">
                     <FaClock className="me-1" />
-                    {article.readTime}
+                    {/* Jika ada waktu baca, tambahkan */}
+                    {artikel.read_time || '5 menit'}
                   </div>
                   <div className="me-4 mb-2">
                     <FaEye className="me-1" />
-                    {article.views.toLocaleString()} views
+                    {artikel.views} views
                   </div>
                 </div>
 
@@ -119,14 +217,14 @@ const ArticleDetailPage = () => {
                     onClick={() => handleLike('like')}
                   >
                     <FaThumbsUp className="me-1" />
-                    {article.likes + (likeStatus === 'like' ? 1 : 0)}
+                    {artikel.likes + (likeStatus === 'like' ? 1 : 0)}
                   </button>
                   <button 
                     className={`btn ${likeStatus === 'dislike' ? 'btn-danger' : 'btn-outline-danger'} btn-sm`}
                     onClick={() => handleLike('dislike')}
                   >
                     <FaThumbsDown className="me-1" />
-                    {article.dislikes + (likeStatus === 'dislike' ? 1 : 0)}
+                    {artikel.dislikes + (likeStatus === 'dislike' ? 1 : 0)}
                   </button>
                   <button 
                     className={`btn ${isBookmarked ? 'btn-warning' : 'btn-outline-warning'} btn-sm`}
@@ -154,8 +252,8 @@ const ArticleDetailPage = () => {
                 {/* Featured Image */}
                 <div className="mb-4">
                   <img 
-                    src={article.image} 
-                    alt={article.title}
+                    src={artikel.images || 'default-image.png'} 
+                    alt={artikel.judul}
                     className="img-fluid rounded"
                     style={{ width: '100%', height: '400px', objectFit: 'cover' }}
                   />
@@ -164,7 +262,7 @@ const ArticleDetailPage = () => {
                 {/* Article Content */}
                 <div 
                   className="article-content"
-                  dangerouslySetInnerHTML={{ __html: article.content }}
+                  dangerouslySetInnerHTML={{ __html: artikel.isi }}
                   style={{ lineHeight: '1.8', fontSize: '16px' }}
                 />
 
@@ -175,7 +273,7 @@ const ArticleDetailPage = () => {
                     <strong>Tags:</strong>
                   </div>
                   <div className="d-flex flex-wrap gap-2">
-                    {article.tags.map((tag, index) => (
+                    {artikel.tags && artikel.tags.map((tag, index) => (
                       <span key={index} className="badge bg-light text-dark px-2 py-1">
                         #{tag}
                       </span>
@@ -184,35 +282,6 @@ const ArticleDetailPage = () => {
                 </div>
               </div>
             </div>
-
-            {/* Related Articles */}
-              <div className=" bg-white">
-                <h5 className="mb-0">Artikel Terkait</h5>
-              </div>
-              <div className="card-body">
-                <div className="row">
-                  {relatedArticles.map((relatedArticle) => (
-                    <div key={relatedArticle.id} className="col-md-4 mb-3">
-                      <div className="h-100 border-0 shadow-none">
-                        <img 
-                          src={relatedArticle.image}
-                          className="card-img-top"
-                          alt={relatedArticle.title}
-                          style={{ height: '150px', objectFit: 'cover' }}
-                        />
-                        <div className="card-body p-3">
-                          <span className="badge bg-primary mb-2 small">{relatedArticle.category}</span>
-                          <h6 className="card-title">{relatedArticle.title}</h6>
-                          <p className="card-text small text-muted">
-                            <FaCalendarAlt className="me-1" />
-                            {relatedArticle.date}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
           </div>
 
           {/* Sidebar */}
@@ -220,22 +289,22 @@ const ArticleDetailPage = () => {
             {/* Popular Articles */}
             <div className="mb-4">
               <div className="card-header bg-white">
-                <h5 className="mb-0"> Artikel Populer</h5>
+                <h5 className="mb-0">Artikel Populer</h5>
               </div>
               <div className="list-group list-group-flush">
                 {popularArticles.map((popularArticle) => (
                   <div key={popularArticle.id} className="list-group-item border-0 py-3">
-                    <div className="d-flex justify-content-between align-items-start">
+                    <div className="d-flex justify-content-between align-items-center">
                       <div className="flex-grow-1">
-                        <h6 className="mb-1">{popularArticle.title}</h6>
+                        <h6 className="mb-1">{popularArticle.judul}</h6>
                         <div className="small text-muted">
                           <span className="me-3">
                             <FaTag className="me-1" />
-                            {popularArticle.category}
+                            {getKategoriName(popularArticle.kategori_id)}
                           </span>
                           <span>
                             <FaEye className="me-1" />
-                            {popularArticle.views.toLocaleString()}
+                            {popularArticle.views}
                           </span>
                         </div>
                       </div>
@@ -246,18 +315,18 @@ const ArticleDetailPage = () => {
             </div>
 
             {/* Health Categories */}
-            <div className=" mb-4">
+            <div className="mb-4">
               <div className="card-header bg-white">
                 <h5 className="mb-0">Kategori Kesehatan</h5>
               </div>
               <div className="list-group list-group-flush">
-                {healthCategories.map((category, index) => (
-                  <a key={index} href="#" className="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center">
+                {kategoriKesehatan.map((category, id) => (
+                  <a key={id} href="#" className="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center">
                     <div>
-                      <FaHeartbeat className="me-2 text-primary" />
-                      {category.name}
+                      <FaHeartbeat className="me-2 primary" />
+                      {category.nama_kategori}
                     </div>
-                    <span className="badge bg-light text-dark">{category.count}</span>
+                    <span className="badge bg-light text-dark">{category.count || 0}</span>
                   </a>
                 ))}
               </div>
@@ -266,9 +335,9 @@ const ArticleDetailPage = () => {
             {/* Newsletter Subscription */}
             <div className="card shadow-sm">
               <div className="card-body">
-                <h5 className='text-primary'>Newsletter Kesehatan</h5>
+                <h5 className="primary">Newsletter Kesehatan</h5>
                 <p className="small">Dapatkan tips kesehatan terbaru langsung di email Anda!</p>
-                <div onSubmit={handleNewsletterSubmit}>
+                <form onSubmit={handleNewsletterSubmit}>
                   <div className="mb-3">
                     <input 
                       type="email" 
@@ -276,43 +345,103 @@ const ArticleDetailPage = () => {
                       placeholder="Masukkan email Anda"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      required
                     />
                   </div>
                   <button 
                     type="submit" 
                     className="btn btn-primary btn-sm w-100"
-                    onClick={handleNewsletterSubmit}
                   >
                     Berlangganan
                   </button>
-                </div>
+                </form>
               </div>
             </div>
-            {/* Artikel Lainnya */}
-            <div className=" bg-white">
-                <h5 className="mb-0">Artikel Terkait</h5>
-              </div>
-              <div className="card-body">
-                <div className="row">
-                  {relatedArticles.map((relatedArticle) => (
-                    <div key={relatedArticle.id} className="col-md-4 mb-3">
-                      <div className="h-100 border-0 d-flex justify-content-between align-items-center shadow-none">
-                        <img src={relatedArticle.image}className="card-img-top"alt={relatedArticle.title}style={{ height: '70px', objectFit: 'cover' }}/>
-                        <div className="card-body p-3">
-                          <span className="badge bg-primary mb-2 small">{relatedArticle.category}</span>
-                          <h6 className="card-title">{relatedArticle.title}</h6>
-                          <p className="card-text small text-muted">
-                            <FaCalendarAlt className="me-1" />
-                            {relatedArticle.date}
+
+            {/* Artikel Lainnya 2 */}
+            <div className="bg-white mt-4 mb-3">
+              <h4 className="mb-0">Semua Artikel</h4>
+            </div>
+            <div className="card-body">
+              <div className="row">
+                {randomArticles.map((item) => (
+                  <div key={item.id} className="col-12 mb-3">
+                    <a href={`/artikel/${item.id}`} className='text-black'>
+                    <div className="d-flex rounded overflow-hidden shadow-none">
+                      <img
+                        src={item.images || 'default-image.png'}
+                        className="img-fluid"
+                        alt={item.judul}
+                        style={{
+                          width: '120px',
+                          height: '100px',
+                          objectFit: 'cover',
+                          flexShrink: 0,
+                        }}
+                      />
+                      <div className="p-2 d-flex flex-column justify-content-between">
+                        <div>
+                          {/* <span className="badge bg-primary mb-1 small">
+                            {item.kategori_id}
+                          </span> */}
+                          <h6 className="mb-1">{item.judul}</h6>
+                          <p className="text-muted small mb-1">
+                            {item.isi?.slice(0, 70) + '...'}
                           </p>
                         </div>
+                        <p className="card-text small text-muted mb-0">
+                          <FaCalendarAlt className="me-1" />
+                          {new Date(item.created_at).toLocaleDateString()}
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </div>
+                    </a>
+                  </div>
+                ))}
               </div>
+            </div>
           </div>
         </div>
+        
+        <div className="row">
+          {/* Related Articles */}
+          <div className="bg-white">
+            <h3 className="mb-3">Artikel Terkait</h3>
+          </div>
+          <div className="card-body">
+            <div className="row mb-4">
+              {randomArticles.map((item) => (
+                <div key={item.id} className="col-12 mb-4">
+                  <a href={`/artikel/${item.id}`} className='text-black'>
+                  <div className="row h-100 shadow-none">
+                    <div className="col-12 col-md-6">
+                      <img
+                        src={item.images || 'default-image.png'}
+                        className="img-fluid w-100"
+                        alt={item.judul}
+                        style={{ height: '100%', maxHeight: '300px', objectFit: 'cover' }}
+                      />
+                    </div>
+                    <div className="col-12 col-md-6 d-flex flex-column justify-content-center p-3">
+                      <span className="badge bg-gradient mb-1"style={{ width: '100px' }}>{getKategoriName(artikel.kategori_id)}</span>
+                      <h3 className="card-title">{item.judul}</h3>
+                      <p className="text">{(item.isi?.slice(0, 400) + '...')}</p>
+                      <div className='col-12 col-md-6 d-flex gap-x-px justify-content-start align-items-start'>
+                      <p className="text">{item.author}</p>
+                      <p className="card-text text-muted">
+                        <FaCalendarAlt className="me-1" />
+                        {new Date(item.created_at).toLocaleDateString()}
+                      </p>
+                      </div>
+                    </div>
+                  </div>
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
       </div>
       {/* Footer */}
       <footer className="bg-dark text-white pt-5 pb-3">
@@ -358,7 +487,7 @@ const ArticleDetailPage = () => {
                                 placeholder="Alamat email Anda"
                                 aria-label="Email address"
                               />
-                              <Button variant="primary">Langganan</Button>
+                              <Button className='btn-primary'>Langganan</Button>
                             </InputGroup>
                           </Form>
                         </Col>
@@ -374,6 +503,27 @@ const ArticleDetailPage = () => {
                       </div>
                     </Container>
       </footer>
+      <style jsx>{`
+        .bg-gradient {
+          background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%) !important;
+        }
+        .btn-primary {
+          background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%);
+          color: white;
+          border: none;
+          transition: all 0.3s ease;
+        }
+        .primary {
+          color: #0c54b7;
+        }
+        .border-primary {
+          border: #0c54b7;
+        }
+        .btn-primary:hover {
+          background: linear-gradient(135deg, #1573b1 10%, #1d53b1 90%);
+          color: white;
+        }
+      `}</style>
     </div>
   );
 };

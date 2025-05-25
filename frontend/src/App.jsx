@@ -6,6 +6,7 @@ import ForgotPassword from "./View/Auth/ForgotPassword";
 import Home from "./Pages/Home";
 import Artikel from "./Pages/Artikel";
 import DetailArtikel from "./Pages/ArtikelDetail";
+import Kategori from "./Pages/Kategori"
 import Kontak from "./Pages/Kontak";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "./View/Dashboard/Dashboard";
@@ -26,7 +27,8 @@ function App() {
     <Routes>
       <Route path="/home" element={<Home />} />
       <Route path="/artikel" element={<Artikel />} />
-      <Route path="/artikel/detail" element={<DetailArtikel />} />
+      <Route path="/artikel/:id" element={<DetailArtikel />} />
+      <Route path="/kategori" element={<Kategori />} />
       <Route path="/kontak" element={<Kontak />} />
       {/* Auth */}
       <Route path="/login" element={<Login />} />

@@ -1,46 +1,36 @@
-import React, { useState } from "react";
-import {
-  FaHeartbeat,
-  FaStethoscope,
-  FaPhoneAlt,
-  FaComments,
-  FaSearch,
-  FaMapMarkerAlt,
-  FaEnvelope,
-  FaClock,
-  FaPhone,
-  FaWhatsapp,
-  FaFax,
-  FaPaperPlane,
-  FaUserMd,
-  FaQuestionCircle,
-  FaExclamationTriangle,
-} from "react-icons/fa";
-import {
-  Navbar,
-  Nav,
-  Container,
-  Button,
-  Card,
-  Carousel,
-  Row,
-  Col,
-  Form,
-  InputGroup,
-} from "react-bootstrap";
+import React, { useState,useEffect } from "react";
+import axios from 'axios';
+import {FaHeartbeat,FaStethoscope,FaPhoneAlt,FaComments,FaSearch,FaMapMarkerAlt,FaEnvelope,FaClock,FaPhone,FaWhatsapp,FaFax,FaPaperPlane,FaUserMd,FaQuestionCircle,FaExclamationTriangle,} from "react-icons/fa";
+import { Dropdown, NavDropdown,Navbar,Nav,Container,Button,Card,Carousel,Row,Col,Form,InputGroup,} from "react-bootstrap";
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    subject: "",
-    category: "",
-    message: "",
-  });
+  const [formData, setFormData] = useState({name: "",email: "",phone: "",subject: "",category: "",message: "",});
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
+  const [kategoriList, setKategoriList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchKategori = async () => {
+    try {
+      const kategoriRes = await axios.get("http://localhost:5000/api/kategori");
+      const artikelRes = await axios.get("http://localhost:5000/api/artikel");
+
+      const kategoriData = kategoriRes.data.data;
+      const artikelData = artikelRes.data.data;
+
+      const kategoriWithCount = kategoriData.map(k => {
+        const count = artikelData.filter(a => String(a.kategori_id) === String(k.id)).length;
+        return { ...k, count };
+      });
+
+      setKategoriList(kategoriWithCount);
+    } catch (err) {
+      console.error("Gagal mengambil kategori:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -84,12 +74,25 @@ export default function ContactPage() {
     }, 5000);
   };
 
+  useEffect(() => {
+  fetchKategori();
+}, []);
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{height: '100vh'}}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-vh-100 d-flex flex-column">
       {/* Navbar */}
       <Navbar bg="white" expand="lg" className="py-3 shadow-sm sticky-top">
               <Container>
-                <Navbar.Brand href="/home" className="text-primary">
+                <Navbar.Brand href="/home" className="primary">
                   <img
                     width="100"
                     height="auto"
@@ -112,11 +115,11 @@ export default function ContactPage() {
                     <Navbar.Collapse id="navbar-dark-example">
                       <Nav>
                         <NavDropdown id="nav-dropdown-dark-example" title="Kategori Kesehatan" menuVariant="light" className="no-hover">
-                          {kategoriKesehatan.length > 0 ? (
-                          kategoriKesehatan.map((kategori) => (
+                          {kategoriList.length > 0 ? (
+                          kategoriList.map((kategori) => (
                           <Dropdown.Item key={kategori.id} href={`/kategori/${kategori.id}`} className="d-flex align-items-center">
                               <img 
-                                src={kategori.image_url || kategori.image || 'default-image.png'} 
+                                src={kategori.images || 'default-image.png'} 
                                 alt={kategori.nama_kategori} 
                                 style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', marginRight: 10 }} 
                               />
@@ -152,7 +155,7 @@ export default function ContactPage() {
                         placeholder="Cari informasi kesehatan..."
                         aria-label="Search"
                       />
-                      <Button variant="outline-primary">
+                      <Button className="btn-primary">
                         <FaSearch />
                       </Button>
                     </InputGroup>
@@ -173,7 +176,7 @@ export default function ContactPage() {
         <div className="container">
           <div className="row align-items-center">
             <div className="col-lg-8">
-              <h1 className="display-4 fw-bold mb-3">Hubungi Kami</h1>
+              <h1 className="display-4 fw-bold mb-3" style={{background: 'linear-gradient(135deg, #1573b7 10%, #0c54b7 90%)',WebkitBackgroundClip: 'text',WebkitTextFillColor: 'transparent',}}>Hubungi Kami</h1>
               <p className="lead mb-4">
                 Tim KesehatanKU siap membantu Anda dengan pertanyaan seputar
                 kesehatan. Hubungi kami melalui berbagai channel yang tersedia
@@ -181,7 +184,7 @@ export default function ContactPage() {
               </p>
             </div>
             <div className="col-lg-4 text-center">
-              <FaPhoneAlt size={120} className="opacity-75" />
+              <FaPhoneAlt size={120} style={{background: 'linear-gradient(135deg, #1573b7 10%, #0c54b7 90%)',WebkitBackgroundClip: 'text',WebkitTextFillColor: 'transparent',}}  className="opacity-75" />
             </div>
           </div>
         </div>
@@ -271,16 +274,12 @@ export default function ContactPage() {
                           onChange={handleInputChange}
                         >
                           <option value="">Pilih kategori...</option>
-                          <option value="konsultasi">
-                            Konsultasi Kesehatan
-                          </option>
-                          <option value="teknis">Bantuan Teknis Website</option>
-                          <option value="kerjasama">
-                            Kerjasama & Partnership
-                          </option>
-                          <option value="keluhan">Keluhan & Saran</option>
-                          <option value="media">Media & Pers</option>
-                          <option value="lainnya">Lainnya</option>
+                          {kategoriList.length > 0 &&
+                            kategoriList.map((kategori) => (
+                              <option key={kategori.id} value={kategori.id}>
+                                {kategori.nama_kategori}
+                              </option>
+                            ))}
                         </select>
                       </div>
                     </div>
@@ -341,7 +340,7 @@ export default function ContactPage() {
               </h5>
               <div className="card-body p-4">
                 <div className="mb-4">
-                  <h6 className="text-primary fw-bold mb-2">
+                  <h6 className="primary fw-bold mb-2">
                     <FaMapMarkerAlt className="me-2" />
                     Alamat Kantor
                   </h6>
@@ -355,7 +354,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="mb-4">
-                  <h6 className="text-primary fw-bold mb-2">
+                  <h6 className="primary fw-bold mb-2">
                     <FaPhone className="me-2" />
                     Telepon
                   </h6>
@@ -373,7 +372,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="mb-4">
-                  <h6 className="text-primary fw-bold mb-2">
+                  <h6 className="primary fw-bold mb-2">
                     <FaWhatsapp className="me-2" />
                     WhatsApp
                   </h6>
@@ -388,7 +387,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="mb-4">
-                  <h6 className="text-primary fw-bold mb-2">
+                  <h6 className="primary fw-bold mb-2">
                     <FaEnvelope className="me-2" />
                     Email
                   </h6>
@@ -411,7 +410,7 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <h6 className="text-primary fw-bold mb-2">
+                  <h6 className="primary fw-bold mb-2">
                     <FaClock className="me-2" />
                     Jam Operasional
                   </h6>
@@ -451,7 +450,7 @@ export default function ContactPage() {
           <div className="col-md-6 mb-4">
             <div className="card h-100 shadow-sm border-0">
               <div className="card-body p-4 text-center">
-                <FaUserMd size={50} className="text-primary mb-3" />
+                <FaUserMd size={50} className="primary mb-3" />
                 <h5 className="fw-bold">Konsultasi Penyakit</h5>
                 <p className="text-muted">
                   Butuh konsultasi penyakit anda secara langsung? Gunakan layanan
@@ -464,7 +463,7 @@ export default function ContactPage() {
           <div className="col-md-6 mb-4">
             <div className="card h-100 shadow-none border-0">
               <div className="card-body p-4 text-center">
-                <FaStethoscope size={50} className="text-primary mb-3" />
+                <FaStethoscope size={50} className="primary mb-3" />
                 <h5 className="fw-bold">Cek Kesehatan</h5>
                 <p className="text-muted">
                   Pantau kondisi kesehatan Anda dengan berbagai tools
@@ -602,6 +601,27 @@ export default function ContactPage() {
           </div>
         </Container>
       </footer>
+      <style jsx>{`
+        .bg-gradient {
+        background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%) !important;
+        }
+        .btn-primary {
+        background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%);
+        color: white;
+        border: none;
+        transition: all 0.3s ease;
+        }
+        .primary {
+        color: #0c54b7;
+        }
+        .border_primary {
+        border-bottom: 2px solid #0c54b7;
+        }
+        .btn-primary:hover {
+        background: linear-gradient(135deg, #1573b1 10%, #1d53b1 90%);
+    color: white;
+    }
+    `}</style>
     </div>
   );
 }

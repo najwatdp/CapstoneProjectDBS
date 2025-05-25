@@ -1,10 +1,10 @@
-import { useRef, useState } from "react";
+import {useState } from "react";
 import LoadingBerputar from "../../Animation Loading/LoadingBerputar";
 import Users from "../../Model/users";
 import RegisterPresenter from "../../Presenter/RegisterPresenter";
 import { useNavigate } from "react-router";
 import { FaCross } from "react-icons/fa";
-import { FaCircleCheck, FaCircleXmark } from 'react-icons/fa6';
+import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
 
 export default function Register() {
@@ -88,7 +88,7 @@ export default function Register() {
                                         <input type="email" name="email" id="email" onChange={hanldeInputEmail} placeholder="example@gmail.com" className="border border-0 outline-0 w-95" disabled={Loading} />
                                         { showCheck ? 
                                         <>
-                                        { LoadingCheck ? <div className="w-20px"><LoadingBerputar wdith={20} hiegth={20} /></div> : emailAvailable ? <div className="c-red"><FaCircleXmark/></div> : <div className="c-green"><FaCircleCheck /></div>}
+                                        { LoadingCheck ? <div className="w-20px"><LoadingBerputar wdith={20} hiegth={20} /></div> : emailAvailable ? <div className="c-red"><FaTimesCircle/></div> : <div className="c-green"><FaCheckCircle /></div>}
                                         </> : <></> }
                                     </div>
                                 </div>

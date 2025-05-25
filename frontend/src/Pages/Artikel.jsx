@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Dropdown, NavDropdown, Navbar, Container, Row, Col, Card, Button, Form, Badge, Nav, InputGroup } from 'react-bootstrap';
 import { 
   FaPhoneAlt, FaComments, FaStethoscope, FaHeartbeat, FaSearch, FaBookmark, FaShare, 
-  FaFacebook, FaTwitter, FaWhatsapp, FaInstagram, FaEnvelope 
+  FaFacebook, FaTwitter, FaWhatsapp, FaInstagram, FaEnvelope, FaCalendarAlt  
 } from 'react-icons/fa';
 
 
@@ -96,7 +96,7 @@ const ArticleCategory = () => {
       {/* Navbar */}
       <Navbar bg="white" expand="lg" className="py-3 shadow-sm sticky-top">
               <Container>
-                <Navbar.Brand href="/home" className="text-primary">
+                <Navbar.Brand href="/home" className="primary">
                   <img
                     width="100"
                     height="auto"
@@ -159,7 +159,7 @@ const ArticleCategory = () => {
                         placeholder="Cari informasi kesehatan..."
                         aria-label="Search"
                       />
-                      <Button variant="outline-primary">
+                      <Button className='btn-primary'>
                         <FaSearch />
                       </Button>
                     </InputGroup>
@@ -184,7 +184,7 @@ const ArticleCategory = () => {
                 {pregnancySubcategories.map(subcat => (
                   <Nav.Item key={subcat.id}>
                     <Nav.Link 
-                      className={`mx-2 ${activeSubcategory === subcat.name ? 'fw-bold text-primary border-bottom border-primary border-3' : 'text-dark'}`}
+                      className={`mx-2 ${activeSubcategory === subcat.name ? 'fw-bold primary border_primary border-3' : 'text-dark'}`}
                       onClick={() => setActiveSubcategory(subcat.name)}
                       style={{ cursor: 'pointer' }}
                     >
@@ -201,71 +201,38 @@ const ArticleCategory = () => {
           {/* Main Content */}
           <Col lg={8}>
             {/* Featured Article */}
-            {filteredArticles.length > 0 && (
-            <Card className="mb-4 border-0 shadow-none">
-              <Row className="g-0">
-                <Col md={6}>
-                  <Card.Img 
-                      src={filteredArticles[0].image_url || filteredArticles[0].image || '/image/default-image.png'} 
-                      alt={filteredArticles[0].judul}
-                      className="h-100 object-fit-cover"
-                    />
-                </Col>
-                <Col md={6}>
-                  <Card.Body className="d-flex flex-column h-100">
-                    <div className="mb-2">
-                      <Badge bg="primary" className="me-2">{getNamaKategori(filteredArticles[0].kategori_id)}</Badge>
-                      <Badge bg="secondary">Recommended</Badge>
-                    </div>
-                    <Card.Title className="h4 fw-bold">{filteredArticles[0].judul}</Card.Title>
-                    <Card.Text className="text-muted">
-                      {filteredArticles[0].excerpt || filteredArticles[0].isi?.slice(0, 100) + '...'}
-                    </Card.Text>
-                    <div className="mt-auto">
-                      <small className="text-muted">
-                        {filteredArticles[0].author || 'Admin'} • {new Date(filteredArticles[0].created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} • 10 menit baca
-                      </small>
-                    </div>
-                  </Card.Body>
-                </Col>
-              </Row>
-            </Card>
-            )}
-
-            {/* Article List */}
-            <div className="d-flex justify-content-between align-items-center">
-            <h2 className="h4 mb-3">Artikel {activeSubcategory} Terbaru</h2>
-            <a href='#' className="px-4 text-decoration-none">Lihat Lebih Banyak</a>
-            </div>
-            <Row className="g-4">
-              {filteredArticles.slice(1).map((art) => (
-                <Col md={6} key={art.id}>
-                  <Card className="h-100 border-0 shadow-none">
-                    <div className="position-relative">
-                      <Card.Img variant="top" src={art.image} alt={art.judul}/>
-                      <div className="position-absolute top-0 end-0 m-2">
-                        <Button variant="light" size="sm" className="rounded-circle p-1">
-                          <FaBookmark className="text-primary" />
-                        </Button>
-                      </div>
-                    </div>
-                    <Card.Body>
-                      <div className="mb-2">
-                        <Badge bg="primary" className="me-1">{getNamaKategori(art.kategori_id)}</Badge>
-                        {/* Kamu bisa tambahkan subkategori jika ada */}
-                      </div>
-                      <Card.Title className="h5">{art.judul}</Card.Title>
-                      <Card.Text className="text-muted small">{art.excerpt || art.isi?.slice(0, 100) + '...'}</Card.Text>
-                    </Card.Body>
-                    <Card.Footer className="bg-white border-0">
-                      <small className="text-muted">
-                        {art.author || 'Admin'} • {new Date(art.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} • 10 menit baca
-                      </small>
-                    </Card.Footer>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
+            {filteredArticles.length > 0 && filteredArticles.slice(0, 2).map((artikel) => (
+              <Card className="mb-5 border-0 shadow-none" key={artikel.id}>
+                <Row className="g-0">
+                  <a href={`/artikel/${artikel.id}`} className='text-black'>
+                    <Col md={12}>
+                      <Card.Img 
+                        src={artikel.images} 
+                        alt={artikel.judul}
+                        className="h-100 object-fit-cover"
+                      />
+                    </Col>
+                    <Col md={12}>
+                      <Card.Body className="d-flex flex-column h-100">
+                        <div className="mb-2">
+                          <Badge className="me-2 bg-gradient">{getNamaKategori(artikel.kategori_id)}</Badge>
+                          <Badge bg="secondary">Recommended</Badge>
+                        </div>
+                        <Card.Title className="h4 fw-bold">{artikel.judul}</Card.Title>
+                        <Card.Text className="text-muted">
+                          {artikel.isi}
+                        </Card.Text>
+                        <div className="mt-auto">
+                          <small className="text-muted">
+                            {artikel.author} • {new Date(artikel.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} • 10 menit baca
+                          </small>
+                        </div>
+                      </Card.Body>
+                    </Col>
+                  </a>
+                </Row>
+              </Card>
+            ))}
           </Col>
 
           {/* Sidebar */}
@@ -287,62 +254,40 @@ const ArticleCategory = () => {
               </div>
             </div>
 
-            {/* Health Check */}
-            <Card className="border-0 shadow-none mb-4 bg-light">
-              <Card.Body>
-                <h3 className="h5 mb-3">Cek Kesehatan</h3>
-                <p className="small">Cek kondisi kesehatan Anda dengan kalkulator dan tools interaktif kami.</p>
-                <Row className="g-2">
-                  <Col sm={6}>
-                    <Card className="h-100">
-                      <Card.Body className="p-2 text-center">
-                        <div className="mb-2 text-primary">
-                          <FaHeartbeat size={24} />
-                        </div>
-                        <h4 className="h6 mb-0">Kalkulator BMI</h4>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                  <Col sm={6}>
-                    <Card className="h-100">
-                      <Card.Body className="p-2 text-center">
-                        <div className="mb-2 text-primary">
-                          <FaHeartbeat size={24} />
-                        </div>
-                        <h4 className="h6 mb-0">Usia Kehamilan</h4>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                  <Col sm={6}>
-                    <Card className="h-100">
-                      <Card.Body className="p-2 text-center">
-                        <div className="mb-2 text-primary">
-                          <FaHeartbeat size={24} />
-                        </div>
-                        <h4 className="h6 mb-0">Kalori Harian</h4>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                  <Col sm={6}>
-                    <Card className="h-100">
-                      <Card.Body className="p-2 text-center">
-                        <div className="mb-2 text-primary">
-                          <FaHeartbeat size={24} />
-                        </div>
-                        <h4 className="h6 mb-0">Risiko Diabetes</h4>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                </Row>
-              </Card.Body>
+            {/* Health Tools */}
+            <Card className="border-0 shadow-sm mb-4 bg-gradient" 
+                              style={{ background: 'linear-gradient(135deg, #1573b7 10%, #0c54b7 90%)' }}>
+                          <Card.Body className="p-4 text-white">
+                            <h3 className="h5 fw-bold mb-3">Tools Kesehatan</h3>
+                            <p className="small mb-3 opacity-75">
+                              Cek kondisi kesehatan Anda dengan tools interaktif kami
+                            </p>
+                            <Row className="g-2">
+                              {[
+                                { icon: FaHeartbeat, title: 'Kalkulator BMI' },
+                                { icon: FaHeartbeat, title: 'Tes Risiko Diabetes' },
+                                { icon: FaHeartbeat, title: 'Kalori Harian' },
+                                { icon: FaHeartbeat, title: 'Usia Kehamilan' }
+                              ].map((tool, index) => (
+                                <Col sm={6} key={index}>
+                                  <Card className="bg-white bg-opacity-25 border-0 text-white h-100 hover-card">
+                                    <Card.Body className="p-3 text-center">
+                                      <tool.icon className="mb-2" size={20} />
+                                      <h6 className="small mb-0">{tool.title}</h6>
+                                    </Card.Body>
+                                  </Card>
+                                </Col>
+                              ))}
+                            </Row>
+                          </Card.Body>
             </Card>
 
             {/* Consultation CTA */}
-            <Card className="border-0 shadow-none bg-primary text-white mb-4">
+            <Card className="border-0 shadow-none bg-gradient text-white mb-4">
               <Card.Body className="text-center p-4">
                 <h3 className="h5 mb-3">Konsultasi Penyakit Sekarang</h3>
                 <p className="small mb-3">Dapatkan jawaban untuk pertanyaan seputar kehamilan Anda.</p>
-                <Button variant="light" className="text-primary">Konsultasi Sekarang</Button>
+                <Button variant="light" className="primary">Konsultasi Sekarang</Button>
               </Card.Body>
             </Card>
 
@@ -355,7 +300,7 @@ const ArticleCategory = () => {
                   <Form.Group className="mb-2">
                     <Form.Control type="email" placeholder="Email Anda" />
                   </Form.Group>
-                  <Button variant="primary" className="w-100">Langganan</Button>
+                  <Button className="btn-primary w-100">Langganan</Button>
                 </Form>
               </Card.Body>
             </Card>
@@ -383,6 +328,91 @@ const ArticleCategory = () => {
                 </div>
               </Card.Body>
             </Card>
+
+            {/* Artikel Lainnya 2 */}
+            <Col lg={12}>
+            <div className="bg-white mt-4 mb-3">
+                          <h4 className="mb-0">Semua Artikel</h4>
+            </div>
+            <div className="card-body">
+                          <div className="row">
+                            {filteredArticles.slice(3).map((item) => (
+                              <div key={item.id} className="col-12 mb-3">
+                                <a href={`/artikel/${item.id}`} className='text-black'>
+                                <div className="d-flex rounded overflow-hidden shadow-none">
+                                  <img
+                                    src={item.images || 'default-image.png'}
+                                    className="img-fluid"
+                                    alt={item.judul}
+                                    style={{
+                                      width: '125px',
+                                      height: '105px',
+                                      objectFit: 'cover',
+                                      flexShrink: 0,
+                                    }}
+                                  />
+                                  <div className="p-2 d-flex flex-column justify-content-between">
+                                    <div>
+                                      {/* <span className="badge bg-primary mb-1 small">
+                                        {item.kategori_id}
+                                      </span> */}
+                                      <h6 className="mb-1">{item.judul}</h6>
+                                      <p className="text-muted small mb-1">
+                                        {item.isi?.slice(0, 80) + '...'}
+                                      </p>
+                                    </div>
+                                    <p className="card-text small text-muted mb-0">
+                                      <FaCalendarAlt className="me-1" />
+                                      {new Date(item.created_at).toLocaleDateString()}
+                                    </p>
+                                  </div>
+                                </div>
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+            </div>
+            </Col>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+          {/* Article List */}
+            <div className="d-flex justify-content-between align-items-center">
+            <h1 className="h2 mb-3">Artikel {activeSubcategory} Terbaru</h1>
+            <a href='#' className="px-4 primary text-decoration-none">Lihat Lebih Banyak</a>
+            </div>
+            <Row className="g-4">
+              {filteredArticles.slice(1).map((art) => (
+                <Col md={4} key={art.id}>
+                  <Card className="h-100 border-0 shadow-none">
+                    <a href={`/artikel/${art.id}`} className='text-black'>
+                    <div className="position-relative">
+                      <Card.Img variant="top" src={art.images} alt={art.judul}/>
+                      <div className="position-absolute top-0 end-0 m-2">
+                        <Button variant="light" size="sm" className="rounded-circle p-1">
+                          <FaBookmark className="primary" />
+                        </Button>
+                      </div>
+                    </div>
+                    <Card.Body>
+                      <div className="mb-2">
+                        <Badge className=" bg-gradient me-1">{getNamaKategori(art.kategori_id)}</Badge>
+                        {/* Kamu bisa tambahkan subkategori jika ada */}
+                      </div>
+                      <Card.Title className="h5">{art.judul}</Card.Title>
+                      <Card.Text className="text-muted small">{(art.isi?.slice(0, 200) + '...')}</Card.Text>
+                    </Card.Body>
+                    <Card.Footer className="bg-white border-0">
+                      <small className="text-muted">
+                        {art.author} • {new Date(art.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} • 10 menit baca
+                      </small>
+                    </Card.Footer>
+                    </a>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
           </Col>
         </Row>
       </Container>
@@ -447,8 +477,32 @@ const ArticleCategory = () => {
                 </div>
               </Container>
             </footer>
+            {/* Custom Styles */}
+      <style jsx>{`
+        .bg-gradient {
+          background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%) !important;
+        }
+        .btn-primary {
+          background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%);
+          color: white;
+          border: none;
+          transition: all 0.3s ease;
+        }
+        .primary {
+          color: #0c54b7;
+        }
+        .border_primary {
+          border-bottom: 2px solid #0c54b7;
+        }
+        .btn-primary:hover {
+          background: linear-gradient(135deg, #1573b1 10%, #1d53b1 90%);
+          color: white;
+        }
+      `}</style>
     </div>
+    
   );
+  
   // Fungsi untuk mendapatkan nama kategori berdasarkan ID
   function getNamaKategori(kategoriId) {
     const kategori = kategoriKesehatan.find(k => k.id === kategoriId);
