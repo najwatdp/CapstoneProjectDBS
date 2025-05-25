@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./View/Auth/Login";
 import Register from "./View/Auth/Signin";
 import ForgotPassword from "./View/Auth/ForgotPassword";
-import Home from "./Pages/Home";
+import Home from "./View/Pages/Home";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "./View/Dashboard/Dashboard";
 import MainLayout from "./View/Dashboard/layouts/MainLayout";
@@ -17,11 +17,12 @@ import Analytics from "./View/Dashboard/Analytics";
 import Profile from "./View/Dashboard/Profile";
 import SetupRoleAdmin from "./SetupRoleAdmin";
 import SetupRoleUser from "./SetupRoleUser";
+import Error404 from "./View/Errors/404";
 
 function App() {
   return (
     <Routes>
-      <Route path="/home" element={<Home />} />
+      <Route path="/" element={<Home />} />
       {/* Auth */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

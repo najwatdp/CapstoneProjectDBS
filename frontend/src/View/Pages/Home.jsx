@@ -1,108 +1,114 @@
-import { useEffect } from "react"
-import { Navigate } from "react-router"
-import React from 'react';
-import { Navbar, Nav, Container, Button, Card, Carousel, Row, Col, Form, InputGroup } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Navbar, Nav, Container, Button, Card, Carousel, Row, Col, Form, InputGroup, Image } from 'react-bootstrap';
 import { FaSearch, FaHeartbeat, FaStethoscope, FaPhoneAlt, FaComments, FaArrowRight, FaUserMd } from 'react-icons/fa';
+import HomePresenter from '../../Presenter/HomePresenter';
+import Model from '../../Model/Model';
 
 export default function Home() {
 
-    const role = localStorage.getItem('role') !== 'admin';
+  const [categoris, setCategoris] = useState(null);
 
-    return role ? <ContainerHome/> : <Navigate to="/dashboard"/>;
-}
-// Dummy data untuk simulasi konten dinamis
-const trendingArticles = [
-  {
-    id: 1,
-    title: "10 Cara Menjaga Kesehatan Jantung di Usia Muda",
-    excerpt: "Temukan langkah-langkah pencegahan penyakit jantung sejak dini yang bisa Anda terapkan dalam kehidupan sehari-hari.",
-    image: "/image/test.webp",
-    category: "Jantung",
-    date: "18 Mei 2025"
-  },
-  {
-    id: 2,
-    title: "Panduan Lengkap Nutrisi untuk Ibu Hamil Trimester Pertama",
-    excerpt: "Kebutuhan nutrisi yang tepat sangat penting bagi perkembangan janin dan kesehatan ibu selama kehamilan awal.",
-    image: "/image/test.webp",
-    category: "Kehamilan",
-    date: "17 Mei 2025"
-  },
-  {
-    id: 3,
-    title: "Kenali Gejala Diabetes dan Cara Pencegahannya",
-    excerpt: "Deteksi dini dan perubahan gaya hidup dapat membantu mencegah dan mengelola diabetes dengan lebih baik.",
-    image: "/image/test.webp",
-    category: "Diabetes",
-    date: "16 Mei 2025"
-  }
-];
+  const presenter = new HomePresenter({
+    model: Model,
+    view: {
+      setCategoris: setCategoris
+    }
+  });
 
-const recentArticles = [
-  {
-    id: 4,
-    title: "Tips Menjaga Kesehatan Mental di Tengah Pandemi",
-    image: "/image/test.webp",
-    category: "Kesehatan Mental"
-  },
-  {
-    id: 5,
-    title: "Olahraga Ringan untuk Lansia: Aman dan Bermanfaat",
-    image: "/image/test.webp",
-    category: "Lansia"
-  },
-  {
-    id: 6,
-    title: "Makanan Sehat untuk Penderita Hipertensi",
-    image: "/image/test.webp",
-    category: "Hipertensi"
-  },
-  {
-    id: 7,
-    title: "Cara Efektif Mengatasi Insomnia Tanpa Obat",
-    image: "/image/test.webp",
-    category: "Tidur"
-  }
-];
+  useEffect(() => {
+    presenter.getCategoris();
+  }, []);
 
-const healthCategories = [
-  { id: 1, name: "Jantung", icon: <FaHeartbeat/>, count: 42 },
-  { id: 2, name: "Diabetes", icon: <FaHeartbeat/>, count: 38 },
-  { id: 3, name: "Kehamilan", icon: <FaHeartbeat/>, count: 53 },
-  { id: 4, name: "Kesehatan Mental", icon: <FaHeartbeat/>, count: 29 },
-  { id: 5, name: "COVID-19", icon: <FaHeartbeat/>, count: 47 },
-  { id: 6, name: "Nutrisi", icon: <FaHeartbeat/>, count: 61 }
-];
+  const trendingArticles = [
+    {
+      id: 1,
+      title: "10 Cara Menjaga Kesehatan Jantung di Usia Muda",
+      excerpt: "Temukan langkah-langkah pencegahan penyakit jantung sejak dini yang bisa Anda terapkan dalam kehidupan sehari-hari.",
+      image: "/image/test.webp",
+      category: "Jantung",
+      date: "18 Mei 2025"
+    },
+    {
+      id: 2,
+      title: "Panduan Lengkap Nutrisi untuk Ibu Hamil Trimester Pertama",
+      excerpt: "Kebutuhan nutrisi yang tepat sangat penting bagi perkembangan janin dan kesehatan ibu selama kehamilan awal.",
+      image: "/image/test.webp",
+      category: "Kehamilan",
+      date: "17 Mei 2025"
+    },
+    {
+      id: 3,
+      title: "Kenali Gejala Diabetes dan Cara Pencegahannya",
+      excerpt: "Deteksi dini dan perubahan gaya hidup dapat membantu mencegah dan mengelola diabetes dengan lebih baik.",
+      image: "/image/test.webp",
+      category: "Diabetes",
+      date: "16 Mei 2025"
+    }
+  ];
 
-function ContainerHome() {
+  const recentArticles = [
+    {
+      id: 4,
+      title: "Tips Menjaga Kesehatan Mental di Tengah Pandemi",
+      image: "/image/test.webp",
+      category: "Kesehatan Mental"
+    },
+    {
+      id: 5,
+      title: "Olahraga Ringan untuk Lansia: Aman dan Bermanfaat",
+      image: "/image/test.webp",
+      category: "Lansia"
+    },
+    {
+      id: 6,
+      title: "Makanan Sehat untuk Penderita Hipertensi",
+      image: "/image/test.webp",
+      category: "Hipertensi"
+    },
+    {
+      id: 7,
+      title: "Cara Efektif Mengatasi Insomnia Tanpa Obat",
+      image: "/image/test.webp",
+      category: "Tidur"
+    }
+  ];
+
+  const healthCategories = [
+    { id: 1, name: "<h2>Jantung</h2>", icon: <FaHeartbeat/>, count: 42 },
+    { id: 2, name: "Diabetes", icon: <FaHeartbeat/>, count: 38 },
+    { id: 3, name: "Kehamilan", icon: <FaHeartbeat/>, count: 53 },
+    { id: 4, name: "Kesehatan Mental", icon: <FaHeartbeat/>, count: 29 },
+    { id: 5, name: "COVID-19", icon: <FaHeartbeat/>, count: 47 },
+    { id: 6, name: "Nutrisi", icon: <FaHeartbeat/>, count: 61 }
+  ];
     return (
     <div className="homepage">
       {/* Navbar */}
     <Navbar bg="white" expand="lg" className="py-3 shadow-sm sticky-top">
         <Container>
         <Navbar.Brand href="#home" className="text-primary">
-            <img width="100" height="auto" src="/image/LogoHealth.png" alt="LogoKesehatanKu" /><span>
-                <img width="100" height="auto" src="/image/kementrian-sehat.webp" alt="LogoKementrian" />
+            <Image width={55} height="auto" src={"/image/LogoHealth.png"} alt="LogoKesehatanKu" /><span>
+                <Image width={55} height="auto" src={"/image/kementrian-sehat.webp"} alt="LogoKementrian" />
             </span>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mx-auto">
-            <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+            <Nav.Link href="#" className="mx-1 fs-6 d-flex align-items-center">
                 <FaHeartbeat className="me-1" /> 
-                <span>Kategori Kesehatan</span>
+                <span>Kategori</span>
             </Nav.Link>
-            <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+            <Nav.Link href="#" className="mx-1 fs-6 d-flex align-items-center">
                 <FaStethoscope className="me-1" /> 
                 <span>Cek Kesehatan</span>
             </Nav.Link>
-            <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+            <Nav.Link href="#" className="mx-1 fs-6 d-flex align-items-center">
               <FaPhoneAlt className="me-1" /> 
                 <span>Kontak</span>
             </Nav.Link>
-            <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+            <Nav.Link href="#" className="mx-1 fs-6 d-flex align-items-center">
                 <FaComments className="me-1" /> 
-                <span>Konsultasi Kesehatan</span>
+                <span>Konsultasi</span>
             </Nav.Link>
             </Nav>
             <Form className="d-flex me-2">
@@ -117,7 +123,8 @@ function ContainerHome() {
                 </Button>
               </InputGroup>
             </Form>
-            <Button variant="light" href="/login" className="border-grey text-grey">Masuk</Button>
+            <Button variant="primary" href="/login" className="border-grey text-grey mx-1">Masuk</Button>
+            <Button variant="light" href="/login" className="border-grey text-grey mx-1">Register</Button>
           </Navbar.Collapse>
         </Container>
       </Navbar>
@@ -131,7 +138,6 @@ function ContainerHome() {
             alt="First slide"
           />
           <Carousel.Caption className="text-start bg-dark bg-opacity-50 rounded p-3">
-            <h3>Informasi Kesehatan Terpercaya</h3>
             <p>Temukan artikel kesehatan terverifikasi oleh tim medis profesional</p>
             <Button variant="primary">Jelajahi Sekarang</Button>
           </Carousel.Caption>
@@ -143,7 +149,6 @@ function ContainerHome() {
             alt="Second slide"
           />
           <Carousel.Caption className="text-start bg-dark bg-opacity-50 rounded p-3">
-            <h3>Konsultasi dengan Dokter</h3>
             <p>Layanan konsultasi online dengan dokter spesialis terpercaya</p>
             <Button variant="primary">Konsultasi Sekarang</Button>
           </Carousel.Caption>
@@ -155,7 +160,6 @@ function ContainerHome() {
             alt="Third slide"
           />
           <Carousel.Caption className="text-start bg-dark bg-opacity-50 rounded p-3">
-            <h3>Cek Kesehatan Online</h3>
             <p>Evaluasi kondisi kesehatan Anda secara cepat dan akurat</p>
             <Button variant="primary">Cek Sekarang</Button>
           </Carousel.Caption>
@@ -202,15 +206,15 @@ function ContainerHome() {
               </Card.Header>
               <Card.Body className="p-0">
                 <ul className="list-group list-group-flush">
-                  {healthCategories.map((category) => (
+                  { categoris ? categoris.map((category) => (
                     <li key={category.id} className="list-group-item d-flex justify-content-between align-items-center">
                       <div className="d-flex align-items-center">
-                        <span className="me-2">{category.icon}</span>
-                        {category.name}
+                        <span className="me-2"><Image src={category.images} width={40} height={40} alt={category.nama_kategori} className="border border-0" /></span>
+                        {category.nama_kategori}
                       </div>
-                      <span className="badge bg-light text-dark rounded-pill">{category.count}</span>
+                      <span className="badge bg-light text-dark rounded-pill">33</span>
                     </li>
-                  ))}
+                  )) : <></> }
                 </ul>
               </Card.Body>
             </Card>
@@ -407,11 +411,9 @@ function ContainerHome() {
             <Col md={2} className="mb-4">
               <h5 className="fw-bold mb-4">Kategori</h5>
               <ul className="list-unstyled">
-                <li className="mb-2"><a href="#" className="text-white text-decoration-none">Jantung</a></li>
-                <li className="mb-2"><a href="#" className="text-white text-decoration-none">Diabetes</a></li>
-                <li className="mb-2"><a href="#" className="text-white text-decoration-none">Kesehatan Mental</a></li>
-                <li className="mb-2"><a href="#" className="text-white text-decoration-none">COVID-19</a></li>
-                <li className="mb-2"><a href="#" className="text-white text-decoration-none">Kehamilan</a></li>
+                { categoris ? categoris.map(categori => (
+                  <li className="mb-2"><a href="#" className="text-white text-decoration-none">{ categori.nama_kategori }</a></li>
+                )) : <></> }
               </ul>
             </Col>
             <Col md={2} className="mb-4">
@@ -461,4 +463,5 @@ function ContainerHome() {
       `}</style>
     </div>
   );
-};
+}
+// Dummy data untuk simulasi konten dinamis

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button } from "react-bootstrap";
 import Users from "../../Model/users";
 import LoadingBerputar from "../../Animation Loading/LoadingBerputar";
 import { useNavigate } from "react-router";
@@ -63,9 +64,9 @@ export default function Login() {
                                 <input type="checkbox" name="" id="" />
                                 <span>Keep me logged in</span>
                             </div>
-                            <button type="submit" className="w-100 btn btn-primary d-flex align-items-center justify-content-center text-light rounded-20px mb-20px fs-6 border p-8px" disabled={LoadingButton}>
-                                { LoadingButton ? <LoadingBerputar wdith={16} hiegth={16}/> : <><span>Login</span></>}
-                            </button>
+                            <Button type="submit" variant="primary" className="w-100 d-flex align-items-center justify-content-center text-light mb-20px rounded border p-8px" disabled={LoadingButton}>
+                                { LoadingButton ? <LoadingBerputar wdith={20} hiegth={20}/> : <><span>Login</span></> }
+                            </Button>
                             <div className="text-center mb-10px">
                                 <span>Don't have account? <a href="/register">Sign Up</a></span>
                             </div>

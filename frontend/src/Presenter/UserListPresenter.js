@@ -92,7 +92,6 @@ export default class UserListPresenter {
 
             return;
         }
-
         this.#view.setRenderUsers(users);
     }
     handleNext(start, end) {

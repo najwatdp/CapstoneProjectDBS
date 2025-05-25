@@ -1,6 +1,5 @@
 
-export default class DashboardPresenter {
-
+export default class MainLayoutPresenter {
     #model;
     #view;
 
@@ -9,14 +8,12 @@ export default class DashboardPresenter {
         this.#view = view;
     }
 
-    async getUser() {
+    async Logout() {
         try {
-            const res = await this.#model.Users.getUsers();
+            const res = await this.#model.Logout();
             console.log(res);
-            this.#view.setUsers(res.data);
         } catch (err) {
             console.error(err);
         }
     }
-
 }

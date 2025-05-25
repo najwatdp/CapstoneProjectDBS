@@ -1,6 +1,6 @@
 
-export default class DashboardPresenter {
-
+export default class HomePresenter {
+    
     #model;
     #view;
 
@@ -9,14 +9,13 @@ export default class DashboardPresenter {
         this.#view = view;
     }
 
-    async getUser() {
+    async getCategoris() {
         try {
-            const res = await this.#model.Users.getUsers();
+            const res = await this.#model.Dashboard.getKategori();
             console.log(res);
-            this.#view.setUsers(res.data);
+            this.#view.setCategoris(res.data);
         } catch (err) {
             console.error(err);
         }
     }
-
 }

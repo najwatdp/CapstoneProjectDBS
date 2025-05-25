@@ -61,7 +61,7 @@ const init = async () => {
         
     }
     
-    server.route(routeArtikel)
+    server.route(routeArtikel);
     server.route(routeKategori);
     server.route(routeUser)
     server.route(routePenyakit);
