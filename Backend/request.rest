@@ -117,7 +117,7 @@ Content-Type: application/json
 ###
 
 //API UNTUK MENAMPILKAN DATA ARTIKEL
-GET http://localhost:5000/api/
+GET http://localhost:5000/api/artikel
 
 
 ###
@@ -132,7 +132,10 @@ Content-Type: application/json
 
 ###
 //API UNTUK MENGUPDATE DATA ARTIKEL
-PUT http://localhost:5000/api/artikel
+PUT http://localhost:5000/api/artikel/1
+Content-Type: application/json
+
+
 
 
 ###
