@@ -26,16 +26,13 @@ import {
 } from "react-icons/fa";
 import { HomePresenter } from '../Presenter/HomePresenter';
 
-// Main Home Component
 export default function Home() {
-  // In a real application, use proper state management instead of localStorage
-  const role = "user"; // Simplified for artifact compatibility
+  const role = "user"; 
   const isUser = role !== "admin";
 
   return isUser ? <HomeView /> : <Navigate to="/dashboard" />;
 }
 
-// Home View Component
 function HomeView() {
   const [state, setState] = useState({
     artikel: [],

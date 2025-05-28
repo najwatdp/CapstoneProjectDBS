@@ -1,4 +1,3 @@
-// views/ContactView.js
 import React, { useState, useEffect, useRef } from "react";
 import {
   FaHeartbeat, FaStethoscope, FaPhoneAlt, FaComments, FaSearch,
@@ -21,8 +20,6 @@ export default function ContactView() {
   const [submitting, setSubmitting] = useState(false);
   
   const presenterRef = useRef(null);
-
-  // View interface methods that presenter will call
   const viewInterface = {
     setLoading: (isLoading) => setLoading(isLoading),
     setCategories: (categories) => setKategoriList(categories),
@@ -30,7 +27,6 @@ export default function ContactView() {
       setAlertType(type);
       setAlertMessage(message);
       setShowAlert(true);
-      // Auto hide after 5 seconds
       setTimeout(() => setShowAlert(false), 5000);
     },
     hideAlert: () => setShowAlert(false),
@@ -46,9 +42,7 @@ export default function ContactView() {
   };
 
   useEffect(() => {
-    // Initialize presenter with view interface
     presenterRef.current = new ContactPresenter(viewInterface);
-    // Set initial form state
     setFormData(presenterRef.current.getInitialFormState());
   }, []);
 

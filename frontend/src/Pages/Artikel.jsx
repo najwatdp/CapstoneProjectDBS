@@ -7,7 +7,6 @@ import {
 import { articlePresenter } from '../Presenter/ArtikelHomePresenter';
 
 const ArticleCategoryView = () => {
-  // Menggunakan presenter untuk mendapatkan data dan logic
   const {
     articles,
     categories,
@@ -23,7 +22,6 @@ const ArticleCategoryView = () => {
     handleRefresh
   } = articlePresenter.useArticleLogic();
 
-  // Loading state
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{height: '100vh'}}>
@@ -34,7 +32,6 @@ const ArticleCategoryView = () => {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{height: '100vh'}}>
@@ -47,7 +44,6 @@ const ArticleCategoryView = () => {
     );
   }
 
-  // Get data dari presenter
   const featuredArticles = articlePresenter.getArticlesBySection(filteredArticles, 'featured');
   const sidebarArticles = articlePresenter.getArticlesBySection(filteredArticles, 'sidebar');
   const mainArticles = articlePresenter.getArticlesBySection(filteredArticles, 'main');
@@ -70,7 +66,6 @@ const ArticleCategoryView = () => {
         />
 
         <Row>
-          {/* Main Content */}
           <Col lg={8}>
             {/* Featured Articles Component */}
             <FeaturedArticles 
@@ -121,7 +116,6 @@ const ArticleCategoryView = () => {
   );
 };
 
-// Navbar Component
 const NavbarComponent = ({ categories }) => (
   <Navbar bg="white" expand="lg" className="py-3 shadow-sm sticky-top">
     <Container>
@@ -277,7 +271,7 @@ const HealthTools = ({ tools }) => (
   </Card>
 );
 
-// Consultation CTA Component
+// Consultation Component
 const ConsultationCTA = () => (
   <Card className="border-0 shadow-none bg-gradient text-white mb-4">
     <Card.Body className="text-center p-4">
@@ -414,7 +408,6 @@ const MainArticleList = ({ articles, activeSubcategory, getCategoryName, formatD
   </>
 );
 
-// Footer Component
 const FooterComponent = ({ links }) => (
   <footer className="bg-dark text-white pt-5 pb-3">
     <Container>
@@ -476,7 +469,6 @@ const FooterComponent = ({ links }) => (
   </footer>
 );
 
-// Custom Styles Component
 const CustomStyles = () => (
   <style jsx>{`
     .bg-gradient {

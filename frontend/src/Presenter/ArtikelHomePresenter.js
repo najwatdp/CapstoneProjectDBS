@@ -6,7 +6,6 @@ class ArticlePresenter {
     this.model = new ArticleModel();
   }
 
-  // Hook untuk mengelola state dan logic
   useArticleLogic() {
     const [articles, setArticles] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -14,12 +13,10 @@ class ArticlePresenter {
     const [activeSubcategory, setActiveSubcategory] = useState("Semua");
     const [error, setError] = useState(null);
 
-    // Fetch data saat component mount
     useEffect(() => {
       this.loadData(setArticles, setCategories, setLoading, setError);
     }, []);
 
-    // Computed values
     const filteredArticles = this.model.filterArticlesByCategory(
       articles, 
       categories, 
@@ -29,26 +26,19 @@ class ArticlePresenter {
     const subcategories = this.model.createSubcategories(categories, articles);
 
     return {
-      // State
       articles,
       categories,
       loading,
       activeSubcategory,
       error,
-      
-      // Computed
       filteredArticles,
       subcategories,
-      
-      // Actions
       setActiveSubcategory,
-      
-      // Utility functions
+
       getCategoryName: (categoryId) => this.model.getCategoryName(categoryId, categories),
       formatDate: this.model.formatDate,
       truncateText: this.model.truncateText,
-      
-      // Handlers
+
       handleSubcategoryChange: (subcategory) => {
         setActiveSubcategory(subcategory);
       },
@@ -59,13 +49,11 @@ class ArticlePresenter {
     };
   }
 
-  // Load data dari model
   async loadData(setArticles, setCategories, setLoading, setError) {
     try {
       setLoading(true);
       setError(null);
 
-      // Fetch data secara paralel
       const [articlesData, categoriesData] = await Promise.all([
         this.model.fetchArticles(),
         this.model.fetchCategories()
@@ -81,7 +69,6 @@ class ArticlePresenter {
     }
   }
 
-  // Business logic methods
   getArticlesBySection(articles, section) {
     switch (section) {
       case 'featured':
@@ -95,7 +82,6 @@ class ArticlePresenter {
     }
   }
 
-  // Validation methods
   validateArticle(article) {
     return article && article.id && article.judul && article.isi;
   }
@@ -104,7 +90,6 @@ class ArticlePresenter {
     return category && category.id && category.nama_kategori;
   }
 
-  // Search functionality
   searchArticles(articles, searchTerm) {
     if (!searchTerm) return articles;
     
@@ -115,7 +100,6 @@ class ArticlePresenter {
     );
   }
 
-  // Sorting functionality
   sortArticles(articles, sortBy = 'date') {
     switch (sortBy) {
       case 'date':
@@ -129,7 +113,6 @@ class ArticlePresenter {
     }
   }
 
-  // Navigation helpers
   getArticleUrl(articleId) {
     return `/artikel/${articleId}`;
   }
@@ -138,7 +121,6 @@ class ArticlePresenter {
     return `/kategori/${categoryId}`;
   }
 
-  // Constants for view
   getTrendingTags() {
     return ['Sehat', 'Gizi', 'Kehamilan', 'Mental', 'Covid'];
   }
@@ -181,6 +163,5 @@ class ArticlePresenter {
   }
 }
 
-// Export singleton instance
 const articlePresenter = new ArticlePresenter();
 export { articlePresenter };

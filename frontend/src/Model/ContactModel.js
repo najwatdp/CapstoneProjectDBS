@@ -1,12 +1,9 @@
-// models/ContactModel.js
 import axios from 'axios';
 
 export class ContactModel {
   constructor() {
     this.baseURL = 'http://localhost:5000/api';
   }
-
-  // Fetch categories from API
   async fetchKategori() {
     try {
       const [kategoriRes, artikelRes] = await Promise.all([
@@ -17,7 +14,6 @@ export class ContactModel {
       const kategoriData = kategoriRes.data.data;
       const artikelData = artikelRes.data.data;
 
-      // Count articles per category
       const kategoriWithCount = kategoriData.map(k => {
         const count = artikelData.filter(a => String(a.kategori_id) === String(k.id)).length;
         return { ...k, count };
@@ -30,7 +26,6 @@ export class ContactModel {
     }
   }
 
-  // Validate form data
   validateFormData(formData) {
     const errors = {};
 
@@ -59,8 +54,6 @@ export class ContactModel {
       errors
     };
   }
-
-  // Submit contact form (simulation)
   async submitContactForm(formData) {
     return new Promise((resolve) => {
       // Simulate API call delay
@@ -72,8 +65,6 @@ export class ContactModel {
       }, 1000);
     });
   }
-
-  // Get initial form state
   getInitialFormState() {
     return {
       name: '',

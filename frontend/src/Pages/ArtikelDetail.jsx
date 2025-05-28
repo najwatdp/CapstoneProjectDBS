@@ -5,7 +5,6 @@ import { FaSearch, FaPhoneAlt, FaComments, FaStethoscope, FaHeartbeat, FaCalenda
 import { ArticlePresenter } from '../Presenter/DetailArtikelPresenter';
 
 const ArticleDetailPage = () => {
-  // State management
   const [loading, setLoading] = useState(true);
   const [artikel, setArtikel] = useState(null);
   const [allArticles, setAllArticles] = useState([]);
@@ -21,7 +20,6 @@ const ArticleDetailPage = () => {
   const { id } = useParams();
   const presenter = new ArticlePresenter();
 
-  // View interface untuk presenter
   const viewInterface = {
     setLoading: (loading) => setLoading(loading),
     setArticleData: (data) => setArtikel(data),
@@ -51,7 +49,6 @@ const ArticleDetailPage = () => {
     presenter.loadArticleData(id);
   }, [id]);
 
-  // Event handlers
   const handleLike = (status) => {
     presenter.handleLike(likeStatus, status, artikel);
   };
@@ -101,7 +98,6 @@ const ArticleDetailPage = () => {
 
   return (
     <div className="min-vh-100">
-      {/* Navbar */}
       <Navbar bg="white" expand="lg" className="py-3 shadow-sm sticky-top">
         <Container>
           <Navbar.Brand href="/home" className="primary">
@@ -164,7 +160,6 @@ const ArticleDetailPage = () => {
         </Container>
       </Navbar>
 
-      {/* Main Content */}
       <div className="container pt-5 pb-5">
         <div className="row">
           {/* Article Content */}
@@ -200,7 +195,6 @@ const ArticleDetailPage = () => {
                   </div>
                 </div>
 
-                {/* Action Buttons */}
                 <div className="d-flex flex-wrap gap-2 mb-4">
                   <button 
                     className={`btn ${likeStatus === 'like' ? 'btn-success' : 'btn-outline-success'} btn-sm`}
@@ -239,7 +233,6 @@ const ArticleDetailPage = () => {
                   </div>
                 )}
 
-                {/* Featured Image */}
                 <div className="mb-4">
                   <img 
                     src={artikel.images || 'default-image.png'} 
@@ -249,7 +242,6 @@ const ArticleDetailPage = () => {
                   />
                 </div>
 
-                {/* Article Content */}
                 <div 
                   className="article-content"
                   dangerouslySetInnerHTML={{ __html: artikel.isi }}
@@ -274,9 +266,8 @@ const ArticleDetailPage = () => {
             </div>
           </div>
 
-          {/* Sidebar */}
           <div className="col-lg-4">
-            {/* Popular Articles */}
+
             <div className="mb-4">
               <div className="card-header bg-white">
                 <h5 className="mb-0">Artikel Populer</h5>
@@ -348,7 +339,6 @@ const ArticleDetailPage = () => {
               </div>
             </div>
 
-            {/* Artikel Lainnya */}
             <div className="bg-white mt-4 mb-3">
               <h4 className="mb-0">Semua Artikel</h4>
             </div>
@@ -389,8 +379,6 @@ const ArticleDetailPage = () => {
             </div>
           </div>
         </div>
-        
-        {/* Related Articles Section */}
         <div className="row">
           <div className="bg-white">
             <h3 className="mb-3">Artikel Terkait</h3>
@@ -431,7 +419,6 @@ const ArticleDetailPage = () => {
           </div>
         </div>
       </div>
-      {/* Footer */}
       <footer className="bg-dark text-white pt-5 pb-3">
                     <Container>
                       <Row className="mb-5">
