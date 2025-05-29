@@ -172,7 +172,9 @@ const ArticleDetailPage = () => {
                     {presenter.getCategoryName(kategoriKesehatan, artikel.kategori_id)}
                   </span>
                   <h1 className="h2 mb-3">{artikel.judul}</h1>
-                  <p className="text-muted lead">{artikel.isi}</p>
+                  <p className="text-muted mw-100 word-break overflow-wrap-break-word" style={{ maxWidth: 800 + 'px' }}>
+                    <div dangerouslySetInnerHTML={{__html: artikel.isi }}></div>
+                  </p>
                 </div>
 
                 {/* Article Meta */}
@@ -243,7 +245,7 @@ const ArticleDetailPage = () => {
                 </div>
 
                 <div 
-                  className="article-content"
+                  className="article-content word-break overflow-wrap-break-word"
                   dangerouslySetInnerHTML={{ __html: artikel.isi }}
                   style={{ lineHeight: '1.8', fontSize: '16px' }}
                 />

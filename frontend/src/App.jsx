@@ -26,7 +26,7 @@ import Error404 from "./View/Errors/404";
 function App() {
   return (
     <Routes>
-      <Route path="/home" element={<Home />} />
+      <Route path="/" element={<Home />} />
       <Route path="/artikel" element={<Artikel />} />
       <Route path="/artikel/:id" element={<ArtikelDetail />} />
       <Route path="/kontak" element={<Kontak />} />
@@ -70,6 +70,7 @@ function App() {
         <Route path="analytics" element={<Analytics />} />
       </Route>
 
+      <Route path="/*" element={<Error404 />} />
       {/* loading */}
       <Route path="/percobaan" element={<SetupRoleAdmin />} />
     </Routes>
