@@ -265,8 +265,7 @@ function HomeView() {
                       <Card.Title className="fw-bold">
                         {artikel.judul}
                       </Card.Title>
-                      <Card.Text className="text-muted">
-                        {presenter.truncateText(artikel.isi, 200)}
+                      <Card.Text className="text-muted" dangerouslySetInnerHTML={{__html: presenter.truncateText(artikel.isi, 200)}}>
                       </Card.Text>
                     </Card.Body>
                   </Card>
@@ -337,8 +336,7 @@ function HomeView() {
                       <Card.Title className="fw-bold text-black">
                         {artikel.judul}
                       </Card.Title>
-                      <Card.Text className="text-muted">
-                        {presenter.truncateText(artikel.isi, 50)}
+                      <Card.Text className="text-muted" dangerouslySetInnerHTML={{__html: presenter.truncateText(artikel.isi, 50)}}>
                       </Card.Text>
                     </Card.Body>
                   </Card>

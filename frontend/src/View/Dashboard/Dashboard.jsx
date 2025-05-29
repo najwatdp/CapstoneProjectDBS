@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Button, ProgressBar, Table } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import { FaCog, FaUser, FaHome } from "react-icons/fa";
-import { 
-  FaUserPlus, FaNewspaper, FaEye, FaDownload, 
-  FaChartLine, FaChartArea, FaChartPie, FaCalendarAlt,  
+import {
+  FaUserPlus, FaNewspaper, FaEye, FaDownload,
+  FaChartLine, FaChartArea, FaChartPie, FaCalendarAlt,
 } from 'react-icons/fa';
 import '../Dashboard/layouts/MainLayout.css';
 import '../Dashboard/Dashboard.css';
@@ -14,15 +14,24 @@ import Model from '../../Model/Model';
 const Dashboard = () => {
 
   const [users, setUsers] = useState(null);
+  const [articles, setArticles] = useState(null);
+  const [categories, setCategories] = useState(null);
+  const [presentaseUsers, setPresentaseUsers] = useState(0);
+  const [presentaseArticles, setPresentaseArticles] = useState(0);
 
   const presenter = new DashboardPresenter({
     model: Model,
     view: {
-      setUsers: setUsers
+      setUsers: setUsers,
+      setArticles: setArticles,
+      setCategories: setCategories,
+      setPresentaseUsers: setPresentaseUsers,
+      setPresentaseArticles: setPresentaseArticles
     }
   });
   useEffect(() => {
-    presenter.getUser();
+    presenter.getUsers();
+    presenter.getArticles();
   }, []);
 
 
@@ -30,7 +39,7 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <div className="page-header mb-4">
         <h1 className="h3 mb-1">Dashboard</h1>
-          <p className="text-muted mb-0">Ringkasan data dan statistik utama untuk memantau kinerja sistem secara real-time.</p>
+        <p className="text-muted mb-0">Ringkasan data dan statistik utama untuk memantau kinerja sistem secara real-time.</p>
         {/* <Button variant="primary">
           <FaDownload className="me-2" /> Unduh Laporan
         </Button> */}
@@ -43,12 +52,12 @@ const Dashboard = () => {
             <Card.Body>
               <Row className="no-gutters align-items-center">
                 <Col className="mr-2">
-                  <div style={{ fontWeight: 'bold'}} className="text-primary text-uppercase mb-1">
+                  <div style={{ fontWeight: 'bold' }} className="text-primary text-uppercase mb-1">
                     Total Pengguna
                   </div>
-                  <div className="h5 mb-0 font-weight-bold">{ users !== null ? users.length : 0 }</div>
+                  <div className="h5 mb-0 font-weight-bold">{users !== null ? users.length : 0}</div>
                   <div className="mt-2 small">
-                    <span className="text-success me-2">+12%</span>
+                    <span className="text-success me-2">+{presentaseUsers}%</span>
                     <span className="text-muted">sejak bulan lalu</span>
                   </div>
                 </Col>
@@ -59,35 +68,35 @@ const Dashboard = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col lg={3} md={6} className="mb-4">
           <Card className=" border-left-success h-100 py-2">
             <Card.Body>
               <Row className="no-gutters align-items-center">
                 <Col className="mr-2">
-                  <div style={{ fontWeight: 'bold'}} className=" text-success text-uppercase mb-1">
+                  <div style={{ fontWeight: 'bold' }} className=" text-success text-uppercase mb-1">
                     Artikel Diterbitkan
                   </div>
-                  <div className="h5 mb-0 font-weight-bold">#</div>
+                  <div className="h5 mb-0 font-weight-bold">{articles ? articles.length : 0}</div>
                   <div className="mt-2 small">
-                    <span className="text-success me-2">+5%</span>
+                    <span className="text-success me-2">+{presentaseArticles}%</span>
                     <span className="text-muted">sejak bulan lalu</span>
                   </div>
                 </Col>
                 <Col xs="auto">
-                  <FaNewspaper  style={{ fontSize: '2rem', color: '#d1d3e2' }} />
+                  <FaNewspaper style={{ fontSize: '2rem', color: '#d1d3e2' }} />
                 </Col>
               </Row>
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col lg={3} md={6} className="mb-4">
           <Card className="border-left-info h-100 py-2">
             <Card.Body>
               <Row className="no-gutters align-items-center">
                 <Col className="mr-2">
-                  <div style={{ fontWeight: 'bold'}} className=" text-info text-uppercase mb-1">
+                  <div style={{ fontWeight: 'bold' }} className=" text-info text-uppercase mb-1">
                     Total Kunjungan
                   </div>
                   <div className="h5 mb-0 font-weight-bold">#</div>
@@ -103,13 +112,13 @@ const Dashboard = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col lg={3} md={6} className="mb-4">
           <Card className="border-left-warning h-100 py-2">
             <Card.Body>
               <Row className="no-gutters align-items-center">
                 <Col className="mr-2">
-                  <div style={{ fontWeight: 'bold'}} className="text-warning text-uppercase mb-1">
+                  <div style={{ fontWeight: 'bold' }} className="text-warning text-uppercase mb-1">
                     Target Bulanan
                   </div>
                   <div className="mb-0 font-weight-bold">#%</div>
@@ -215,43 +224,17 @@ const Dashboard = () => {
                     <th>Tanggal</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>10 Tips Menjaga Kesehatan Jantung</td>
-                    <td>Kesehatan Umum</td>
-                    <td>Dr. Andi</td>
-                    <td><span className="badge bg-success">Diterbitkan</span></td>
-                    <td>12/05/2025</td>
-                  </tr>
-                  <tr>
-                    <td>Manfaat Olahraga Pagi untuk Kesehatan</td>
-                    <td>Olahraga</td>
-                    <td>Budi S.</td>
-                    <td><span className="badge bg-success">Diterbitkan</span></td>
-                    <td>10/05/2025</td>
-                  </tr>
-                  <tr>
-                    <td>5 Makanan untuk Meningkatkan Daya Tahan Tubuh</td>
-                    <td>Nutrisi</td>
-                    <td>Dr. Citra</td>
-                    <td><span className="badge bg-warning">Menunggu</span></td>
-                    <td>09/05/2025</td>
-                  </tr>
-                  <tr>
-                    <td>Cara Mengatasi Stres di Tempat Kerja</td>
-                    <td>Kesehatan Mental</td>
-                    <td>Dr. Dewi</td>
-                    <td><span className="badge bg-warning">Menunggu</span></td>
-                    <td>08/05/2025</td>
-                  </tr>
-                  <tr>
-                    <td>Pentingnya Vaksinasi untuk Anak</td>
-                    <td>Kesehatan Umum</td>
-                    <td>Dr. Eko</td>
-                    <td><span className="badge bg-danger">Draft</span></td>
-                    <td>05/05/2025</td>
-                  </tr>
-                </tbody>
+                {articles ? articles.map(value => (
+                  <tbody>
+                    <tr>
+                      <td>{ value.judul }</td>
+                      <td>{ categories ? categories.find(categori => categori.id === value.kategori_id).nama_kategori : "tidak mempunyai kategori" }</td>
+                      <td>{ value.author }</td>
+                      <td><span className="badge bg-success">Diterbitkan</span></td>
+                      <td>12/05/2025</td>
+                    </tr>
+                  </tbody>
+                )) : <></>}
               </Table>
             </Card.Body>
           </Card>

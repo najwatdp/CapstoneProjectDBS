@@ -272,3 +272,10 @@ footer a:hover {
   box-shadow: none !important; 
   border-bottom: none !important;
 }
+
+.word-break {
+  word-break: break-word;
+}
+.overflow-wrap-break-word {
+  overflow-wrap: break-word;
+}
