@@ -141,3 +141,36 @@ Content-Type: application/json
 ###
 //API UNTUK MENGHAPUS DATA ARTIKEL
 DELETE http://localhost:5000/api/artikel/7
+
+
+
+/////////////////////////////////////////////////// CEK KESEHATAN //////////////////////////////////////////////
+
+
+### Get all categories
+GET http://localhost:5000/api/cek-kesehatan/categories
+Content-Type: application/json
+
+###
+
+### Get detail cek kesehatan by ID (ganti :id sesuai data)
+GET http://localhost:5000/api/cek-kesehatan/1
+Content-Type: application/json
+
+###
+
+### Start session cek kesehatan (ganti :id sesuai data)
+POST http://localhost:5000/api/cek-kesehatan/1/start
+Content-Type: application/json
+
+###
+
+### Submit answer
+POST http://localhost:5000/api/cek-kesehatan/submit-answer
+Content-Type: application/json
+
+{
+  "session_id": "abc123",
+  "question_id": "q1",
+  "answer": "yes"
+}

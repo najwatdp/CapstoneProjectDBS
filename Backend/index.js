@@ -1,5 +1,4 @@
 'use strict';
-
 import Hapi, { server } from '@hapi/hapi'
 import routeAuth from './routes/auth-route.js';
 import db from './config/db.js';
@@ -15,6 +14,8 @@ import routeUser from './routes/user-route.js';
 import routeKategori from './routes/kategori-route.js';
 import Artikel from './models/artikel-model.js';
 import routeArtikel from './routes/artikel-route.js';
+import { HasilKesehatan, PertanyaanKesehatan, SessionCekKesehatan } from './models/hasilCekKesehatan-model.js';
+import routesCekKesehatan from './routes/cekKesehatan-route.js';
 
 const init = async () => {
 
@@ -55,12 +56,13 @@ const init = async () => {
     try {
         await db.authenticate();
         console.log('Database Connected...');
-        await db.sync();
+        // await db.sync({alter:true});
         // await Artikel.sync({ alter: true });
     } catch (error) {
         
     }
     
+    server.route(routesCekKesehatan);
     server.route(routeArtikel);
     server.route(routeKategori);
     server.route(routeUser)
