@@ -6,6 +6,7 @@ import {
 } from 'react-icons/fa';
 import NavbarComponent from '../Component/NavbarComponent';
 import FooterComponent from '../Component/FooterComponent';
+import SubscriptionForm from '../Component/SubscriptionForm';
 import { articlePresenter } from '../Presenter/ArtikelHomePresenter';
 
 const ArticleCategoryView = () => {
@@ -202,7 +203,7 @@ const HealthTools = ({ tools }) => (
           <Col xs={6} key={index}>
             <Card className="bg-white bg-opacity-25 border-0 text-white h-100 hover-card">
               <Card.Body className="p-3 text-center">
-                <FaHeartbeat className="mb-2" size={20} />
+                <FaStethoscope className="mb-2" size={20} />
                 <h6 className="small mb-0">{tool.title}</h6>
               </Card.Body>
             </Card>
@@ -219,7 +220,9 @@ const ConsultationCTA = () => (
     <Card.Body className="text-center p-4">
       <h3 className="h5 mb-3">Konsultasi Penyakit Sekarang</h3>
       <p className="small mb-3">Dapatkan jawaban untuk pertanyaan seputar kehamilan Anda.</p>
+      <a href="/konsultasi-penyakit">
       <Button variant="light" className="primary">Konsultasi Sekarang</Button>
+      </a>
     </Card.Body>
   </Card>
 );
@@ -228,14 +231,7 @@ const ConsultationCTA = () => (
 const NewsletterSubscription = () => (
   <Card className="border-0 shadow-none bg-gradient text-white mb-4">
     <Card.Body className="p-4">
-      <h3 className="h5 mb-3">Dapatkan Artikel Terbaru</h3>
-      <p className="small mb-3">Langganan newsletter kami untuk mendapatkan informasi kesehatan terbaru.</p>
-      <Form>
-        <Form.Group className="mb-2">
-          <Form.Control type="email" placeholder="Email Anda" />
-        </Form.Group>
-        <Button variant="light" className="primary w-100">Langganan</Button>
-      </Form>
+      <SubscriptionForm />
     </Card.Body>
   </Card>
 );

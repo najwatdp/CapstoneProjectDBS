@@ -110,7 +110,7 @@ const NavbarComponent = () => {
               <span>Kontak</span>
             </Nav.Link>
 
-            <Nav.Link href="/konsultasi-kesehatan" className="mx-2 d-flex align-items-center">
+            <Nav.Link href="/konsultasi-penyakit" className="mx-2 d-flex align-items-center">
               <FaComments className="me-1" />
               <span>Konsultasi Kesehatan</span>
             </Nav.Link>
@@ -130,9 +130,9 @@ const NavbarComponent = () => {
               </InputGroup>
             </Form>
             <Button
-              variant="light"
+              variant="primary"
               href="/login"
-              className="border text-secondary"
+              className="border text-white"
             >
               Masuk
             </Button>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Navigate, useNavigate } from "react-router";
 import { Container, Row, Col, Form, InputGroup, Button } from 'react-bootstrap';
 import axios from 'axios';
 import {
@@ -9,9 +10,11 @@ import {
   FaWhatsapp,
   FaYoutube,
 } from "react-icons/fa";
+import SubscriptionForm from './SubscriptionForm';
 
 const FooterComponent = () => {
   const [kategoriKesehatan, setKategoriKesehatan] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchKategori = async () => {
@@ -25,6 +28,9 @@ const FooterComponent = () => {
 
     fetchKategori();
   }, []);
+  const handleSelect = (id) => {
+    navigate(`/cek-kesehatan/${id}`);
+  };
 
   return (
     <footer className="bg-dark text-white pt-5 pb-3">
@@ -65,22 +71,24 @@ const FooterComponent = () => {
             <h5 className="fw-bold mb-4">Layanan</h5>
             <ul className="list-unstyled">
               <li className="mb-2">
-                <a href="#" className="text-white text-decoration-none">Konsultasi Penyakit</a>
+                <a href="/konsultasi-penyakit" className="text-white text-decoration-none">Konsultasi Penyakit</a>
               </li>
-              <li className="mb-2">
-                <a href="#" className="text-white text-decoration-none">Cek Kesehatan</a>
-              </li>
+              <ul className="ps-0">
+                <li className="mb-2 fw-semibold text-white list-unstyled">Cek Kesehatan</li>
+                <li className="text-white" style={{ listStyleType: 'disc', marginLeft: '1.25rem' }}>
+                  <a href="#" onClick={() => handleSelect(1)} className="text-white text-decoration-none">Cacar Air</a>
+                </li>
+                <li className="text-white" style={{ listStyleType: 'disc', marginLeft: '1.25rem' }}>
+                  <a href="#" onClick={() => handleSelect(2)} className="text-white text-decoration-none">DBD</a>
+                </li>
+                <li className="text-white" style={{ listStyleType: 'disc', marginLeft: '1.25rem' }}>
+                  <a href="#" onClick={() => handleSelect(3)} className="text-white text-decoration-none">Alergi</a>
+                </li>
+              </ul>
             </ul>
           </Col>
           <Col md={4} className="mb-4">
-            <h5 className="fw-bold mb-4">Berlangganan</h5>
-            <p>Dapatkan informasi kesehatan terbaru langsung ke email Anda</p>
-            <Form className="mt-3">
-              <InputGroup className="mb-3">
-                <Form.Control placeholder="Alamat email Anda" aria-label="Email address" />
-                <Button className='btn-primary'>Langganan</Button>
-              </InputGroup>
-            </Form>
+            <SubscriptionForm />
             <h3 className="h5 mb-3">Ikuti Kami</h3>
               <div className="d-flex justify-content-between">
                     <Button variant="outline-light" className="rounded-circle p-2">
@@ -124,7 +132,7 @@ const FooterComponent = () => {
     </footer>
   );
 };
-<style jsx>{`
+      <style jsx>{`
         .bg-gradient {
           background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%) !important;
         }

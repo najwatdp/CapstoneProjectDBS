@@ -36,7 +36,7 @@ function App() {
       <Route path="/kategori" element={<Kategori />} />
       <Route path="/kategori/:id" element={<KategoriPage />} />
       <Route path="/cek-kesehatan/:id" element={<CekKesehatan />} />
-      <Route path="/konsultasi-kesehatan" element={<Konsultasi />} />
+      <Route path="/konsultasi-penyakit" element={<Konsultasi />} />
       {/* Auth */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

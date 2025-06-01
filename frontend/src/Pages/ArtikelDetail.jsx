@@ -5,6 +5,7 @@ import { FaSearch, FaPhoneAlt, FaComments, FaStethoscope, FaHeartbeat, FaCalenda
 import { ArticlePresenter } from '../Presenter/DetailArtikelPresenter';
 import NavbarComponent from '../Component/NavbarComponent';
 import FooterComponent from '../Component/FooterComponent';
+import SubscriptionForm from '../Component/SubscriptionForm';
 
 const ArticleDetailPage = () => {
   const [loading, setLoading] = useState(true);
@@ -252,26 +253,7 @@ const ArticleDetailPage = () => {
             {/* Newsletter Subscription */}
             <div className="card shadow-sm d-none d-sm-block">
               <div className="card-body">
-                <h5 className="primary">Newsletter Kesehatan</h5>
-                <p className="small">Dapatkan tips kesehatan terbaru langsung di email Anda!</p>
-                <form onSubmit={handleNewsletterSubmit}>
-                  <div className="mb-3">
-                    <input 
-                      type="email" 
-                      className="form-control border-0"
-                      placeholder="Masukkan email Anda"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <button 
-                    type="submit" 
-                    className="btn btn-primary btn-sm w-100"
-                  >
-                    Berlangganan
-                  </button>
-                </form>
+                <SubscriptionForm />
               </div>
             </div>
 
