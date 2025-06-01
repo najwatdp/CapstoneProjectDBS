@@ -110,7 +110,7 @@ const NavbarComponent = () => {
               <span>Kontak</span>
             </Nav.Link>
 
-            <Nav.Link href="#" className="mx-2 d-flex align-items-center">
+            <Nav.Link href="/konsultasi-kesehatan" className="mx-2 d-flex align-items-center">
               <FaComments className="me-1" />
               <span>Konsultasi Kesehatan</span>
             </Nav.Link>

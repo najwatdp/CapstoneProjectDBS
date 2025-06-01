@@ -10,6 +10,7 @@ import ArtikelDetail from "./Pages/ArtikelDetail";
 import Kontak from "./Pages/Kontak";
 import Kategori from "./Pages/Kategori";
 import CekKesehatan from "./Pages/CekKesehatan";
+import Konsultasi from "./Pages/Konsultasi";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "./View/Dashboard/Dashboard";
 import MainLayout from "./View/Dashboard/layouts/MainLayout";
@@ -35,6 +36,7 @@ function App() {
       <Route path="/kategori" element={<Kategori />} />
       <Route path="/kategori/:id" element={<KategoriPage />} />
       <Route path="/cek-kesehatan/:id" element={<CekKesehatan />} />
+      <Route path="/konsultasi-kesehatan" element={<Konsultasi />} />
       {/* Auth */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
