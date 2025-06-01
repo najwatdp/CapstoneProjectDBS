@@ -9,6 +9,8 @@ import {
   Card, Row, Col, Form, InputGroup
 } from "react-bootstrap";
 import { ContactPresenter } from '../Presenter/ContactPresenter';
+import NavbarComponent from '../Component/NavbarComponent';
+import FooterComponent from '../Component/FooterComponent';
 
 export default function ContactView() {
   const [formData, setFormData] = useState({});
@@ -73,99 +75,39 @@ export default function ContactView() {
   return (
     <div className="min-vh-100 d-flex flex-column">
       {/* Navbar */}
-      <Navbar bg="white" expand="lg" className="py-3 shadow-sm sticky-top">
-        <Container>
-          <Navbar.Brand href="/home" className="primary">
-            <img
-              width="100"
-              height="auto"
-              src="/image/LogoHealth.png"
-              alt="LogoKesehatanKu"
-            />
-            <span>
-              <img
-                width="100"
-                height="auto"
-                src="/image/kementrian-sehat.webp"
-                alt="LogoKementrian"
-              />
-            </span>
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mx-auto">
-              <NavDropdown id="nav-dropdown-dark-example" title="Kategori Kesehatan" menuVariant="light" className="no-hover">
-                {kategoriList.length > 0 ? (
-                  kategoriList.map((kategori) => (
-                    <Dropdown.Item key={kategori.id} href={`/kategori/${kategori.id}`} className="d-flex align-items-center">
-                      <img 
-                        src={kategori.images || 'default-image.png'} 
-                        alt={kategori.nama_kategori} 
-                        style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%', marginRight: 10 }} 
-                      />
-                      {kategori.nama_kategori}
-                    </Dropdown.Item>
-                  ))
-                ) : (
-                  <Dropdown.Item disabled>Tidak ada kategori</Dropdown.Item>
-                )}
-              </NavDropdown>
-              <Nav.Link href="#" className="mx-2 d-flex align-items-center">
-                <FaStethoscope className="me-1" />
-                <span>Cek Kesehatan</span>
-              </Nav.Link>
-              <Nav.Link href="/kontak" className="mx-2 d-flex align-items-center">
-                <FaPhoneAlt className="me-1" />
-                <span>Kontak</span>
-              </Nav.Link>
-              <Nav.Link href="#" className="mx-2 d-flex align-items-center">
-                <FaComments className="me-1" />
-                <span>Konsultasi Kesehatan</span>
-              </Nav.Link>
-            </Nav>
-            <Form className="d-flex me-2">
-              <InputGroup>
-                <Form.Control
-                  type="search"
-                  placeholder="Cari informasi kesehatan..."
-                  aria-label="Search"
-                />
-                <Button className="btn-primary">
-                  <FaSearch />
-                </Button>
-              </InputGroup>
-            </Form>
-            <Button variant="light" href="/login" className="border-grey text-grey">
-              Masuk
-            </Button>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+      <NavbarComponent />
 
       {/* Hero Section */}
       <div className="py-5">
         <div className="container">
           <div className="row align-items-center">
             <div className="col-lg-8">
-              <h1 className="display-4 fw-bold mb-3" style={{
-                background: 'linear-gradient(135deg, #1573b7 10%, #0c54b7 90%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}>
+              <h1
+                className="display-4 fw-bold mb-3"
+                style={{
+                  background: 'linear-gradient(135deg, #1573b7 10%, #0c54b7 90%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
                 Hubungi Kami
               </h1>
-              <p className="lead mb-4">
+              <p className="lead mb-4 fs-5 fs-md-4"> 
                 Tim KesehatanKU siap membantu Anda dengan pertanyaan seputar
                 kesehatan. Hubungi kami melalui berbagai channel yang tersedia
                 atau kunjungi langsung kantor kami.
               </p>
             </div>
             <div className="col-lg-4 text-center">
-              <FaPhoneAlt size={120} style={{
-                background: 'linear-gradient(135deg, #1573b7 10%, #0c54b7 90%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }} className="opacity-75" />
+              <FaPhoneAlt
+                size={120}
+                style={{
+                  background: 'linear-gradient(135deg, #1573b7 10%, #0c54b7 90%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+                className="opacity-75 d-none d-md-block" 
+              />
             </div>
           </div>
         </div>
@@ -174,7 +116,6 @@ export default function ContactView() {
       {/* Main Content */}
       <div className="container py-5 flex-grow-1">
         <div className="row">
-          {/* Contact Form */}
           <div className="col-lg-8 mb-5">
             <div className="card shadow-none">
               <div className="card-body p-4">
@@ -328,12 +269,9 @@ export default function ContactView() {
                     Telepon
                   </h6>
                   <p className="mb-1">
-                    <a href="tel:+622150829999" className="text-decoration-none">
+                    <a href="tel:+622150829999" className="text-decoration-none text-muted">
                       +62 21 5082 9999
                     </a>
-                  </p>
-                  <p className="mb-0 text-muted small">
-                    Senin - Jumat, 08:00 - 17:00 WIB
                   </p>
                 </div>
 
@@ -343,7 +281,7 @@ export default function ContactView() {
                     WhatsApp
                   </h6>
                   <p className="mb-0">
-                    <a href="https://wa.me/6281234567890" className="text-decoration-none text-success">
+                    <a href="https://wa.me/6281234567890" className="text-decoration-none text-muted">
                       +62 812 3456 7890
                     </a>
                   </p>
@@ -354,13 +292,8 @@ export default function ContactView() {
                     <FaEnvelope className="me-2" />
                     Email
                   </h6>
-                  <p className="mb-1">
-                    <a href="mailto:info@kesehatanku.id" className="text-decoration-none">
-                      info@kesehatanku.id
-                    </a>
-                  </p>
                   <p className="mb-0">
-                    <a href="mailto:konsultasi@kesehatanku.id" className="text-decoration-none">
+                    <a href="mailto:konsultasi@kesehatanku.id" className="text-decoration-none text-muted">
                       konsultasi@kesehatanku.id
                     </a>
                   </p>
@@ -403,123 +336,40 @@ export default function ContactView() {
         </div>
 
         {/* Additional Info Section */}
-        <div className="row mt-5">
-          <div className="col-md-6 mb-4">
-            <div className="card h-100 shadow-sm border-0">
-              <div className="card-body p-4 text-center">
-                <FaUserMd size={50} className="primary mb-3" />
-                <h5 className="fw-bold">Konsultasi Penyakit</h5>
-                <p className="text-muted">
-                  Butuh konsultasi penyakit anda secara langsung? Gunakan layanan
-                  konsultasi penyakit kami secara online yang tersedia 24/7.
-                </p>
-                <button className="btn btn-primary">Mulai Konsultasi</button>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6 mb-4">
-            <div className="card h-100 shadow-none border-0">
-              <div className="card-body p-4 text-center">
-                <FaStethoscope size={50} className="primary mb-3" />
-                <h5 className="fw-bold">Cek Kesehatan</h5>
-                <p className="text-muted">
-                  Pantau kondisi kesehatan Anda dengan berbagai tools
-                  pemeriksaan kesehatan yang telah terverifikasi medis.
-                </p>
-                <button className="btn btn-primary">Mulai Cek Kesehatan</button>
-              </div>
-            </div>
-          </div>
-        </div>
+<div className="row mt-5">
+  <div className="col-sm-6 col-md-6 mb-4">
+    <div className="card h-100 shadow-none border-0">
+      <div className="card-body p-4 text-center">
+        <FaUserMd size={50} className="primary mb-3" />
+        <h5 className="fw-bold">Konsultasi Penyakit</h5>
+        <p className="text-muted">
+          Butuh konsultasi penyakit anda secara langsung? Gunakan layanan
+          konsultasi penyakit kami secara online yang tersedia 24/7.
+        </p>
+        <button className="btn btn-primary">Mulai Konsultasi</button>
+      </div>
+    </div>
+  </div>
+  <div className="col-sm-6 col-md-6 mb-4">
+    <div className="card h-100 shadow-none border-0">
+      <div className="card-body p-4 text-center">
+        <FaStethoscope size={50} className="primary mb-3" />
+        <h5 className="fw-bold">Cek Kesehatan</h5>
+        <p className="text-muted">
+          Pantau kondisi kesehatan Anda dengan berbagai tools
+          pemeriksaan kesehatan yang telah terverifikasi medis.
+        </p>
+        <button className="btn btn-primary">Mulai Cek Kesehatan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
       </div>
 
       {/* Footer */}
-      <footer className="bg-dark text-white pt-5 pb-3">
-        <Container>
-          <Row className="mb-5">
-            <Col md={4} className="mb-4">
-              <img width="100" height="auto" src="/image/LogoHealth.png" alt="LogoKesehatanKu" />
-              <span>
-                <img width="100" height="auto" src="/image/kementrian-sehat.webp" alt="LogoKementrian" />
-              </span>
-              <p>
-                Sumber informasi kesehatan terpercaya dan terverifikasi untuk
-                membantu Anda menjalani hidup yang lebih sehat.
-              </p>
-              <div className="d-flex gap-3 mt-4">
-                <a href="#" className="text-white fs-5">
-                  <i className="bi bi-facebook"></i>
-                </a>
-                <a href="#" className="text-white fs-5">
-                  <i className="bi bi-twitter"></i>
-                </a>
-                <a href="#" className="text-white fs-5">
-                  <i className="bi bi-instagram"></i>
-                </a>
-                <a href="#" className="text-white fs-5">
-                  <i className="bi bi-youtube"></i>
-                </a>
-              </div>
-            </Col>
-            <Col md={2} className="mb-4">
-              <h5 className="fw-bold mb-4">Kategori</h5>
-              <ul className="list-unstyled">
-                <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">Jantung</a>
-                </li>
-                <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">Diabetes</a>
-                </li>
-                <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">Kesehatan Mental</a>
-                </li>
-                <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">COVID-19</a>
-                </li>
-                <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">Kehamilan</a>
-                </li>
-              </ul>
-            </Col>
-            <Col md={2} className="mb-4">
-              <h5 className="fw-bold mb-4">Layanan</h5>
-              <ul className="list-unstyled">
-                <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">Konsultasi Online</a>
-                </li>
-                <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">Cek Kesehatan</a>
-                </li>
-                <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">Direktori Dokter</a>
-                </li>
-                <li className="mb-2">
-                  <a href="#" className="text-white text-decoration-none">Kalkulator Kesehatan</a>
-                </li>
-              </ul>
-            </Col>
-            <Col md={4} className="mb-4">
-              <h5 className="fw-bold mb-4">Berlangganan</h5>
-              <p>Dapatkan informasi kesehatan terbaru langsung ke email Anda</p>
-              <Form className="mt-3">
-                <InputGroup className="mb-3">
-                  <Form.Control placeholder="Alamat email Anda" aria-label="Email address" />
-                  <Button variant="primary">Langganan</Button>
-                </InputGroup>
-              </Form>
-            </Col>
-          </Row>
-          <hr />
-          <div className="d-flex flex-column flex-md-row justify-content-between align-items-center">
-            <p className="mb-2 mb-md-0">© 2025 KesehatanKU. Hak Cipta Dilindungi.</p>
-            <div>
-              <a href="#" className="text-white text-decoration-none me-3">Syarat dan Ketentuan</a>
-              <a href="#" className="text-white text-decoration-none me-3">Kebijakan Privasi</a>
-              <a href="#" className="text-white text-decoration-none">Kontak</a>
-            </div>
-          </div>
-        </Container>
-      </footer>
+      <FooterComponent />
 
       <style jsx>{`
         .bg-gradient {

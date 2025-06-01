@@ -122,15 +122,13 @@ class ArticlePresenter {
   }
 
   getTrendingTags() {
-    return ['Sehat', 'Gizi', 'Kehamilan', 'Mental', 'Covid'];
+    return ['Sehat', 'Gizi', 'Kehamilan', 'Mental', 'Nutrisi','Penyakit Kulit','Gaya Hidup','Kesehatan Diri'];
   }
 
   getHealthTools() {
     return [
-      { title: 'Kalkulator BMI' },
-      { title: 'Tes Risiko Diabetes' },
-      { title: 'Kalori Harian' },
-      { title: 'Usia Kehamilan' }
+      { title: 'Cek Kesehatan' },
+      { title: 'Konsultasi Penyakit' },
     ];
   }
 
@@ -144,23 +142,6 @@ class ArticlePresenter {
     ];
   }
 
-  getFooterLinks() {
-    return {
-      categories: [
-        { name: 'Jantung', url: '#' },
-        { name: 'Diabetes', url: '#' },
-        { name: 'Kesehatan Mental', url: '#' },
-        { name: 'COVID-19', url: '#' },
-        { name: 'Kehamilan', url: '#' }
-      ],
-      services: [
-        { name: 'Konsultasi Online', url: '#' },
-        { name: 'Cek Kesehatan', url: '#' },
-        { name: 'Direktori Dokter', url: '#' },
-        { name: 'Kalkulator Kesehatan', url: '#' }
-      ]
-    };
-  }
 }
 
 const articlePresenter = new ArticlePresenter();
