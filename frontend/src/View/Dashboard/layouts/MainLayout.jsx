@@ -60,7 +60,7 @@ const MainLayout = ({ children }) => {
         { path: '/dashboard/health-info/categories', icon: <FaListUl />, label: 'Kategori' }
       ]
     },
-    { path: '/dashboard/analytics', icon: <FaChartBar />, label: 'Analitik' },
+    { path: '/dashboard/health', icon: <FaChartBar />, label: 'Analitik' },
     { path: '/dashboard/settings', icon: <FaCog />, label: 'Pengaturan' },
     { path: '/dashboard/profile', icon: <FaUser />, label: 'Profil' }
   ];

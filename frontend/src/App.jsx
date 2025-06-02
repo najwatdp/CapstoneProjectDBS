@@ -22,6 +22,7 @@ import Profile from "./View/Dashboard/Profile";
 import SetupRoleAdmin from "./SetupRoleAdmin";
 import SetupRoleUser from "./SetupRoleUser";
 import Error404 from "./View/Errors/404";
+import KesehatanList from "./View/Dashboard/KesehatanList";
 
 function App() {
   return (
@@ -67,7 +68,7 @@ function App() {
         <Route path="health-info/create" element={<CreateArticle />} />
         <Route path="health-info/categories" element={<Categories />} />
         <Route path="settings" element={<Settings />} />
-        <Route path="analytics" element={<Analytics />} />
+        <Route path="health" element={<KesehatanList />} />
       </Route>
 
       <Route path="/*" element={<Error404 />} />
