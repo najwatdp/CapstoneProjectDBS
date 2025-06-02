@@ -137,7 +137,7 @@ body {
 
 /* Link styles */
 a {
-  color: #0d6efd;
+  color: #0c54b7;
   transition: all 0.3s ease;
 }
 
@@ -166,7 +166,7 @@ a:hover {
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #0d6efd;
+  background-color: #0c54b7;
   transition: width 0.3s ease;
 }
 
@@ -211,19 +211,24 @@ a:hover {
 }
 
 .btn-primary {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%);
+          color: white;
+          border: none;
+          transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-  background-color: #0a58ca;
-  border-color: #0a58ca;
+  background: linear-gradient(135deg, #1573b1 10%, #1d53b1 90%);
+          color: white;
 }
 
 /* Section styles */
 .bg-light {
   background-color: #f8f9fa !important;
 }
+        .bg-gradient {
+          background: linear-gradient(135deg, #1573b7 10%, #0c54b7 90%) !important;
+        }
 
 /* Footer */
 footer {
@@ -231,7 +236,7 @@ footer {
 }
 
 footer a:hover {
-  color: #0d6efd !important;
+  color: #0c54b7 !important;
 }
 
 /* Media queries for responsiveness */
@@ -239,9 +244,80 @@ footer a:hover {
   .hero-carousel .carousel-item {
     height: 350px;
   }
+  
 
   .hero-carousel .carousel-caption {
     padding: 2rem !important;
+  }
+}
+@media (max-width: 576px) {
+  .title-h2 {
+    font-size: 1.1rem;
+  }
+  .link-semua {
+    font-size: 0.575rem;
+  }
+  .custom-badge {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .custom-createAt {
+    font-size: 0.6rem;
+  }
+  .title-card {
+    font-size: 0.8rem;
+  }
+  .title-text {
+    font-size: 0.7rem;
+  }
+  .title-author {
+    font-size: 0.5rem;
+  }
+
+  /* horizontal card */
+  .horizontal-card {
+    flex-direction: row !important;
+    align-items: flex-start;
+  }
+
+  .horizontal-card .card-img-top {
+    width: 40%;
+    height: 80%;
+    object-fit: cover;
+  }
+
+  .horizontal-card .card-body {
+    padding: 0.5rem 0.75rem;
+  }
+
+  /* horizontal card artikel */
+  /* horizontal card */
+  .horizontal-card-artikel {
+    flex-direction: row !important;
+    align-items: flex-start;
+  }
+
+  .horizontal-card-artikel .card-img-top {
+    width: 100%;
+    height: 90%;
+    object-fit: cover;
+  }
+
+  .horizontal-card-artikel .card-body {
+    padding: 0.5rem 0.75rem;
+  }
+  
+
+  /* subcategori */
+  .subcategory-nav .nav-link {
+    font-size: 0.75rem;      
+    margin: 0 0.1rem;    
+    padding: 0.1rem 0.5rem; 
+  }
+
+  .subcategory-nav span {
+    font-size: 0.65rem;      
   }
 }
 
