@@ -1,4 +1,3 @@
-// models/homeModel.js
 import axios from "axios";
 
 export class HomeModel {
@@ -6,7 +5,6 @@ export class HomeModel {
     this.baseURL = "http://localhost:5000/api";
   }
 
-  // Mengambil data artikel
   async fetchArtikel() {
     try {
       const response = await axios.get(`${this.baseURL}/artikel`);
@@ -28,7 +26,6 @@ export class HomeModel {
     }
   }
 
-  // Mengambil data kategori kesehatan
   async fetchKategoriKesehatan() {
     try {
       const response = await axios.get(`${this.baseURL}/kategori`);
@@ -50,7 +47,6 @@ export class HomeModel {
     }
   }
 
-  // Utility functions untuk data processing
   shuffleArray(array) {
     return [...array].sort(() => Math.random() - 0.5);
   }
@@ -76,11 +72,7 @@ export class HomeModel {
     const kategori = kategoriKesehatan.find(k => k.id === kategoriId);
     return kategori ? kategori.nama_kategori : 'Kategori Tidak Ditemukan';
   }
-
-  // Check user role from storage (Note: In real MVP, this would be in a separate auth model)
   getUserRole() {
-    // In a real application, avoid localStorage in artifacts
-    // This is just for demonstration - use state management instead
-    return "user"; // Simplified for artifact compatibility
+    return "user"; 
   }
 }
