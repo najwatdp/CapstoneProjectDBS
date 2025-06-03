@@ -14,26 +14,20 @@ export class ArticlePresenter {
     this.view.setLoading(true);
     
     try {
-      // Fetch semua data yang diperlukan secara paralel
       const [artikelResult, kategoriResult, semuaArtikelResult] = await Promise.all([
         this.model.getArticleById(articleId),
         this.model.getCategories(),
         this.model.getAllArticles()
       ]);
 
-      // Handle hasil fetch artikel
       if (!artikelResult.success) {
         this.view.showError('Gagal memuat artikel');
         return;
       }
-
-      // Handle hasil fetch kategori
       if (!kategoriResult.success) {
         this.view.showError('Gagal memuat kategori');
         return;
       }
-
-      // Handle hasil fetch semua artikel
       if (!semuaArtikelResult.success) {
         this.view.showError('Gagal memuat daftar artikel');
         return;
@@ -42,13 +36,10 @@ export class ArticlePresenter {
       const artikel = artikelResult.data;
       const kategoris = Array.isArray(kategoriResult.data) ? kategoriResult.data : [];
       const semuaArtikel = semuaArtikelResult.data;
-
-      // Proses data untuk view
       const kategoriWithCount = this.model.addCountToCategories(kategoris, semuaArtikel);
       const randomArticles = this.model.getRandomArticles(semuaArtikel, artikel.id, artikel.kategori_id);
       const popularArticles = this.model.getPopularArticles(semuaArtikel, artikel.id);
 
-      // Update view dengan data yang sudah diproses
       this.view.setArticleData(artikel);
       this.view.setCategories(kategoriWithCount);
       this.view.setRelatedArticles(randomArticles);
@@ -63,19 +54,13 @@ export class ArticlePresenter {
   }
 
   handleLike(currentStatus, newStatus, artikel) {
-    // Update status like
     let newLikeStatus = currentStatus === newStatus ? null : newStatus;
-    
-    // Hitung likes/dislikes baru
     let newLikes = artikel.likes;
     let newDislikes = artikel.dislikes;
-    
     if (currentStatus === 'like') newLikes--;
     if (currentStatus === 'dislike') newDislikes--;
-    
     if (newLikeStatus === 'like') newLikes++;
     if (newLikeStatus === 'dislike') newDislikes++;
-    
     this.view.updateLikeStatus(newLikeStatus, newLikes, newDislikes);
   }
 

@@ -5,13 +5,11 @@ class ArticleModel {
     this.baseURL = 'http://localhost:5000/api';
   }
 
-  // Fetch artikel dari API
   async fetchArticles() {
     try {
       const response = await axios.get(`${this.baseURL}/artikel`);
       const data = response.data;
 
-      // Handle berbagai struktur response
       if (Array.isArray(data)) {
         return data;
       } else if (Array.isArray(data.artikel)) {
@@ -28,13 +26,11 @@ class ArticleModel {
     }
   }
 
-  // Fetch kategori dari API
   async fetchCategories() {
     try {
       const response = await axios.get(`${this.baseURL}/kategori`);
       const data = response.data;
 
-      // Handle berbagai struktur response
       if (Array.isArray(data)) {
         return data;
       } else if (Array.isArray(data.kategori)) {
@@ -51,7 +47,6 @@ class ArticleModel {
     }
   }
 
-  // Filter artikel berdasarkan kategori
   filterArticlesByCategory(articles, categories, activeCategory) {
     if (activeCategory === "Semua") {
       return articles;
@@ -84,14 +79,10 @@ class ArticleModel {
       })),
     ];
   }
-
-  // Dapatkan nama kategori berdasarkan ID
   getCategoryName(categoryId, categories) {
     const category = categories.find(c => c.id === categoryId);
     return category ? category.nama_kategori : 'Kategori Tidak Ditemukan';
   }
-
-  // Format tanggal
   formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('id-ID', { 
       day: 'numeric', 
@@ -100,7 +91,6 @@ class ArticleModel {
     });
   }
 
-  // Truncate text
   truncateText(text, maxLength = 200) {
     if (!text) return '';
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;

@@ -21,7 +21,12 @@ export default class ArticlePresenter {
             data.append("author", author);
             data.append("kategori_id", kategori);
             const res = await this.#model.createArticle(data);
-            console.log(res);
+            alert(res.status);
+            if (res.status === "success") {
+                this.#view.navigate("/dashboard/health-info");
+            }
+            // this.#view.setMessage(res);
+            // this.#view.setShow(true);
         } catch (err) {
             console.error(err);
         } finally {
@@ -62,11 +67,19 @@ export default class ArticlePresenter {
             data.append("kategori_id", kategori ? kategori : article.kategori_id);
             data.append("images", images);
             const res = await this.#model.updateArticle(id, data);
-            console.log(res);
+            alert(res.status);
+            if (res.status === "success") {
+                this.#view.navigate("/dashboard/health-info");
+            }
+            // this.#view.setMessage(res);
+            // this.#view.setShow(true);
         } catch (err) {
             console.error(err);
         } finally {
             this.#view.setLoading(false);
+            setTimeout(() => {
+                this.#view.navigate("/dashboard/health-info");
+            }, 2000);
         }
     }
     async getKategori() {

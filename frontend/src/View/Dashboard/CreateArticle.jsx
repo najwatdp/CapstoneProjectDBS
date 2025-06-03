@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { Editor } from "@tinymce/tinymce-react";
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, Button, Modal } from 'react-bootstrap';
 import { FaSave, FaTimes } from 'react-icons/fa';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import ArticlePresenter from '../../Presenter/ArticlePresenter';
 import Dashboard from '../../Model/modelDashboard';
 import { useState } from 'react';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useRef } from 'react';
 
 const CreateArticle = () => {
@@ -20,8 +20,13 @@ const CreateArticle = () => {
   const [kategori, setKategori] = useState(null);
   const [kategoris, setKategoris] = useState(null);
 
+  const [show, setShow] = useState(false);
+  const [message, setMessage] = useState(null);
+
   const editorRef = useRef();
   const location = useLocation();
+  const navigate = useNavigate();
+
   const getArticle = location.state || null;
   const [editId, setEditId] = useState(getArticle !== null ? getArticle.id : null);
 
@@ -29,7 +34,10 @@ const CreateArticle = () => {
     model: Dashboard,
     view: {
       setLoading: setLoading,
-      setKategoris: setKategoris
+      setKategoris: setKategoris,
+      navigate: navigate,
+      setShow: setShow,
+      setMessage: setMessage
     }
   });
 

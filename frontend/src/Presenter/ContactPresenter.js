@@ -1,4 +1,3 @@
-// presenters/ContactPresenter.js
 import { ContactModel } from '../Model/ContactModel';
 
 export class ContactPresenter {
@@ -25,7 +24,6 @@ export class ContactPresenter {
   }
 
   async handleSubmit(formData) {
-    // Validate form data
     const validation = this.model.validateFormData(formData);
     
     if (!validation.isValid) {

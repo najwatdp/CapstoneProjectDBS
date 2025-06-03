@@ -65,7 +65,6 @@ export class ArticleModel {
     }
   }
 
-  // Utility methods untuk manipulasi data
   filterArticlesByCategory(articles, categoryId) {
     return articles.filter(article => 
       String(article.kategori_id) === String(categoryId)
