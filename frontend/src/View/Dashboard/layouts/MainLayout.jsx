@@ -88,7 +88,7 @@ const MainLayout = ({ children }) => {
           </Button>
         </div>
         
-        <Nav className="flex-column sidebar-nav">
+        <Nav className="flex-column sidebar-nav media-screen-600">
           {navigationItems.map((item, index) => {
             const isActive = location.pathname === item.path;
             if (item.submenu) {
@@ -162,55 +162,6 @@ const MainLayout = ({ children }) => {
               >
                 {darkMode ? <FaSun /> : <FaMoon />}
               </Button>
-              
-              <Dropdown align="end" className="notification-dropdown">
-                <Dropdown.Toggle variant="link" id="notification-dropdown">
-                  <FaBell />
-                  <Badge bg="danger" pill className="notification-badge">3</Badge>
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <div className="notification-header">
-                    <h6>Notifikasi</h6>
-                    <a href="#" className="text-muted">Tandai semua dibaca</a>
-                  </div>
-                  <Dropdown.Item>
-                    <div className="notification-item">
-                      <div className="notification-icon bg-info">
-                        <FaUser />
-                      </div>
-                      <div className="notification-content">
-                        <p>Pengguna baru telah mendaftar</p>
-                        <small className="text-muted">2 menit yang lalu</small>
-                      </div>
-                    </div>
-                  </Dropdown.Item>
-                  <Dropdown.Item>
-                    <div className="notification-item">
-                      <div className="notification-icon bg-success">
-                        <FaNewspaper />
-                      </div>
-                      <div className="notification-content">
-                        <p>Artikel baru telah dipublikasikan</p>
-                        <small className="text-muted">1 jam yang lalu</small>
-                      </div>
-                    </div>
-                  </Dropdown.Item>
-                  <Dropdown.Item>
-                    <div className="notification-item">
-                      <div className="notification-icon bg-warning">
-                        <FaCog />
-                      </div>
-                      <div className="notification-content">
-                        <p>Pengaturan sistem telah diperbarui</p>
-                        <small className="text-muted">1 hari yang lalu</small>
-                      </div>
-                    </div>
-                  </Dropdown.Item>
-                  <div className="notification-footer">
-                    <Link to="/dashboard/notifications">Lihat semua notifikasi</Link>
-                  </div>
-                </Dropdown.Menu>
-              </Dropdown>
               
               <Dropdown align="end" className="user-dropdown">
                 <Dropdown.Toggle variant="link" id="user-dropdown">

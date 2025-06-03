@@ -36,7 +36,7 @@ const Dashboard = () => {
 
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container text-screen-md">
       <div className="page-header mb-4">
         <h1 className="h3 mb-1">Dashboard</h1>
         <p className="text-muted mb-0">Ringkasan data dan statistik utama untuk memantau kinerja sistem secara real-time.</p>
@@ -47,7 +47,7 @@ const Dashboard = () => {
 
       {/* Statistic Cards */}
       <Row>
-        <Col lg={3} md={6} className="mb-4">
+        <Col lg={3} md={3} xs={3} className="mb-4">
           <Card className="border-left-primary h-100 py-2">
             <Card.Body>
               <Row className="no-gutters align-items-center">
@@ -69,7 +69,7 @@ const Dashboard = () => {
           </Card>
         </Col>
 
-        <Col lg={3} md={6} className="mb-4">
+        <Col lg={3} md={3} xs={3} className="mb-4">
           <Card className=" border-left-success h-100 py-2">
             <Card.Body>
               <Row className="no-gutters align-items-center">
@@ -91,7 +91,7 @@ const Dashboard = () => {
           </Card>
         </Col>
 
-        <Col lg={3} md={6} className="mb-4">
+        <Col lg={3} md={3} xs={3} className="mb-4">
           <Card className="border-left-info h-100 py-2">
             <Card.Body>
               <Row className="no-gutters align-items-center">
@@ -113,7 +113,7 @@ const Dashboard = () => {
           </Card>
         </Col>
 
-        <Col lg={3} md={6} className="mb-4">
+        <Col lg={3} md={3} xs={3} className="mb-4">
           <Card className="border-left-warning h-100 py-2">
             <Card.Body>
               <Row className="no-gutters align-items-center">

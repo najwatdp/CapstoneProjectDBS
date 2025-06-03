@@ -417,4 +417,14 @@ body.dark-mode {
   .search-bar {
     display: none;
   }
+  .media-screen-600 {
+    width: 0;
+  }
 }
+
+@media screen and (max-width: 576px) {
+  .text-screen-md {
+    font-size: 0.8rem !important;
+  }
+}
+

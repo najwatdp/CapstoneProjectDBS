@@ -30,31 +30,20 @@ export default function Login() {
 
     return (
         <>
-            <div className="container d-flex align-items-center justify-content-center vw-100 dvh-100">
+            <div className="container-fluid d-flex align-items-center justify-content-center vw-100 dvh-100">
                 <div className="d-flex align-items-center justify-content-center w-80 h-100">
                     <div className="d-flex flex-column w-50 h-100 p-20px w-lg-90">
                         <div className="">
-                            <img src="/image/LogoHealth.jpg" className="w-60px h-60px m-0" alt="Logo Health" />
+                            <img src="/image/LogoHealth.png" className="w-100px h-60px m-0" alt="Logo Health" />
                         </div>
                         <div className="m-15px">
-                            <h3 className="m-0">Welcome Back!</h3>
-                            <span className="fs-15px color-span">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</span>
-                        </div>
-                        <div className="d-flex justify-content-around w-100 gap-1 mb-10px">
-                            <a href="" className="d-flex align-items-center justify-content-center g-5px p-6px pi-10px text-dark border-white shadow rounded-20px hover-border-black">
-                                <img src="/image/Google.png" className="w-20px h-20px" alt="" />
-                                Google</a>
-                            <a href="" className="d-flex align-items-center justify-content-center g-5px p-6px pi-10px text-dark border-white shadow rounded-20px hover-border-black">
-                                <img src="/image/Apple.png" className="w-20px h-20px" alt="" />
-                                Apple</a>
-                            <a href="" className="d-flex align-items-center justify-content-center g-5px p-6px pi-10px text-dark border-white shadow rounded-20px hover-border-black">
-                                <img src="/image/Linkedin.png" className="w-20px h-20px" alt="" />
-                                LinkedIn</a>
+                            <h3 className="m-0">Selamat datang kembali!</h3>
+                            <span className="fs-15px color-span">Masuk untuk melanjutkan akses informasi kesehatan Anda dengan mudah</span>
                         </div>
                         <form onSubmit={submit}>
                             <div className="mb-20px">
                                 <label htmlFor="email">Email Address</label>
-                                <input type="text" name="email" onChange={(e) => setEmail(e.target.value)} id="email" placeholder="example@gmail.com" className="d-block w-100 p-8px pi-15 rounded-20px mb-5px border border-0 outline-1" disabled={LoadingButton} />
+                                <input type="text" name="email" onChange={(e) => setEmail(e.target.value)} id="email" placeholder="email@gmail.com" className="d-block w-100 p-8px pi-15 rounded-20px mb-5px border border-0 outline-1" disabled={LoadingButton} />
                             </div>
                             <div className="mb-20px">
                                 <label htmlFor="password">Password</label>

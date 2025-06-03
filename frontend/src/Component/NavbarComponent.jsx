@@ -18,10 +18,21 @@ import {
   FaHeartbeat,
   FaEnvelope,
 } from "react-icons/fa";
+import NavbarComponentPresenter from "../Presenter/NavbarComponentPresenter";
+import Dashboard from "../Model/modelDashboard";
 
 const NavbarComponent = () => {
   const [kategoriKesehatan, setKategoriKesehatan] = useState([]);
+  const [categoires, setCategories] = useState(null);
   const navigate = useNavigate();
+
+
+  const presenter = new NavbarComponentPresenter({
+    model: Dashboard,
+    view: {
+      setCategories: setCategories
+    }
+  })
 
   useEffect(() => {
     const fetchKategori = async () => {
@@ -32,7 +43,7 @@ const NavbarComponent = () => {
         console.error("Gagal mengambil kategori:", error);
       }
     };
-
+    presenter.getKategori();
     fetchKategori();
   }, []);
 
@@ -55,11 +66,11 @@ const NavbarComponent = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mx-auto d-flex align-items-center">
             <NavDropdown title={
-                <>
-                  <FaHeartbeat className="me-1" />
-                  Kategori Kesehatan
-                </>
-              } id="nav-dropdown">
+              <>
+                <FaHeartbeat className="me-1" />
+                Kategori Kesehatan
+              </>
+            } id="nav-dropdown">
               {kategoriKesehatan.length > 0 ? (
                 kategoriKesehatan.map((kategori) => (
                   <NavDropdown.Item
@@ -94,15 +105,11 @@ const NavbarComponent = () => {
               }
               id="cek-kesehatan-dropdown"
             >
-              <NavDropdown.Item onClick={() => handleSelect(1)}>
-                Cacar Air
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => handleSelect(2)}>
-                DBD
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => handleSelect(3)}>
-                Alergi
-              </NavDropdown.Item>
+              {categoires?.map(value => (
+                <NavDropdown.Item onClick={() => handleSelect(value.id)}>
+                  {value.nama_kategori}
+                </NavDropdown.Item>
+              )).slice(0, 3)}
             </NavDropdown>
 
             <Nav.Link href="/kontak" className="mx-2 d-flex align-items-center">

@@ -53,26 +53,17 @@ export default function Register() {
     }
 
     return (
-        <div className="container d-flex align-items-center justify-content-center vw-100 dvh-100">
+        <div className="container-fluid d-flex align-items-center justify-content-center vw-100 dvh-100">
             <div className="d-flex align-items-center justify-content-center w-80 h-90">
                 <div className="d-flex flex-column w-50 h-100 p-20px w-lg-90">
                     <div className="">
-                        <img src="/image/LogoHealth.jpg" className="w-60px h-60px m-0" alt="Logo Health" />
+                        <img src="/image/LogoHealth.png" className="w-100px h-60px m-0" alt="Logo Health" />
                     </div>
                     <div className="m-15px">
-                        <h3 className="m-0">Get started</h3>
-                        <span className="fs-15px color-span">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</span>
-                    </div>
-                    <div className="d-flex w-100 justify-content-around gap-1 mb-10px">
-                        <a href="" className="d-flex align-items-center justify-content-center g-5px p-6px pi-10px text-dark border-white shadow rounded-20px hover-border-black">
-                            <img src="/image/Google.png" className="w-20px h-20px" alt="" />
-                            Google</a>
-                        <a href="" className="d-flex align-items-center justify-content-center g-5px p-6px pi-10px text-dark border-white shadow rounded-20px hover-border-black">
-                            <img src="/image/Apple.png" className="w-20px h-20px" alt="" />
-                            Apple</a>
-                        <a href="" className="d-flex align-items-center justify-content-center g-5px p-6px pi-10px text-dark border-white shadow rounded-20px hover-border-black">
-                            <img src="/image/Linkedin.png" className="w-20px h-20px" alt="" />
-                            LinkedIn</a>
+                        <h3 className="m-0">Get Started</h3>
+                        <span className="fs-15px color-span">
+                        Buat akun untuk mulai mengakses berbagai informasi dan layanan kesehatan terpercaya.
+                        </span>
                     </div>
                     <form onSubmit={Submit}>
                         <span>{message}</span>
@@ -85,7 +76,7 @@ export default function Register() {
                                 <div className="mb-20px">
                                     <label htmlFor="email">Email Address</label>
                                     <div className="d-flex align-items-center justify-content-center w-100 p-8px pi-15 rounded-20px mb-5px border border-0 outline-1">
-                                        <input type="email" name="email" id="email" onChange={hanldeInputEmail} placeholder="example@gmail.com" className="border border-0 outline-0 w-95" disabled={Loading} />
+                                        <input type="email" name="email" id="email" onChange={hanldeInputEmail} placeholder="email@gmail.com" className="border border-0 outline-0 w-95" disabled={Loading} />
                                         { showCheck ? 
                                         <>
                                         { LoadingCheck ? <div className="w-20px"><LoadingBerputar wdith={20} hiegth={20} /></div> : emailAvailable ? <div className="c-red"><FaTimesCircle/></div> : <div className="c-green"><FaCheckCircle /></div>}
