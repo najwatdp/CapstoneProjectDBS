@@ -1,6 +1,9 @@
 import { Users, Roles } from "../models/auth-model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import nodemailer from "nodemailer"
+import { Op } from 'sequelize';
+import crypto from 'crypto';
 
 export const serviceGetUser = async () => {
     const dataUser = await Users.findAll();
@@ -112,4 +115,76 @@ export const refreshTokenServise = async (refreshToken) => {
       return accessToken;
     }
   );
+};
+
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'fatih.muzaqi123@gmail.com', 
+        pass: 'lqob yudp tkjn hxgf', 
+    }
+});
+
+export const sendResetEmail = async (email) => {
+  // Cari user berdasarkan email
+  const user = await Users.findOne({ where: { email } });
+  if (!user) throw new Error('Email tidak ditemukan');
+
+  // Generate token acak
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  // Token expire dalam 1 jam
+  const resetTokenExpires = new Date(Date.now() + 60 * 60 * 1000);
+
+  // Simpan token & expired di DB user
+  await Users.update(
+    { reset_token: resetToken, reset_token_expires: resetTokenExpires },
+    { where: { id: user.id } }
+  );
+
+  // Buat link reset password
+  const resetURL = `http://localhost:5000/reset-password/${resetToken}`;
+
+  // Kirim email ke user
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: 'Reset Password Link',
+    text: `Klik link berikut untuk mereset password Anda:\n\n${resetURL}\n\nLink ini berlaku 1 jam.`,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
+export const resetPasswordService = async (token, newPassword) => {
+  // Cari user berdasarkan reset token dan cek expired
+  const user = await Users.findOne({
+    where: {
+      reset_token: token,
+      reset_token_expires: {
+        [Op.gt]: new Date()  // token belum expired
+      }
+    }
+  });
+
+  if (!user) throw new Error('Token tidak valid atau sudah kedaluwarsa');
+
+  // Hash password baru
+  const salt = await bcrypt.genSalt();
+  const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+  // Update password dan hapus token
+  await Users.update(
+    {
+      password: hashedPassword,
+      reset_token: null,
+      reset_token_expires: null,
+    },
+    {
+      where: { id: user.id }
+    }
+  );
+
+  return { message: 'Password berhasil diubah' };
 };

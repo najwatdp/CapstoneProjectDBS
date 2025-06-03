@@ -62,6 +62,7 @@ const init = async () => {
         
     }
     
+
     server.route(routesCekKesehatan);
     server.route(routeArtikel);
     server.route(routeKategori);

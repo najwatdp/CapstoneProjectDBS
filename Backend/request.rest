@@ -6,8 +6,8 @@ POST http://localhost:5000/user
 Content-Type: application/json
 
 {
-    "name":"admin",
-    "email":"admin@gmail.com",
+    "name":"fatih",
+    "email":"fatih.muzaqi123@gmail.com",
     "password": "12345678",
     "confPassword": "12345678"
 }
@@ -151,7 +151,6 @@ DELETE http://localhost:5000/api/artikel/7
 GET http://localhost:5000/api/cek-kesehatan/categories
 Content-Type: application/json
 
-###
 
 ### Get detail cek kesehatan by ID (ganti :id sesuai data)
 GET http://localhost:5000/api/cek-kesehatan/1
@@ -173,4 +172,31 @@ Content-Type: application/json
   "session_id": "abc123",
   "question_id": "q1",
   "answer": "yes"
+}
+
+
+
+###
+POST http://localhost:5000/predict
+Content-Type: application/json
+
+{
+    "input": "gejala mual dan pusing"
+}
+
+###
+POST http://localhost:5000/request-password-reset
+Content-Type: application/json
+
+{
+  "email": "fatih.muzaqi123@gmail.com"
+}
+
+
+###
+POST http://localhost:5000/reset-password/96535d5ac5246241ac63d59fd63c6918e3b6680caa64d539e776475eae7ffc0e
+Content-Type: application/json
+
+{
+  "newPassword": "passwordBaru123"
 }

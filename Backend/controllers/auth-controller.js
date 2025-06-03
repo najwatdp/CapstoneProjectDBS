@@ -1,4 +1,4 @@
-import { LoginService, RegisterServices, serviceGetUser } from "../services/auth-service.js";
+import { LoginService, RegisterServices, resetPasswordService, sendResetEmail, serviceGetUser } from "../services/auth-service.js";
 import { refreshTokenServise } from "../services/auth-service.js";
 
 export const getUser = async (request, h) => {
@@ -86,3 +86,47 @@ export const refreshToken = async (request, h) => {
     }
 };
 
+
+export const requestPasswordReset = async (request, h) => {
+  try {
+    const { email } = request.payload;
+
+    await sendResetEmail(email); // generate token & kirim email
+
+    return h.response({
+      status: 'success',
+      message: 'Link reset password sudah dikirim ke email Anda.'
+    }).code(200);
+  } catch (error) {
+    return h.response({
+      status: 'fail',
+      message: error.message
+    }).code(400);
+  }
+};
+
+export const resetPassword = async (request, h) => {
+  try {
+    const { token } = request.params;
+    const { newPassword } = request.payload;
+
+    if (!newPassword || newPassword.trim() === '') {
+      return h.response({
+        status: 'fail',
+        message: 'Password baru tidak boleh kosong.'
+      }).code(400);
+    }
+
+    await resetPasswordService(token, newPassword);
+
+    return h.response({
+      status: 'success',
+      message: 'Password berhasil diubah.'
+    }).code(200);
+  } catch (error) {
+    return h.response({
+      status: 'fail',
+      message: error.message
+    }).code(400);
+  }
+};
