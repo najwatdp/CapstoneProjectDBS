@@ -16,6 +16,7 @@ import Artikel from './models/artikel-model.js';
 import routeArtikel from './routes/artikel-route.js';
 import { HasilKesehatan, PertanyaanKesehatan, SessionCekKesehatan } from './models/hasilCekKesehatan-model.js';
 import routesCekKesehatan from './routes/cekKesehatan-route.js';
+import Kesehatan from './models/kesehatan-model.js';
 
 const init = async () => {
 
@@ -56,8 +57,9 @@ const init = async () => {
     try {
         await db.authenticate();
         console.log('Database Connected...');
-        await db.sync({alter:true});
-        await Artikel.sync({ alter: true });
+        // await db.sync({alter:true});
+        await Kesehatan.sync()
+        // await Artikel.sync({ alter: true });
     } catch (error) {
         
     }
