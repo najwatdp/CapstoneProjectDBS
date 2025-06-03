@@ -200,3 +200,24 @@ Content-Type: application/json
 {
   "newPassword": "passwordBaru123"
 }
+
+
+###
+POST http://localhost:5000/kesehatan
+Content-Type: application/json
+
+{
+    "id_kategori": 1,
+    "title": "Diabetes",
+    "deskripsi": "Diabetes adalah penyakit kronis yang ditandai oleh tingginya kadar gula darah.",
+    "saran": "Jaga pola makan sehat, rutin olahraga, dan periksa gula darah secara berkala."
+}
+
+
+###
+POST http://localhost:5000/cek-kesehatan
+Content-Type: application/json
+
+{
+  "symptoms": ["shivering", "chills"]
+}
