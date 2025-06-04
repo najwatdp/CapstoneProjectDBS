@@ -99,4 +99,37 @@ export class ArticleModel {
     const kategori = categories.find(k => String(k.id) === String(categoryId));
     return kategori ? kategori.nama_kategori : 'Kategori tidak ditemukan';
   }
+
+  async getlike(user_id, artikel_id) {
+    const res = await axios.post(`${this.baseURL}/like`, {
+      user_id: user_id,
+      artikel_id: artikel_id
+    });
+
+    return res.data;
+  }
+
+  async createLike(user_id, artikel_id, status) {
+    const res = await axios.post(`${this.baseURL}/likes`, {
+      user_id: user_id,
+      artikel_id: artikel_id,
+      status: status
+    });
+
+    return res.data;
+  }
+
+
+  async getUser() {
+    const cookie = await axios.get(`http://localhost:5000/token`, {
+      withCredentials: true
+    });
+    const res = await axios.get(`${this.baseURL}/user`, {
+      headers: {
+        Authorization: `Bearer ${cookie.data.accessToken}`
+      }
+    });
+
+    return res.data;
+  }
 }

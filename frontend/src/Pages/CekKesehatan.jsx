@@ -54,10 +54,9 @@ const CekKesehatan = () => {
   });
 
   function hanldePertanyaan() {
-    if (pertanyaan >= (diabetes.length - 1)) {
+    if ((pertanyaan + 1) >= (diabetes.length)) {
       setJawaban(jawaban + " " + diabetes[pertanyaan].name);
       setShowPertanyaan(false);
-      console.log(jawaban);
       return;
     }
     if (selectedAnswer) {
@@ -167,7 +166,7 @@ return (
                               id={``}
                               name="answer"
                               checked={selectedAnswer}
-                              onChange={() => setSelectedAnswer("ya")}
+                              onChange={() => setSelectedAnswer(true)}
                               className="d-flex align-items-center"
                               style={{ cursor: 'pointer' }}
                             >
@@ -272,6 +271,7 @@ return (
                   <Card className={`border mb-4`}>
                     <Card.Body>
                       <h4 className={`text fw-bold mb-3`}>
+                        {jawaban}
                       </h4>
                       <p className="mb-0 text-muted">
                       </p>

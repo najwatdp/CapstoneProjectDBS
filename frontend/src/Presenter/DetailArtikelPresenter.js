@@ -1,9 +1,9 @@
 import { ArticleModel } from '../Model/ArtikelDetail';
 
 export class ArticlePresenter {
-  constructor() {
+  constructor({ view }) {
     this.model = new ArticleModel();
-    this.view = null;
+    this.view = view;
   }
 
   setView(view) {
@@ -53,15 +53,43 @@ export class ArticlePresenter {
     }
   }
 
-  handleLike(currentStatus, newStatus, artikel) {
-    let newLikeStatus = currentStatus === newStatus ? null : newStatus;
-    let newLikes = artikel.likes;
-    let newDislikes = artikel.dislikes;
-    if (currentStatus === 'like') newLikes--;
-    if (currentStatus === 'dislike') newDislikes--;
-    if (newLikeStatus === 'like') newLikes++;
-    if (newLikeStatus === 'dislike') newDislikes++;
-    this.view.updateLikeStatus(newLikeStatus, newLikes, newDislikes);
+  async handleLike(user_id, artikel_id, status) {
+    try {
+      const res = await this.model.createLike(user_id, artikel_id, status);
+      console.log(res);
+      await this.getLike(user_id, artikel_id);
+    } catch (err) {
+      console.error("Terjadi Error:", err);
+    }
+  }
+
+  async getUser(artikel_id) {
+    try {
+      const user = await this.model.getUser();
+      this.view.setUser(user.user);
+      await this.getLike(user.user.userID, artikel_id);
+      console.log(user.user);
+    } catch (err) {
+      console.log("user belum login");
+    }
+  }
+
+  async getLike(user_id, artikel_id) {
+    if (!user_id) return;
+    try {
+      const res = await this.model.getlike(user_id, artikel_id);
+      console.log(res);
+      if (res.status === "success") {
+        if (res.data.status === "like") {
+          this.view.updateLikeStatus("like");
+        }
+        else {
+          this.view.updateLikeStatus("dislike");
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   handleBookmark(currentStatus) {

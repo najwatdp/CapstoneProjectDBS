@@ -97,7 +97,7 @@ export const handleHealthCheck = async (request, h) => {
   const { symptoms } = request.payload;
 
   try {
-    const response = await axios.post('http://localhost:3000/predict', {
+    const response = await axios.post(' http://127.0.0.1:3000/predict', {
       symptoms
     });
 

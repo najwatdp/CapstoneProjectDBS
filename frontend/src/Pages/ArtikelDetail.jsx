@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Dropdown, NavDropdown, Navbar, Container, Row, Col, Card, Button, Form, Badge, Nav, InputGroup } from 'react-bootstrap';
 import { FaSearch, FaPhoneAlt, FaComments, FaStethoscope, FaHeartbeat, FaCalendarAlt, FaUser, FaShare, FaBookmark, FaPrint, FaThumbsUp, FaThumbsDown, FaEye, FaClock, FaTag, FaArrowLeft, FaHome, FaChevronRight } from 'react-icons/fa';
 import { ArticlePresenter } from '../Presenter/DetailArtikelPresenter';
@@ -8,6 +8,8 @@ import FooterComponent from '../Component/FooterComponent';
 import SubscriptionForm from '../Component/SubscriptionForm';
 
 const ArticleDetailPage = () => {
+
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [artikel, setArtikel] = useState(null);
   const [allArticles, setAllArticles] = useState([]);
@@ -21,39 +23,41 @@ const ArticleDetailPage = () => {
   const [error, setError] = useState(null);
 
   const { id } = useParams();
-  const presenter = new ArticlePresenter();
+  const presenter = new ArticlePresenter({
+    view: {
+      setLoading: (loading) => setLoading(loading),
+      setArticleData: (data) => setArtikel(data),
+      setCategories: (categories) => setKategoriKesehatan(categories),
+      setRelatedArticles: (articles) => setRandomArticles(articles),
+      setPopularArticles: (articles) => setPopularArticles(articles),
+      showError: (message) => setError(message),
+      updateLikeStatus: setLikeStatus,
+      updateBookmarkStatus: (status) => setIsBookmarked(status),
+      showShareSuccess: () => {
+        setShowShareAlert(true);
+        setTimeout(() => setShowShareAlert(false), 3000);
+      },
+      showShareError: () => alert('Gagal menyalin link'),
+      showNewsletterSuccess: (message) => alert(message),
+      showNewsletterError: (message) => alert(message),
+      clearNewsletterEmail: () => setEmail(''),
+      setUser: setUser,
+    }
+  });
 
-  const viewInterface = {
-    setLoading: (loading) => setLoading(loading),
-    setArticleData: (data) => setArtikel(data),
-    setCategories: (categories) => setKategoriKesehatan(categories),
-    setRelatedArticles: (articles) => setRandomArticles(articles),
-    setPopularArticles: (articles) => setPopularArticles(articles),
-    showError: (message) => setError(message),
-    updateLikeStatus: (status, likes, dislikes) => {
-      setLikeStatus(status);
-      if (artikel) {
-        setArtikel(prev => ({ ...prev, likes, dislikes }));
-      }
-    },
-    updateBookmarkStatus: (status) => setIsBookmarked(status),
-    showShareSuccess: () => {
-      setShowShareAlert(true);
-      setTimeout(() => setShowShareAlert(false), 3000);
-    },
-    showShareError: () => alert('Gagal menyalin link'),
-    showNewsletterSuccess: (message) => alert(message),
-    showNewsletterError: (message) => alert(message),
-    clearNewsletterEmail: () => setEmail('')
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
-    presenter.setView(viewInterface);
+    presenter.getUser(id);
     presenter.loadArticleData(id);
-  }, [id]);
+  }, []);
 
-  const handleLike = (status) => {
-    presenter.handleLike(likeStatus, status, artikel);
+  const handleLike = async (status) => {
+    if (!user) {
+      return navigate("/login");
+    }
+
+    await presenter.handleLike(user?.userID, id, status);
   };
 
   const handleBookmark = () => {
@@ -75,7 +79,7 @@ const ArticleDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{height: '100vh'}}>
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
@@ -114,14 +118,14 @@ const ArticleDetailPage = () => {
                     {presenter.getCategoryName(kategoriKesehatan, artikel.kategori_id)}
                   </span>
                   <h1 className="h2 mb-3">{artikel.judul}</h1>
-                  <img 
-                    src={artikel.images || 'default-image.png'} 
+                  <img
+                    src={artikel.images || 'default-image.png'}
                     alt={artikel.judul}
                     className="img-fluid rounded"
                     style={{ width: '100%', height: '400px', objectFit: 'cover' }}
                   />
                   <p className="text-muted mw-100 word-break overflow-wrap-break-word" style={{ maxWidth: 800 + 'px' }}>
-                    <div dangerouslySetInnerHTML={{__html: artikel.isi }}></div>
+                    <div dangerouslySetInnerHTML={{ __html: artikel.isi }}></div>
                   </p>
                 </div>
 
@@ -146,21 +150,21 @@ const ArticleDetailPage = () => {
                 </div>
 
                 <div className="d-flex flex-wrap gap-2 mb-4">
-                  <button 
+                  <button
                     className={`btn ${likeStatus === 'like' ? 'btn-success' : 'btn-outline-success'} btn-sm`}
                     onClick={() => handleLike('like')}
                   >
                     <FaThumbsUp className="me-1" />
                     {artikel.likes}
                   </button>
-                  <button 
+                  <button
                     className={`btn ${likeStatus === 'dislike' ? 'btn-danger' : 'btn-outline-danger'} btn-sm`}
                     onClick={() => handleLike('dislike')}
                   >
                     <FaThumbsDown className="me-1" />
                     {artikel.dislikes}
                   </button>
-                  <button 
+                  <button
                     className={`btn ${isBookmarked ? 'btn-warning' : 'btn-outline-warning'} btn-sm`}
                     onClick={handleBookmark}
                   >
@@ -280,17 +284,17 @@ const ArticleDetailPage = () => {
 
                         <div className="p-2 d-flex flex-column justify-content-between">
                           <div className='d-flex justify-content-between align-items-center'>
-                          <span className="badge bg-gradient mb-1" style={{ width: '100px' }}>
-                            {presenter.getCategoryName(kategoriKesehatan, artikel.kategori_id)}
-                          </span>
-                          <p className="card-text small text-muted mb-0 title-createdAt">
-                            <FaCalendarAlt className="me-1" />
-                            {presenter.formatDate(item.createdAt)}
-                          </p>
+                            <span className="badge bg-gradient mb-1" style={{ width: '100px' }}>
+                              {presenter.getCategoryName(kategoriKesehatan, artikel.kategori_id)}
+                            </span>
+                            <p className="card-text small text-muted mb-0 title-createdAt">
+                              <FaCalendarAlt className="me-1" />
+                              {presenter.formatDate(item.createdAt)}
+                            </p>
                           </div>
                           <div>
                             <h6 className="mb-1">{item.judul}</h6>
-                            <p className="text-muted small" dangerouslySetInnerHTML={{__html: item.isi?.slice(0, 90) + '...'}}>
+                            <p className="text-muted small" dangerouslySetInnerHTML={{ __html: item.isi?.slice(0, 90) + '...' }}>
                             </p>
                           </div>
                         </div>
@@ -326,7 +330,7 @@ const ArticleDetailPage = () => {
                           {presenter.getCategoryName(kategoriKesehatan, item.kategori_id)}
                         </span>
                         <h3 className="card-title">{item.judul}</h3>
-                        <p className="text-muted" dangerouslySetInnerHTML={{__html: (item.isi?.slice(0, 300) + '...')}}></p>
+                        <p className="text-muted" dangerouslySetInnerHTML={{ __html: (item.isi?.slice(0, 300) + '...') }}></p>
                         <div className='col-12 col-md-6 d-flex gap-x-px justify-content-start align-items-start small'>
                           <p className="text-muted">{item.author}</p>
                           <p className="card-text text-muted">

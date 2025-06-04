@@ -1,4 +1,4 @@
-import { addUser, deleteUser, indexUser, searchEmailHandler, updateUser } from "../controllers/user-controller.js"
+import { addUser, deleteUser, getUserController, indexUser, searchEmailHandler, updateUser } from "../controllers/user-controller.js"
 
 
 const routeUser = [
@@ -39,6 +39,11 @@ const routeUser = [
                 output: 'stream' 
             }
         }
+    },
+    {
+        method: "GET",
+        path: "/api/user",
+        handler: getUserController
     }
 ]
 

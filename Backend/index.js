@@ -17,6 +17,8 @@ import routeArtikel from './routes/artikel-route.js';
 import { HasilKesehatan, PertanyaanKesehatan, SessionCekKesehatan } from './models/hasilCekKesehatan-model.js';
 import routesCekKesehatan from './routes/cekKesehatan-route.js';
 import Kesehatan from './models/kesehatan-model.js';
+import likesRoute from './routes/likes-route.js';
+import { reactions } from './models/reactions-artikel.js';
 
 const init = async () => {
 
@@ -57,14 +59,14 @@ const init = async () => {
     try {
         await db.authenticate();
         console.log('Database Connected...');
-        // await db.sync({alter:true});
-        await Kesehatan.sync()
+        await db.sync();
+        // await Kesehatan.sync()
         // await Artikel.sync({ alter: true });
     } catch (error) {
         
     }
     
-
+    server.route(likesRoute);
     server.route(routesCekKesehatan);
     server.route(routeArtikel);
     server.route(routeKategori);

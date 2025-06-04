@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { addUserService, indexUsersSerice, updateUserService, deleteUserService, searchEmailService } from "../services/User-service.js";
 import Joi from "joi";
 
@@ -113,3 +114,27 @@ export const searchEmailHandler = async (request, h) => {
         }).code(500);
     }
 };
+
+export const getUserController = async (request, h) => {
+    const auth = request.headers.authorization;
+
+    if (!auth) {
+        return h.response({
+            status: "fail",
+            message: "auth tidak tersedia"
+        }).code(404);
+    }
+
+    try {
+        const token = auth.split(" ")[1];
+        const userVerify = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        return h.response({
+            user: userVerify
+        });
+    } catch (err) {
+        return h.response({
+            status: "fail",
+            error: err
+        }).code(404);
+    }
+}

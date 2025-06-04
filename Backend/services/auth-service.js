@@ -61,7 +61,7 @@ export const LoginService = async (email, password) => {
         { userID, name, email, roles },
         process.env.ACCESS_TOKEN_SECRET,
         {
-        expiresIn: "20s",
+        expiresIn: "20h",
         }
     );
 
